@@ -15,6 +15,14 @@ public class ProductController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<ServiceResponse<List<Product>>>> GetProducts(CancellationToken cancellationToken) =>
-        Ok(await _productService.GetProducts(cancellationToken));
+    public async Task<ActionResult<ServiceResponse<List<Product>>>> GetProducts(
+        CancellationToken cancellationToken) =>
+            Ok(await _productService.GetProducts(cancellationToken));
+
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<ServiceResponse<Product>>> GetProduct(
+        Guid id,
+        CancellationToken cancellationToken) =>
+            Ok(await _productService.GetProduct(id, cancellationToken));
 }

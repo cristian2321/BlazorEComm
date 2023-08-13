@@ -5,16 +5,26 @@ namespace BlazorEComm.Server.Services.ProductService;
 
 public class ProductService : IProductService
 {
-    private EcomDbContext _ecomDbContext;
+    private EcommDbContext _ecommDbContext;
 
-    public ProductService(EcomDbContext ecomDbContext)
+    public ProductService(EcommDbContext ecomDbContext)
     {
-        _ecomDbContext = ecomDbContext;
+        _ecommDbContext = ecomDbContext;
+    }
+
+    public async Task<ServiceResponse<Product>> GetProduct(Guid productId, 
+        CancellationToken cancellationToken)
+    {
+        var product = await _ecommDbContext.Products.FirstOrDefaultAsync(x => x.Id == productId, cancellationToken);
+        return product is null ? 
+            new() 
+            {
+                Succes = false,
+                Message = $"Product not found for product Id:{productId}"
+            }: 
+            new() { Data = product };
     }
 
     public async Task<ServiceResponse<List<Product>>> GetProducts(CancellationToken cancellationToken) => 
-        new ()
-        {
-            Data = await _ecomDbContext.Products.ToListAsync(cancellationToken)
-        };
+        new () {  Data = await _ecommDbContext.Products.ToListAsync(cancellationToken)  };
 }

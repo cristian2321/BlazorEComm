@@ -2,9 +2,9 @@
 
 namespace BlazorEComm.Server.Data;
 
-public class EcomDbContext : DbContext
+public class EcommDbContext : DbContext
 {
-    public EcomDbContext(DbContextOptions<EcomDbContext> dbContextOptions): base(dbContextOptions)
+    public EcommDbContext(DbContextOptions<EcommDbContext> dbContextOptions): base(dbContextOptions)
     {
         
     }

@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BlazorEComm.Server.Migrations
 {
-    [DbContext(typeof(EcomDbContext))]
+    [DbContext(typeof(EcommDbContext))]
     [Migration("20230813012846_FirstOne")]
     partial class FirstOne
     {

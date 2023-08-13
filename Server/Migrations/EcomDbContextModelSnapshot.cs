@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BlazorEComm.Server.Migrations
 {
-    [DbContext(typeof(EcomDbContext))]
+    [DbContext(typeof(EcommDbContext))]
     partial class EcomDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
