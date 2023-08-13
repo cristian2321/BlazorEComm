@@ -2,13 +2,16 @@ using Microsoft.AspNetCore.Components;
 
 namespace BlazorEComm.Client.Shared;
 
-public partial class ProductList
+public partial class ProductList : IDisposable
 {
     [Inject]
     private IProductService ProductService { get; set; } = default!;
 
-    protected override async Task OnInitializedAsync()
+    public void Dispose() =>
+        ProductService.ProductsChanged -= StateHasChanged;
+
+    protected override void OnInitialized()
     {
-        await ProductService.GetProducts();   
+        ProductService.ProductsChanged += StateHasChanged;
     }
 }

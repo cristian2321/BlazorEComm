@@ -25,4 +25,11 @@ public class ProductController : ControllerBase
         Guid id,
         CancellationToken cancellationToken) =>
             Ok(await _productService.GetProduct(id, cancellationToken));
+    
+    [HttpGet("category/{categoryUrl}")]
+    public async Task<ActionResult<ServiceResponse<List<Product>>>> GetProductsByCategory(
+        string categoryUrl,
+        CancellationToken cancellationToken) =>
+            Ok(await _productService.GetProductsByCategory(categoryUrl, cancellationToken));
+
 }

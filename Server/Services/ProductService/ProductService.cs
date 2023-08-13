@@ -27,4 +27,13 @@ public class ProductService : IProductService
 
     public async Task<ServiceResponse<List<Product>>> GetProducts(CancellationToken cancellationToken) => 
         new () {  Data = await _ecommDbContext.Products.ToListAsync(cancellationToken)  };
+
+    public async Task<ServiceResponse<List<Product>>> GetProductsByCategory(string categoryUrl, CancellationToken cancellationToken) =>
+        new ()
+        {
+            Data = await _ecommDbContext.Products
+                .Where(x => x.Category != null && 
+                    x.Category.Url.ToLower() == categoryUrl.ToLower())
+                .ToListAsync(cancellationToken)
+        };
 }
