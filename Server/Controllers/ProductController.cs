@@ -1,4 +1,4 @@
-﻿using BlazorEComm.Server.Data;
+﻿using BlazorEComm.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlazorEComm.Server.Controllers;
@@ -7,14 +7,14 @@ namespace BlazorEComm.Server.Controllers;
 [ApiController]
 public class ProductController : ControllerBase
 {
-    private EcomDbContext _context;
+    private IProductService _productService;
 
-    public ProductController(EcomDbContext context)
+    public ProductController(IProductService productService)
     {
-        _context = context;
+        _productService = productService;
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<Product>>> GetProducts(CancellationToken cancellationToken) =>
-        Ok(await _context.Products.ToListAsync(cancellationToken));
+    public async Task<ActionResult<ServiceResponse<List<Product>>>> GetProducts(CancellationToken cancellationToken) =>
+        Ok(await _productService.GetProducts(cancellationToken));
 }

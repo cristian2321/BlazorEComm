@@ -1,4 +1,6 @@
-﻿namespace BlazorEComm.Server.Data;
+﻿using BlazorEComm.Shared.Models;
+
+namespace BlazorEComm.Server.Data;
 
 public class EcomDbContext : DbContext
 {
