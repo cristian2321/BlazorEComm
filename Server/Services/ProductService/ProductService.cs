@@ -15,7 +15,12 @@ public class ProductService : IProductService
     public async Task<ServiceResponse<Product>> GetProduct(Guid productId, 
         CancellationToken cancellationToken)
     {
-        var product = await _ecommDbContext.Products.FirstOrDefaultAsync(x => x.Id == productId, cancellationToken);
+        var product = await _ecommDbContext.Products
+            .Where(x=>x.Id == productId)
+            .Include(x=> x.Variants)
+            .ThenInclude(x=>x.ProductType)
+            .FirstOrDefaultAsync(cancellationToken);
+        
         return product is null ? 
             new() 
             {
@@ -26,7 +31,12 @@ public class ProductService : IProductService
     }
 
     public async Task<ServiceResponse<List<Product>>> GetProducts(CancellationToken cancellationToken) => 
-        new () {  Data = await _ecommDbContext.Products.ToListAsync(cancellationToken)  };
+        new () 
+        { 
+            Data = await _ecommDbContext.Products
+                .Include(x=>x.Variants)
+                .ToListAsync(cancellationToken)  
+        };
 
     public async Task<ServiceResponse<List<Product>>> GetProductsByCategory(string categoryUrl, CancellationToken cancellationToken) =>
         new ()
@@ -34,6 +44,7 @@ public class ProductService : IProductService
             Data = await _ecommDbContext.Products
                 .Where(x => x.Category != null && 
                     x.Category.Url.ToLower() == categoryUrl.ToLower())
+                .Include(x => x.Variants)
                 .ToListAsync(cancellationToken)
         };
 }
