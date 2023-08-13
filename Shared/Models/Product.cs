@@ -13,4 +13,9 @@ public class Product
 
     [Column(TypeName = "decimal(18,2)")]
     public decimal Price { get; set; }
+
+    public Guid CategoryId { get; set; }
+   
+    [ForeignKey(nameof(CategoryId))]
+    public Category? Category { get; set; }
 }
