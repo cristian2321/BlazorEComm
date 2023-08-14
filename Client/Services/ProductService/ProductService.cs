@@ -29,7 +29,7 @@ public class ProductService : IProductService
     {
         var result = categoryUrl is null ?
             await _httpClient.GetFromJsonAsync<ServiceResponse<List<Product>>>
-                ("api/product") :
+                ("api/product/featured") :
             await _httpClient.GetFromJsonAsync<ServiceResponse<List<Product>>>
                 ($"api/product/category/{categoryUrl}");
        

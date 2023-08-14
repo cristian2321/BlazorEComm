@@ -103,4 +103,13 @@ public class ProductService : IProductService
             .Where(x => x.Title.ToLower().Contains(searchText) || x.Description.ToLower().Contains(searchText))
             .Include(x => x.ProductVariants)
             .ToListAsync(cancellationToken);
+
+    public async Task<ServiceResponse<List<Product>>> GetFeaturedProducts(CancellationToken cancellationToken) => 
+        new () 
+        {
+            Data = await _ecommDbContext.Products
+                .Where(x => x.Featured)
+                .Include(x => x.ProductVariants)
+                .ToListAsync(cancellationToken)
+        };
 }

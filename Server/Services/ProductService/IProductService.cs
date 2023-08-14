@@ -13,4 +13,6 @@ public interface IProductService
     Task<ServiceResponse<List<Product>>> SearchProducts(string searchText, CancellationToken cancellationToken);
 
     Task<ServiceResponse<List<string>>> GetProductSearchSuggestions(string searchText, CancellationToken cancellationToken);
+  
+    Task<ServiceResponse<List<Product>>> GetFeaturedProducts(CancellationToken cancellationToken);
 }

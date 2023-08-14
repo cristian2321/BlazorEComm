@@ -12,7 +12,7 @@ public class Product
 
     public string ImageUrl { get; set; } = string.Empty;
 
-    public bool Feature { get; set; } = false;
+    public bool Featured { get; set; } = false;
 
     public Guid CategoryId { get; set; }
    

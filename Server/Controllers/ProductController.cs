@@ -44,5 +44,8 @@ public class ProductController : ControllerBase
       CancellationToken cancellationToken) =>
           Ok(await _productService.GetProductSearchSuggestions(searchText, cancellationToken));
 
-
+    [HttpGet("featured")]
+    public async Task<ActionResult<ServiceResponse<List<Product>>>> GetFeaturedProducts(
+     CancellationToken cancellationToken) =>
+         Ok(await _productService.GetFeaturedProducts(cancellationToken));
 }
