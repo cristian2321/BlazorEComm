@@ -5,7 +5,7 @@ namespace BlazorEComm.Client.Shared;
 public partial class EcommNavMenu
 {
     [Inject]
-    public ICategoryService CategoryService { get; set; } = default!;
+    private ICategoryService CategoryService { get; set; } = default!;
 
     private bool collapseNavMenu = true;
     

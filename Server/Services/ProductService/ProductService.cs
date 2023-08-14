@@ -5,7 +5,7 @@ namespace BlazorEComm.Server.Services.ProductService;
 
 public class ProductService : IProductService
 {
-    private EcommDbContext _ecommDbContext;
+    private readonly EcommDbContext _ecommDbContext;
 
     public ProductService(EcommDbContext ecomDbContext)
     {

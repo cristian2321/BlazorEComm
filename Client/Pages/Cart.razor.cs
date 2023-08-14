@@ -6,7 +6,7 @@ namespace BlazorEComm.Client.Pages;
 public partial class Cart
 {
     [Inject]
-    public ICartService CartService { get; set; } = default!;
+    private ICartService CartService { get; set; } = default!;
 
     private List<CartProductDto>? _cartProducts = null;
     

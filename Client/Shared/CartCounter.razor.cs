@@ -6,6 +6,8 @@ namespace BlazorEComm.Client.Shared;
 
 public partial class CartCounter : IDisposable
 {
+    private const string Cart = "cart";
+
     [Inject]
     private ICartService CartService { get; set; } = default!;
    
@@ -14,7 +16,7 @@ public partial class CartCounter : IDisposable
 
     private int GetCartItemsCount() 
     {
-        var cart = SyncLocalStorageService.GetItem<List<CartItem>>("cart");
+        var cart = SyncLocalStorageService.GetItem<List<CartItem>>(Cart);
 
         return cart is not null ? cart.Count : 0;
     }

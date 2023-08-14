@@ -21,5 +21,9 @@
 
 .cart-product-price {
     font-weight: 600;
-    text-align: right;
+    text-align: center;
+}
+
+.center-text {
+    text-align:center;
 }

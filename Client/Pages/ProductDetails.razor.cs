@@ -1,4 +1,3 @@
-using BlazorEComm.Client.Services.CartService;
 using Microsoft.AspNetCore.Components;
 
 namespace BlazorEComm.Client.Pages;
@@ -6,10 +5,10 @@ namespace BlazorEComm.Client.Pages;
 public partial class ProductDetails
 {
     [Inject]
-    public IProductService ProductService { get; set; } = default!;
+    private IProductService ProductService { get; set; } = default!;
     
     [Inject]
-    public ICartService CartService { get; set; } = default!;
+    private ICartService CartService { get; set; } = default!;
 
 
     private Product? _product = default;

@@ -6,10 +6,10 @@ namespace BlazorEComm.Client.Shared;
 public partial class Search
 {
     [Inject]
-    public NavigationManager NavigationManager { get; set; } = default!;
+    private NavigationManager NavigationManager { get; set; } = default!;
 
     [Inject]
-    public IProductService ProductService { get; set; } = default!;
+    private IProductService ProductService { get; set; } = default!;
 
     private string _searchText = string.Empty;
     private List<string> _suggestions = new ();

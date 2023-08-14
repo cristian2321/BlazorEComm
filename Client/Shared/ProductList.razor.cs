@@ -15,7 +15,7 @@ public partial class ProductList : IDisposable
         ProductService.ProductsChanged += StateHasChanged;
     }
 
-    private string GetPriceText(Product product) 
+    private static string GetPriceText(Product product)
     {
         var variants = product.ProductVariants;
 
