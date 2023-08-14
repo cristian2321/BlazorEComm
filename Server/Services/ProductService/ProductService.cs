@@ -17,7 +17,7 @@ public class ProductService : IProductService
     {
         var product = await _ecommDbContext.Products
             .Where(x => x.Id == productId)
-            .Include(x => x.Variants)
+            .Include(x => x.ProductVariants)
             .ThenInclude(x => x.ProductType)
             .FirstOrDefaultAsync(cancellationToken);
 
@@ -34,7 +34,7 @@ public class ProductService : IProductService
         new()
         {
             Data = await _ecommDbContext.Products
-                .Include(x => x.Variants)
+                .Include(x => x.ProductVariants)
                 .ToListAsync(cancellationToken)
         };
 
@@ -44,7 +44,7 @@ public class ProductService : IProductService
             Data = await _ecommDbContext.Products
                 .Where(x => x.Category != null &&
                     x.Category.Url.ToLower() == categoryUrl.ToLower())
-                .Include(x => x.Variants)
+                .Include(x => x.ProductVariants)
                 .ToListAsync(cancellationToken)
         };
 
@@ -101,6 +101,6 @@ public class ProductService : IProductService
     private async Task<List<Product>> FindProductBySearchText(string searchText, CancellationToken cancellationToken) =>
         await _ecommDbContext.Products
             .Where(x => x.Title.ToLower().Contains(searchText) || x.Description.ToLower().Contains(searchText))
-            .Include(x => x.Variants)
+            .Include(x => x.ProductVariants)
             .ToListAsync(cancellationToken);
 }

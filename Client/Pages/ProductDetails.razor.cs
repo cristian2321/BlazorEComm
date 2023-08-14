@@ -27,9 +27,9 @@ public partial class ProductDetails
         else
         {
             _product = result.Data;
-            if (_product is not null && _product.Variants.Count > 0)
+            if (_product is not null && _product.ProductVariants.Count > 0)
             {
-                _currentTypeId = _product.Variants.First().ProductTypeId;
+                _currentTypeId = _product.ProductVariants.First().ProductTypeId;
             }
         }
     }
@@ -37,6 +37,6 @@ public partial class ProductDetails
     private ProductVariant? GetSectedVariants() =>
         _product is null ?
             default :
-            _product.Variants.FirstOrDefault(x => x.ProductTypeId == _currentTypeId);
+            _product.ProductVariants.FirstOrDefault(x => x.ProductTypeId == _currentTypeId);
 
 }

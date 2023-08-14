@@ -17,7 +17,7 @@ public partial class ProductList : IDisposable
 
     private string GetPriceText(Product product) 
     {
-        var variants = product.Variants;
+        var variants = product.ProductVariants;
 
         if (!variants.Any())
         {
