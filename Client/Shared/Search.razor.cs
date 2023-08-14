@@ -25,7 +25,7 @@ public partial class Search
 
     public void SearchProducts() 
     {
-        NavigationManager.NavigateTo($"search/{_searchText}");
+        NavigationManager.NavigateTo($"search/{_searchText}/1");
     }
 
     public async Task HandleSearch(KeyboardEventArgs args) 

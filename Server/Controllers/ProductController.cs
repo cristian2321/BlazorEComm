@@ -1,4 +1,5 @@
-﻿using BlazorEComm.Shared.Models;
+﻿using BlazorEComm.Shared.Dtos;
+using BlazorEComm.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlazorEComm.Server.Controllers;
@@ -32,11 +33,12 @@ public class ProductController : ControllerBase
         CancellationToken cancellationToken) =>
             Ok(await _productService.GetProductsByCategory(categoryUrl, cancellationToken));
 
-    [HttpGet("search/{searchText}")]
-    public async Task<ActionResult<ServiceResponse<List<Product>>>> SearchProducts(
+    [HttpGet("search/{searchText}/{page}")]
+    public async Task<ActionResult<ServiceResponse<ProductSearchResultDto>>> SearchProducts(
         string searchText,
-        CancellationToken cancellationToken) =>
-            Ok(await _productService.SearchProducts(searchText, cancellationToken));
+        CancellationToken cancellationToken,
+        int page = 1) =>
+            Ok(await _productService.SearchProducts(searchText, page, cancellationToken));
 
     [HttpGet("searchsuggestions/{searchText}")]
     public async Task<ActionResult<ServiceResponse<List<string>>>> GetProductSearchSuggestions(

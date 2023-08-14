@@ -1,4 +1,6 @@
 ﻿using BlazorEComm.Shared;
+using BlazorEComm.Shared.Dtos;
+using static System.Net.WebRequestMethods;
 
 namespace BlazorEComm.Client.Services.ProductService;
 
@@ -11,6 +13,12 @@ public class ProductService : IProductService
     public List<Product> Products { get; set; } = new List<Product>();
 
     public string Message { get; set; } = "Loading products ...";
+ 
+    public int CurrentPage { get; set; } = 1;
+
+    public int PageCount { get; set; } = default;
+
+    public string LastSearchText { get; set; } = default!;
 
     public ProductService(HttpClient httpClient)
     {
@@ -27,32 +35,42 @@ public class ProductService : IProductService
 
     public async Task GetProducts(string? categoryUrl = null)
     {
-        var result = categoryUrl is null ?
-            await _httpClient.GetFromJsonAsync<ServiceResponse<List<Product>>>
-                ("api/product/featured") :
-            await _httpClient.GetFromJsonAsync<ServiceResponse<List<Product>>>
-                ($"api/product/category/{categoryUrl}");
-       
+        var result = categoryUrl == null ?
+            await _httpClient.GetFromJsonAsync<ServiceResponse<List<Product>>>("api/product/featured") :
+             await _httpClient.GetFromJsonAsync<ServiceResponse<List<Product>>>($"api/product/category/{categoryUrl}");
+
         if (result is not null && result.Data is not null)
         {
             Products = result.Data;
         }
+   
 
+        CurrentPage = 1;
+        PageCount = 0;
+
+        if (!Products.Any())
+        {
+            Message = "No products found";
+        }
+          
         ProductsChanged?.Invoke();
     }
 
-    public async Task SearchProducts(string searchText)
+    public async Task SearchProducts(string searchText, int page)
     {
-        var result = await _httpClient.GetFromJsonAsync<ServiceResponse<List<Product>>>($"api/product/search/{searchText}");
+        LastSearchText = searchText;
+        var result = await _httpClient.GetFromJsonAsync<ServiceResponse<ProductSearchResultDto>>($"api/product/search/{searchText}/{page}");
         if (result is not null && result.Data is not null)
         {
-            Products = result.Data;
+            Products = result.Data.Products;
+            CurrentPage = result.Data.CurrentPage;
+            PageCount = result.Data.Pages;
         }
 
         if (!Products.Any())
         {
-            Message = "No products found"; 
-        }
+            Message = "No products found.";
+        }      
 
         ProductsChanged?.Invoke();
     }

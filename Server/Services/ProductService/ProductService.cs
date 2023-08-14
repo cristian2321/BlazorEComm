@@ -1,5 +1,9 @@
 ﻿using BlazorEComm.Server.Data;
+using BlazorEComm.Shared.Dtos;
 using BlazorEComm.Shared.Models;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace BlazorEComm.Server.Services.ProductService;
 
@@ -50,7 +54,7 @@ public class ProductService : IProductService
 
     public async Task<ServiceResponse<List<string>>> GetProductSearchSuggestions(string searchText, CancellationToken cancellationToken)
     {
-        var productsSearch = await FindProductBySearchText(searchText, cancellationToken);
+        var productsSearch = await FindProductsBySearchText(searchText, cancellationToken);
 
         List<string> results = new();
 
@@ -92,17 +96,40 @@ public class ProductService : IProductService
         }
     }
 
-    public async Task<ServiceResponse<List<Product>>> SearchProducts(string searchText, CancellationToken cancellationToken) =>
-        new()
-        {
-            Data = await FindProductBySearchText(searchText, cancellationToken)
-        };
+    public async Task<ServiceResponse<ProductSearchResultDto>> SearchProducts(string searchText, int page, CancellationToken cancellationToken)
+    {
+        var pageResults = 2f;
+        var pageCount = Math.Ceiling((await FindProductsBySearchText(searchText, cancellationToken)).Count / pageResults);
 
-    private async Task<List<Product>> FindProductBySearchText(string searchText, CancellationToken cancellationToken) =>
+
+        return new ServiceResponse<ProductSearchResultDto>
+        {
+            Data = new ProductSearchResultDto
+            {
+                Products = await  FindProductsBySearchTextWithPage(searchText, pageResults, page, cancellationToken),
+                CurrentPage = page,
+                Pages = (int)pageCount
+            }
+        };
+    }
+
+    private async Task<List<Product>> FindProductsBySearchText(string searchText, CancellationToken cancellationToken) =>
         await _ecommDbContext.Products
             .Where(x => x.Title.ToLower().Contains(searchText) || x.Description.ToLower().Contains(searchText))
             .Include(x => x.ProductVariants)
             .ToListAsync(cancellationToken);
+
+    private async Task<List<Product>> FindProductsBySearchTextWithPage(string searchText,
+        float pageResults,
+        int page,
+        CancellationToken cancellationToken) =>
+            await _ecommDbContext.Products
+                .Where(p => p.Title.ToLower().Contains(searchText.ToLower()) ||
+                    p.Description.ToLower().Contains(searchText.ToLower()))
+                .Include(p => p.ProductVariants)
+                .Skip((page - 1) * (int)pageResults)
+                .Take((int)pageResults)
+                .ToListAsync(cancellationToken);
 
     public async Task<ServiceResponse<List<Product>>> GetFeaturedProducts(CancellationToken cancellationToken) => 
         new () 

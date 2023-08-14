@@ -13,11 +13,14 @@ namespace BlazorEComm.Client.Pages
         [Parameter]
         public string? CategoryUrl { get; set; } = null;
 
+        [Parameter]
+        public int Page { get; set; } = 1;
+
         protected async override Task OnParametersSetAsync()
         {
             if (SearchText is not null)
             {
-                await ProductService.SearchProducts(SearchText);
+                await ProductService.SearchProducts(SearchText, Page);
             }
             else
             {
