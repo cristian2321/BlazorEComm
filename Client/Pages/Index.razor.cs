@@ -6,13 +6,23 @@ namespace BlazorEComm.Client.Pages
     {
         [Inject]
         IProductService ProductService { get; set; } = default!;
-       
+
+        [Parameter]
+        public string? SearchText { get; set; } = null;
+
         [Parameter]
         public string? CategoryUrl { get; set; } = null;
 
         protected async override Task OnParametersSetAsync()
         {
-            await ProductService.GetProducts(CategoryUrl);
+            if (SearchText is not null)
+            {
+                await ProductService.SearchProducts(SearchText);
+            }
+            else
+            {
+                await ProductService.GetProducts(CategoryUrl);
+            }
         }
     }
 }

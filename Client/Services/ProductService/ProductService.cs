@@ -4,11 +4,13 @@ namespace BlazorEComm.Client.Services.ProductService;
 
 public class ProductService : IProductService
 {
-    private HttpClient _httpClient;
+    private readonly HttpClient _httpClient;
    
     public event Action? ProductsChanged;
 
     public List<Product> Products { get; set; } = new List<Product>();
+
+    public string Message { get; set; } = "Loading products ...";
 
     public ProductService(HttpClient httpClient)
     {
@@ -37,5 +39,30 @@ public class ProductService : IProductService
         }
 
         ProductsChanged?.Invoke();
+    }
+
+    public async Task SearchProducts(string searchText)
+    {
+        var result = await _httpClient.GetFromJsonAsync<ServiceResponse<List<Product>>>($"api/product/search/{searchText}");
+        if (result is not null && result.Data is not null)
+        {
+            Products = result.Data;
+        }
+
+        if (!Products.Any())
+        {
+            Message = "No products found"; 
+        }
+
+        ProductsChanged?.Invoke();
+    }
+
+    public async Task<List<string>> GetProductsSearchSuggestions(string searchText)
+    {
+        var result = await _httpClient
+            .GetFromJsonAsync<ServiceResponse<List<string>>>($"api/product/searchsuggestions/{searchText}");
+
+        return result is not null && result.Data is not null ?
+            result.Data : default!;
     }
 }

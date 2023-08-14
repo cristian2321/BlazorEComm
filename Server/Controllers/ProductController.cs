@@ -32,4 +32,17 @@ public class ProductController : ControllerBase
         CancellationToken cancellationToken) =>
             Ok(await _productService.GetProductsByCategory(categoryUrl, cancellationToken));
 
+    [HttpGet("search/{searchText}")]
+    public async Task<ActionResult<ServiceResponse<List<Product>>>> SearchProducts(
+        string searchText,
+        CancellationToken cancellationToken) =>
+            Ok(await _productService.SearchProducts(searchText, cancellationToken));
+
+    [HttpGet("searchsuggestions/{searchText}")]
+    public async Task<ActionResult<ServiceResponse<List<string>>>> GetProductSearchSuggestions(
+      string searchText,
+      CancellationToken cancellationToken) =>
+          Ok(await _productService.GetProductSearchSuggestions(searchText, cancellationToken));
+
+
 }
