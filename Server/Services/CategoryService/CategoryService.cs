@@ -1,5 +1,4 @@
-﻿using BlazorEComm.Server.Data;
-using BlazorEComm.Shared.Models;
+﻿using BlazorEComm.Shared.Models;
 
 namespace BlazorEComm.Server.Services.CategoryService;
 

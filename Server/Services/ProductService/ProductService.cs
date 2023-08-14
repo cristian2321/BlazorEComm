@@ -1,9 +1,5 @@
-﻿using BlazorEComm.Server.Data;
-using BlazorEComm.Shared.Dtos;
+﻿using BlazorEComm.Shared.Dtos;
 using BlazorEComm.Shared.Models;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using System.Globalization;
 
 namespace BlazorEComm.Server.Services.ProductService;
 

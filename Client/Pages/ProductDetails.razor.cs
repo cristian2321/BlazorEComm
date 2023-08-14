@@ -1,3 +1,4 @@
+using BlazorEComm.Client.Services.CartService;
 using Microsoft.AspNetCore.Components;
 
 namespace BlazorEComm.Client.Pages;
@@ -6,6 +7,10 @@ public partial class ProductDetails
 {
     [Inject]
     public IProductService ProductService { get; set; } = default!;
+    
+    [Inject]
+    public ICartService CartService { get; set; } = default!;
+
 
     private Product? _product = default;
     private string message = default!;
@@ -39,4 +44,18 @@ public partial class ProductDetails
             default :
             _product.ProductVariants.FirstOrDefault(x => x.ProductTypeId == _currentTypeId);
 
+    private async Task AddToCart() 
+    {
+        var productVariant = GetSectedVariants();
+        if (productVariant is not null)
+        {
+            var cartItem = new CartItem
+            {
+                ProductId = productVariant.ProductId,
+                ProductTypeId = productVariant.ProductTypeId,
+            };
+
+            await CartService.AddToCard(cartItem);
+        }
+    }
 }
