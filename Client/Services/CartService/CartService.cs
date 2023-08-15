@@ -1,5 +1,6 @@
 ﻿using BlazorEComm.Shared;
 using BlazorEComm.Shared.Dtos;
+using BlazorEComm.Shared.Models;
 using Blazored.LocalStorage;
 
 namespace BlazorEComm.Client.Services.CartService;
@@ -21,11 +22,21 @@ public class CartService : ICartService
         _httpClient = httpClient;
     }
 
-    public async Task AddToCard(CartItem card)
+    public async Task AddToCard(CartItem cartItem)
     {
         var cart = await GetCart();
 
-        cart.Add(card);
+        var sameItem = cart.Find(x => x.ProductId == cartItem.ProductId &&
+            x.ProductTypeId == cartItem.ProductTypeId);
+
+        if (sameItem is null)
+        {
+            cart.Add(cartItem);
+        }
+        else
+        {
+            sameItem.Quantity += cartItem.Quantity;
+        }      
 
         await _localStorageService.SetItemAsync(Cart, cart);
 
@@ -61,12 +72,9 @@ public class CartService : ICartService
     public async Task RemoveProductFromCart(Guid productId, Guid productTypeId)
     {
         var cart = await GetCart();
-        if (cart is null)
-        {
-            return;
-        }
 
-        var cardItem = cart.Find(x => x.ProductId == productId && x.ProductTypeId == productTypeId);
+        var cardItem = GetCartItem(cart, productId, productTypeId);
+
         if (cardItem is not null)
         {
             cart.Remove(cardItem);
@@ -76,4 +84,24 @@ public class CartService : ICartService
             OnChange.Invoke();
         }
     }
+
+    public async Task UpdateQuantity(CartProductDto cartProduct)
+    {
+        var cart = await GetCart();
+
+        var cardItem = GetCartItem(cart, cartProduct.ProductId, cartProduct.ProductTypeId);
+
+        if (cardItem is not null)
+        {
+            cardItem.Quantity = cartProduct.Quantity;
+
+            await _localStorageService.SetItemAsync(Cart, cart);
+        }
+    }
+
+    private static CartItem? GetCartItem(List<CartItem> cart, Guid productId, Guid productTypeId) =>
+        cart is null ?
+            default :
+            cart.Find(x => x.ProductId == productId &&
+                x.ProductTypeId == productTypeId);
 }

@@ -13,4 +13,6 @@ public class CartProductDto
     public string ImageUrl { get; set; } = default!;
 
     public decimal Price { get; set; }
+
+    public int Quantity { get; set; }
 }

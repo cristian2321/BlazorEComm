@@ -15,11 +15,17 @@ else
         {
             <div class="container">
                 <div class="image-wrapper">
-                    <img src="@product.ImageUrl" class="image" />
+                    <a href="/products/@product.ProductId">>
+                        <img src="@product.ImageUrl" class="image" />
+                    </a>           
                 </div>
                 <div class="name">
-                    <h5><a href="/product/@product.ProductId">@product.Title</a></h5>
+                    <h5><a href="/products/@product.ProductId">@product.Title</a></h5>
                     <span>@product.ProductType</span><br />
+                    <input type="number" value="@product.Quantity"
+                    @onchange="@((ChangeEventArgs changeEventArgs) => UpdateQuantity(changeEventArgs, product))"
+                           class="form-control input-quantity"
+                           min="1" />
                 <div class="left-text"> 
                      <button class="btn-delete" @onclick="@(() =>
                             RemoveProductFromCart(product.ProductId, product.ProductTypeId))">
