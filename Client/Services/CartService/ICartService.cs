@@ -11,4 +11,6 @@ public interface ICartService
     Task<List<CartItem>> GetCardItems();
 
     Task<List<CartProductDto>> GetCartProducts();
+
+    Task RemoveProductFromCart(Guid productId, Guid productTypeId);
 }

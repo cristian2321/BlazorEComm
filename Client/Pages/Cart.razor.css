@@ -24,6 +24,18 @@
     text-align: center;
 }
 
-.center-text {
-    text-align:center;
+.btn-delete {
+    background-color:red;
+    border: none;
+    padding: 5px;
+    color: white;
+    font-size: 12px;
+}
+
+    .btn-delete:hover {
+        text-decoration: underline;
+    }
+
+.left-text {
+    text-align: left;
 }

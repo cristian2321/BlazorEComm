@@ -1,7 +1,6 @@
 ﻿using BlazorEComm.Shared;
 using BlazorEComm.Shared.Dtos;
 using Blazored.LocalStorage;
-using System.ComponentModel;
 
 namespace BlazorEComm.Client.Services.CartService;
 
@@ -24,7 +23,7 @@ public class CartService : ICartService
 
     public async Task AddToCard(CartItem card)
     {
-        var cart = await GetCarts();
+        var cart = await GetCart();
 
         cart.Add(card);
 
@@ -34,11 +33,11 @@ public class CartService : ICartService
     }
 
     public async Task<List<CartItem>> GetCardItems() =>
-        await GetCarts();
+        await GetCart();
 
     public async Task<List<CartProductDto>> GetCartProducts()
     {
-        var cartItems = await GetCarts();
+        var cartItems = await GetCart();
         if (cartItems is null)
             return new ();
 
@@ -52,10 +51,29 @@ public class CartService : ICartService
     }
 
 
-    private async Task<List<CartItem>> GetCarts()
+    private async Task<List<CartItem>> GetCart()
     {
         var cart = await _localStorageService.GetItemAsync<List<CartItem>>(Cart);
 
         return cart ??= new();
+    }
+
+    public async Task RemoveProductFromCart(Guid productId, Guid productTypeId)
+    {
+        var cart = await GetCart();
+        if (cart is null)
+        {
+            return;
+        }
+
+        var cardItem = cart.Find(x => x.ProductId == productId && x.ProductTypeId == productTypeId);
+        if (cardItem is not null)
+        {
+            cart.Remove(cardItem);
+
+            await _localStorageService.SetItemAsync(Cart, cart);
+
+            OnChange.Invoke();
+        }
     }
 }
