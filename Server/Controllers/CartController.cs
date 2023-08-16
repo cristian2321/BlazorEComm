@@ -1,5 +1,4 @@
 ﻿using BlazorEComm.Shared.Dtos;
-using BlazorEComm.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlazorEComm.Server.Controllers
@@ -16,7 +15,7 @@ namespace BlazorEComm.Server.Controllers
         }
 
         [HttpPost("products")]
-        public async Task<ActionResult<ServiceResponse<List<CartProductDto>>>> GetCartProducts(List<CartItem> cartItems,
+        public async Task<ActionResult<ServiceResponse<List<CartProductDto>>>> GetCartProducts(List<CartItemDto> cartItems,
             CancellationToken cancellationToken) =>
                 Ok(await _cartService.GetCartProducts(cartItems, cancellationToken));
     }

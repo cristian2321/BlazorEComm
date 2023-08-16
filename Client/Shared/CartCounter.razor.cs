@@ -1,4 +1,5 @@
 using BlazorEComm.Client.Services.CartService;
+using BlazorEComm.Shared.Dtos;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 
@@ -16,7 +17,7 @@ public partial class CartCounter : IDisposable
 
     private int GetCartItemsCount() 
     {
-        var cart = SyncLocalStorageService.GetItem<List<CartItem>>(Cart);
+        var cart = SyncLocalStorageService.GetItem<List<CartItemDto>>(Cart);
 
         return cart is not null ? cart.Count : 0;
     }

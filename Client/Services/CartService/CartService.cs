@@ -1,6 +1,5 @@
 ﻿using BlazorEComm.Shared;
 using BlazorEComm.Shared.Dtos;
-using BlazorEComm.Shared.Models;
 using Blazored.LocalStorage;
 
 namespace BlazorEComm.Client.Services.CartService;
@@ -22,7 +21,7 @@ public class CartService : ICartService
         _httpClient = httpClient;
     }
 
-    public async Task AddToCard(CartItem cartItem)
+    public async Task AddToCard(CartItemDto cartItem)
     {
         var cart = await GetCart();
 
@@ -43,7 +42,7 @@ public class CartService : ICartService
         OnChange.Invoke();
     }
 
-    public async Task<List<CartItem>> GetCardItems() =>
+    public async Task<List<CartItemDto>> GetCardItems() =>
         await GetCart();
 
     public async Task<List<CartProductDto>> GetCartProducts()
@@ -62,9 +61,9 @@ public class CartService : ICartService
     }
 
 
-    private async Task<List<CartItem>> GetCart()
+    private async Task<List<CartItemDto>> GetCart()
     {
-        var cart = await _localStorageService.GetItemAsync<List<CartItem>>(Cart);
+        var cart = await _localStorageService.GetItemAsync<List<CartItemDto>>(Cart);
 
         return cart ??= new();
     }
@@ -99,7 +98,7 @@ public class CartService : ICartService
         }
     }
 
-    private static CartItem? GetCartItem(List<CartItem> cart, Guid productId, Guid productTypeId) =>
+    private static CartItemDto? GetCartItem(List<CartItemDto> cart, Guid productId, Guid productTypeId) =>
         cart is null ?
             default :
             cart.Find(x => x.ProductId == productId &&

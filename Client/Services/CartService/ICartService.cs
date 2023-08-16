@@ -6,9 +6,9 @@ public interface ICartService
 {
     event Action OnChange;
 
-    Task AddToCard(CartItem cartItem);
+    Task AddToCard(CartItemDto cartItem);
 
-    Task<List<CartItem>> GetCardItems();
+    Task<List<CartItemDto>> GetCardItems();
 
     Task<List<CartProductDto>> GetCartProducts();
 

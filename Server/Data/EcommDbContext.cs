@@ -291,7 +291,7 @@ public class EcommDbContext : DbContext
    
     public DbSet<ProductVariant> ProductVariants => Set<ProductVariant>();
 
-
-
     public DbSet<Category> Categories => Set<Category>();
+
+    public DbSet<User> Users => Set<User>();
 }

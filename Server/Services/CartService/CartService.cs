@@ -1,5 +1,4 @@
 ﻿using BlazorEComm.Shared.Dtos;
-using BlazorEComm.Shared.Models;
 
 namespace BlazorEComm.Server.Services.CartService;
 
@@ -12,7 +11,7 @@ public class CartService : ICartService
         _ecommDbContext = ecommDbContext;
     }
 
-    public async Task<ServiceResponse<List<CartProductDto>>> GetCartProducts(List<CartItem> cartItems, 
+    public async Task<ServiceResponse<List<CartProductDto>>> GetCartProducts(List<CartItemDto> cartItems, 
         CancellationToken cancellationToken)
     {
         var result = new ServiceResponse<List<CartProductDto>>

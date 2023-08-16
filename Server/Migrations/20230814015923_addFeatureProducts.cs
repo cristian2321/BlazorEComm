@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BlazorEComm.Server.Migrations
 {
-    public partial class addFeatureProducts : Migration
+    public partial class AddFeatureProducts : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

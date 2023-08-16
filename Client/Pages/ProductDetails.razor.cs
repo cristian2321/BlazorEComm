@@ -1,3 +1,4 @@
+using BlazorEComm.Shared.Dtos;
 using Microsoft.AspNetCore.Components;
 
 namespace BlazorEComm.Client.Pages;
@@ -48,7 +49,7 @@ public partial class ProductDetails
         var productVariant = GetSectedVariants();
         if (productVariant is not null)
         {
-            var cartItem = new CartItem
+            var cartItem = new CartItemDto
             {
                 ProductId = productVariant.ProductId,
                 ProductTypeId = productVariant.ProductTypeId,
