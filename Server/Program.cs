@@ -3,11 +3,14 @@ global using Microsoft.EntityFrameworkCore;
 global using BlazorEComm.Server.Services.ProductService;
 global using BlazorEComm.Server.Services.CategoryService;
 global using BlazorEComm.Server.Services.CartService;
+global using BlazorEComm.Server.Services.PasswordService;
+global using BlazorEComm.Server.Services.TokenService;
 global using BlazorEComm.Server.Services.AuthService;
 global using BlazorEComm.Server.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +29,10 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options => 
     {

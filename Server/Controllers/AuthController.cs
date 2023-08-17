@@ -11,10 +11,12 @@ namespace BlazorEComm.Server.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly IPasswordService _passwordService;
 
-        public AuthController(IAuthService authService)
+        public AuthController(IAuthService authService, IPasswordService passwordService)
         {
             _authService = authService;
+            _passwordService = passwordService;
         }
 
         [HttpPost("register")]
@@ -46,7 +48,7 @@ namespace BlazorEComm.Server.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var response =  await _authService.ChangePassword(Guid.Parse(userId), newPassword, cancellationToken);
+            var response =  await _passwordService.ChangePassword(Guid.Parse(userId), newPassword, cancellationToken);
 
             return response.Succes ?
                 Ok(response) :
