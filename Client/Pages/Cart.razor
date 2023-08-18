@@ -41,12 +41,12 @@ else
                 </div>    
            
                 </div>
-                <div class="cart-product-price">$@product.Price</div>
+                <div class="cart-product-price">$@(product.Price * product.Quantity)</div>
             </div>
         }
         <div class="cart-product-price">
-            Total (@_cartProducts.Count): $@_cartProducts.Sum(product => @product.Price )
-            <button onclick="@PlaceOrder" class="btn alert-success"> Place order </button>
+            Total (@_cartProducts.Count): $@_cartProducts.Sum(product => @product.Price * product.Quantity)
+            <button @onclick="PlaceOrder" class="btn alert-success center-text">Checkout</button>
         </div>
     </div>
 }

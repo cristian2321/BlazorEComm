@@ -1,7 +1,6 @@
 ﻿using BlazorEComm.Shared;
 using BlazorEComm.Shared.Dtos;
 using Blazored.LocalStorage;
-using Microsoft.AspNetCore.Components.Authorization;
 
 namespace BlazorEComm.Client.Services.CartService;
 
@@ -10,16 +9,16 @@ public class CartService : ICartService
     private readonly ILocalStorageService _localStorageService;
 
     private readonly HttpClient _httpClient;
-    private readonly AuthenticationStateProvider _authenticationStateProvider;
+    private readonly IAuthService _authService;
 
     public event Action OnChange = default!;
 
     public CartService(ILocalStorageService localStorageService, HttpClient httpClient, 
-        AuthenticationStateProvider authenticationStateProvider)
+        IAuthService authService)
     {
         _localStorageService = localStorageService;
         _httpClient = httpClient;
-        _authenticationStateProvider = authenticationStateProvider;
+        _authService = authService;
     }
 
     private const string AddCartUrl = "api/cart/add";
@@ -32,7 +31,7 @@ public class CartService : ICartService
 
     public async Task AddToCard(CartItem cartItem)
     {
-        if (await IsUserAuthenticated())
+        if (await _authService.IsUserAuthenticated())
         {
             await _httpClient.PostAsJsonAsync(AddCartUrl, cartItem);
         }
@@ -60,7 +59,7 @@ public class CartService : ICartService
 
     public async Task<List<CartProductDto>> GetCartProducts()
     {
-        if (await IsUserAuthenticated())
+        if (await _authService.IsUserAuthenticated())
         {
             var response = await _httpClient.GetFromJsonAsync<ServiceResponse<List<CartProductDto>>>(BaseCartUrl);
 
@@ -87,7 +86,7 @@ public class CartService : ICartService
 
     public async Task RemoveProductFromCart(Guid productId, Guid productTypeId)
     {
-        if (await IsUserAuthenticated())
+        if (await _authService.IsUserAuthenticated())
         { 
             await _httpClient.DeleteAsync($"{BaseCartUrl}/{productId}/{productTypeId}");
         }
@@ -108,7 +107,7 @@ public class CartService : ICartService
 
     public async Task UpdateQuantity(CartProductDto cartProduct)
     {
-        if (await IsUserAuthenticated())
+        if (await _authService.IsUserAuthenticated())
         {
             var request = new CartItem
             {
@@ -152,7 +151,7 @@ public class CartService : ICartService
 
     public async Task GetCartItemsCount()
     {
-        if (await IsUserAuthenticated())
+        if (await _authService.IsUserAuthenticated())
         {
             var result = await _httpClient.GetFromJsonAsync<ServiceResponse<int>>(CartItemsCountUrl);
             if (result is not null)
@@ -187,6 +186,4 @@ public class CartService : ICartService
             cart.Find(x => x.ProductId == productId &&
                 x.ProductTypeId == productTypeId);
 
-    private async Task<bool> IsUserAuthenticated() =>
-        (await _authenticationStateProvider.GetAuthenticationStateAsync()).User.Identity!.IsAuthenticated;
 }

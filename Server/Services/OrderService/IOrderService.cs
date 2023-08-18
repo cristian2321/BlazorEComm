@@ -7,4 +7,6 @@ public interface IOrderService
     Task<ServiceResponse<bool>> PlaceOrder(CancellationToken cancellationToken);
 
     Task<ServiceResponse<List<OrderOverviewDto>>> GetOrders(CancellationToken cancellationToken);
+
+    Task<ServiceResponse<OrderDetailsDto>> GetOrderDetails(Guid orderId, CancellationToken cancellationToken);
 }

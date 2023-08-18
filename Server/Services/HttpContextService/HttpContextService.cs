@@ -4,7 +4,7 @@ namespace BlazorEComm.Server.Services.HttpContextService;
 
 public class HttpContextService : IHttpContextService
 {
-    private IHttpContextAccessor _httpContextAccessor;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     public HttpContextService(IHttpContextAccessor httpContextAccessor)
     {

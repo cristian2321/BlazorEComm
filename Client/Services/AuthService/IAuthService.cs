@@ -10,4 +10,6 @@ public interface IAuthService
     Task<ServiceResponse<string>> Login(UserLoginDto userLogin);
 
     Task<ServiceResponse<bool>> ChangePassword(UserChangePasswordDto userChangePassword);
+
+    Task<bool> IsUserAuthenticated();
 }

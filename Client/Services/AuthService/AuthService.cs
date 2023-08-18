@@ -1,6 +1,6 @@
 ﻿using BlazorEComm.Shared;
 using BlazorEComm.Shared.Dtos;
-using System.Net.Http.Json;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace BlazorEComm.Client.Services.AuthService;
 
@@ -11,10 +11,12 @@ public class AuthService : IAuthService
     private const string LoginUrl = "api/auth/login";
 
     private readonly HttpClient _httpClient;
+    private readonly AuthenticationStateProvider _authenticationStateProvider;
 
-    public AuthService(HttpClient httpClient)
+    public AuthService(HttpClient httpClient, AuthenticationStateProvider authenticationStateProvider)
     {
         _httpClient = httpClient;
+        _authenticationStateProvider = authenticationStateProvider;
     }
 
     public async Task<ServiceResponse<bool>> ChangePassword(UserChangePasswordDto userChangePassword) =>
@@ -29,5 +31,7 @@ public class AuthService : IAuthService
         await (await _httpClient.PostAsJsonAsync(RegisterUrl, userRegister))
             .Content.ReadFromJsonAsync<ServiceResponse<string>>() ?? default!;
 
-   
+    public async Task<bool> IsUserAuthenticated() =>
+        (await _authenticationStateProvider.GetAuthenticationStateAsync()).User.Identity!.IsAuthenticated;
+
 }

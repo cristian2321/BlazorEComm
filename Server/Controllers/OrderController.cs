@@ -21,5 +21,9 @@ namespace BlazorEComm.Server.Controllers
         [HttpGet]
         public async Task<ServiceResponse<List<OrderOverviewDto>>> GetOrders(CancellationToken cancellationToken) =>
             await _orderService.GetOrders(cancellationToken);
+       
+        [HttpGet("{orderId}")]
+        public async Task<ServiceResponse<OrderDetailsDto>> GetOrder(Guid orderId, CancellationToken cancellationToken) =>
+            await _orderService.GetOrderDetails(orderId, cancellationToken);
     }
 }

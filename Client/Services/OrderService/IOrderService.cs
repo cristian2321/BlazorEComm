@@ -7,4 +7,6 @@ public interface IOrderService
     Task PlaceOrder();
 
     Task<List<OrderOverviewDto>> GetOrders();
+
+    Task<OrderDetailsDto> GetOrderDetails(Guid orderId);
 }

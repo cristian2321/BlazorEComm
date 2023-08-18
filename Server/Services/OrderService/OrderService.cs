@@ -30,7 +30,7 @@ public class OrderService : IOrderService
 
         var orderItems = GetOrdersItems(products);
 
-        Order order = GetOrder(totalPrice, orderItems);
+        var order = GetOrder(totalPrice, orderItems);
 
         _ecommDbContext.Orders.Add(order);
 
@@ -41,6 +41,7 @@ public class OrderService : IOrderService
 
         return new ServiceResponse<bool> { Data = IsSucess };
     }
+
     public async Task<ServiceResponse<List<OrderOverviewDto>>> GetOrders(CancellationToken cancellationToken)
     {
         var response = new ServiceResponse<List<OrderOverviewDto>>();
@@ -65,6 +66,28 @@ public class OrderService : IOrderService
 
 
         response.Data = orderOverviews;
+        return response;
+    }
+
+    public async Task<ServiceResponse<OrderDetailsDto>> GetOrderDetails(Guid orderId, CancellationToken cancellationToken)
+    {
+        var response = new ServiceResponse<OrderDetailsDto>();
+
+        var order = await GetOrder(orderId, cancellationToken);
+
+        if (order is null)
+        {
+            response.Succes = !IsSucess;
+            response.Message = "Order does not exists !";
+
+            return response;
+        }
+
+        var orderDetails = GetOrderDetails(order);
+
+        AddOrderDetails(order, orderDetails);
+
+        response.Data = orderDetails;
         return response;
     }
 
@@ -99,5 +122,39 @@ public class OrderService : IOrderService
             OrderDate = DateTime.Now,
             TotalPrice = totalPrice,
             OrderItems = orderItems
-        };   
+        };
+
+    private async Task<Order?> GetOrder(Guid orderId, CancellationToken cancellationToken)
+    {
+        return await _ecommDbContext.Orders
+            .Where(x => x.Id == orderId &&
+                x.UserId == _httpContextService.GetUserId())
+            .Include(x => x.OrderItems)
+            .ThenInclude(x => x.Product)
+            .Include(x => x.OrderItems)
+            .ThenInclude(x => x.ProductType)
+            .OrderByDescending(x => x.OrderDate)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+    
+    private static OrderDetailsDto GetOrderDetails(Order order) =>
+        new()
+        {
+            OrderDate = order.OrderDate,
+            TotalPrice = order.TotalPrice,
+            OrderDetailsProducts = new List<OrderDetailsProductDto>()
+        };
+
+    private static void AddOrderDetails(Order order, OrderDetailsDto orderDetails) =>
+        order.OrderItems.ForEach(o =>
+            orderDetails.OrderDetailsProducts
+            .Add(new()
+            {
+                ProductId = o.ProductId,
+                ImageUrl = o.Product.ImageUrl,
+                ProductType = o.ProductType.Name,
+                Quantity = o.Quantity,
+                Title = o.Product.Title,
+                TotalPrice = o.TotalPrice,
+            }));
 }

@@ -40,18 +40,16 @@ public partial class Cart
         }
     }
 
-    private async Task UpdateQuantity(ChangeEventArgs changeEventArgs, CartProductDto cartProduct) 
+    private async Task UpdateQuantity(ChangeEventArgs e, CartProductDto product)
     {
-        if (changeEventArgs is not null && changeEventArgs.Value is not null)
+        product.Quantity = int.Parse(e!.Value!.ToString()!);
+        
+        if (product.Quantity < 1)
         {
-            cartProduct.Quantity = int.Parse(changeEventArgs.Value.ToString()!);
-            if (cartProduct.Quantity < 1)
-            {
-                cartProduct.Quantity = 1;
-            }
-
-            await CartService.UpdateQuantity(cartProduct);
-        }
+            product.Quantity = 1;
+        }     
+        
+        await CartService.UpdateQuantity(product);
     }
 
     private async Task PlaceOrder()

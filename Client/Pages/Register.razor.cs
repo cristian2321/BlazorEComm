@@ -8,6 +8,9 @@ public partial class Register
     [Inject]
     private IAuthService AuthService { get; set; } = default!;
 
+    [Inject]
+    private NavigationManager NavigationManager { get; set; } = default!;
+
     private readonly UserRegisterDto _userRegister = new ();
 
     private string _message = string.Empty;
@@ -15,6 +18,7 @@ public partial class Register
 
     private const string TextSucces = "text-success";
     private const string TextDanger = "text-danger";
+    private const string LoginUrl = "login";
 
     private async Task HandleRegistration()
     {
@@ -24,5 +28,7 @@ public partial class Register
         _messageCssClass = result.Succes ?
             TextSucces :
             TextDanger;
+
+        NavigationManager.NavigateTo(LoginUrl);
     }
 }
