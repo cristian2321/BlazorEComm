@@ -9,39 +9,28 @@ public partial class Cart
     private ICartService CartService { get; set; } = default!;
 
     private List<CartProductDto>? _cartProducts = null;
-    
+
     private string _message = "Loading cart...";
-    
+
     protected override async Task OnInitializedAsync()
     {
-        await LoadCarts();
+        await LoadCart();
     }
 
-    private async Task RemoveProductFromCart(Guid productId, Guid productTypeId) 
+    private async Task RemoveProductFromCart(Guid productId, Guid productTypeId)
     {
         await CartService.RemoveProductFromCart(productId, productTypeId);
 
-        await LoadCarts();
+        await LoadCart();
     }
 
-    private async Task LoadCarts()
+    private async Task LoadCart()
     {
-        string messageEmptyCart = "Your cart is empty";
-        var cardsItem = await CartService.GetCardItems();
-
-        if (cardsItem is null)
-        {         
-            _cartProducts = new();
-            
-            _message = messageEmptyCart;
-        }
-        else
+        await CartService.GetCartItemsCount();
+        _cartProducts = await CartService.GetCartProducts();
+        if (_cartProducts == null || !_cartProducts.Any())
         {
-            _cartProducts = await CartService.GetCartProducts();
-            if (_cartProducts is not null && !_cartProducts.Any())
-            {
-                _message = messageEmptyCart; 
-            }
+            _message = "Your cart is empty.";
         }
     }
 

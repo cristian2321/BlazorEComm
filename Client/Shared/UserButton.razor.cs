@@ -8,12 +8,15 @@ public partial class UserButton
 {
     [Inject]
     private ILocalStorageService LocalStorageService { get; set; } = default!;
+  
+    [Inject]
+    private ICartService CartService { get; set; } = default!;
 
     [Inject]
     private NavigationManager NavigationManager { get; set; } = default!;
 
     [Inject]
-    AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
+    private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
 
     private bool showUserMenu = false;
     
@@ -35,6 +38,8 @@ public partial class UserButton
     private async Task Logout()
     {
         await LocalStorageService.RemoveItemAsync(AuthToken);
+
+        await CartService.GetCartItemsCount();
 
         await AuthenticationStateProvider.GetAuthenticationStateAsync();
 

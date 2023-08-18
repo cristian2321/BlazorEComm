@@ -20,6 +20,9 @@ public partial class Login
     [Inject]
     private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
 
+    [Inject]
+    private ICartService CartService { get; set; } = default!;
+
     private readonly UserLoginDto _userLogin = new();
 
     private string _errorMessage = string.Empty;
@@ -48,6 +51,10 @@ public partial class Login
             await LocalStorageService.SetItemAsync(AuthToken, result.Data);
 
             await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+            await CartService.StoreCartItems(true);
+
+            await CartService.GetCartItemsCount();
 
             NavigationManager.NavigateTo(_returnUrl);
         }

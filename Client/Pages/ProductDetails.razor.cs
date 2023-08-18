@@ -49,7 +49,7 @@ public partial class ProductDetails
         var productVariant = GetSectedVariants();
         if (productVariant is not null)
         {
-            var cartItem = new CartItemDto
+            var cartItem = new CartItem
             {
                 ProductId = productVariant.ProductId,
                 ProductTypeId = productVariant.ProductTypeId,

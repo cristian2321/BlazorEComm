@@ -6,21 +6,23 @@ namespace BlazorEComm.Server.Services.PasswordService;
 public class PasswordService : IPasswordService
 {
     private readonly EcommDbContext _ecommDbContext;
+    private readonly IHttpContextService _httpContextService;
 
-
-    public PasswordService(EcommDbContext ecommDbContext)
+    public PasswordService(EcommDbContext ecommDbContext, IHttpContextService httpContextService)
     {
         _ecommDbContext = ecommDbContext;
+        _httpContextService = httpContextService;
     }
 
     private const bool IsSucces = true;
     private const string MessageChangePassword = "Password changed successful !"; 
     private const string MessageUserNotFound = "User not found !";
 
-    public async Task<ServiceResponse<bool>> ChangePassword(Guid userId, string newPassword, 
+    public async Task<ServiceResponse<bool>> ChangePassword(string newPassword, 
         CancellationToken cancellationToken)
     {
-        var user = await _ecommDbContext.Users.FindAsync(new object?[] { userId }, cancellationToken: cancellationToken);
+        var user = await _ecommDbContext.Users.FindAsync(new object?[] { _httpContextService.GetUserId() }, 
+            cancellationToken: cancellationToken);
 
         if (user == null)
         {

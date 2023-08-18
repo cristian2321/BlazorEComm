@@ -6,11 +6,11 @@ global using BlazorEComm.Server.Services.CartService;
 global using BlazorEComm.Server.Services.PasswordService;
 global using BlazorEComm.Server.Services.TokenService;
 global using BlazorEComm.Server.Services.AuthService;
+global using BlazorEComm.Server.Services.HttpContextService;
 global using BlazorEComm.Server.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +26,8 @@ builder.Services.AddRazorPages();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IHttpContextService, HttpContextService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICartService, CartService>();

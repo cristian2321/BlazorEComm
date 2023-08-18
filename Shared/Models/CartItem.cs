@@ -1,7 +1,9 @@
-﻿namespace BlazorEComm.Shared.Dtos;
+﻿namespace BlazorEComm.Shared.Models;
 
-public class CartItemDto
+public class CartItem
 {
+    public Guid UserId { get; set; }
+
     public Guid ProductId { get; set; }
 
     public Guid ProductTypeId { get; set; }

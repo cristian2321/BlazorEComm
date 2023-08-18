@@ -1,5 +1,3 @@
-using BlazorEComm.Client.Services.CartService;
-using BlazorEComm.Shared.Dtos;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 
@@ -7,28 +5,20 @@ namespace BlazorEComm.Client.Shared;
 
 public partial class CartCounter : IDisposable
 {
-    private const string Cart = "cart";
+    private const string CartItemsCount = "cartItemsCount";
 
     [Inject]
     private ICartService CartService { get; set; } = default!;
    
     [Inject]
-    private ISyncLocalStorageService SyncLocalStorageService { get; set; } = default!;
+    private ISyncLocalStorageService LocalStorageService { get; set; } = default!;
 
-    private int GetCartItemsCount() 
-    {
-        var cart = SyncLocalStorageService.GetItem<List<CartItemDto>>(Cart);
+    private int GetCartItemsCount() =>
+        LocalStorageService.GetItem<int>(CartItemsCount);
 
-        return cart is not null ? cart.Count : 0;
-    }
-
-    protected override void OnInitialized()
-    {
+    protected override void OnInitialized() =>
         CartService.OnChange += StateHasChanged;
-    }
 
-    public void Dispose()
-    {
+    public void Dispose() => 
         CartService.OnChange -= StateHasChanged;
-    }
 }

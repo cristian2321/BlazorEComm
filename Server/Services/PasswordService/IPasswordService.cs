@@ -5,7 +5,7 @@ namespace BlazorEComm.Server.Services.PasswordService;
 
 public interface IPasswordService
 {
-    Task<ServiceResponse<bool>> ChangePassword(Guid userId, string newPassword, CancellationToken cancellationToken);
+    Task<ServiceResponse<bool>> ChangePassword(string newPassword, CancellationToken cancellationToken);
 
     void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt);
 

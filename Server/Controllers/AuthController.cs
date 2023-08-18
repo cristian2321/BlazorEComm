@@ -46,9 +46,7 @@ namespace BlazorEComm.Server.Controllers
         [HttpPost("change-password"), Authorize]
         public async Task<ActionResult<ServiceResponse<bool>>> ChangePassword([FromBody] string newPassword, CancellationToken cancellationToken) 
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            var response =  await _passwordService.ChangePassword(Guid.Parse(userId), newPassword, cancellationToken);
+            var response =  await _passwordService.ChangePassword(newPassword, cancellationToken);
 
             return response.Succes ?
                 Ok(response) :
