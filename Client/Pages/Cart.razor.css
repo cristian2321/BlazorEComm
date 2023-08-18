@@ -43,3 +43,8 @@
 .input-quantity {
     width:70px;
 }
+
+.center-text{
+    font-weight: 600;
+    text-align: center;
+}

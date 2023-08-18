@@ -8,6 +8,13 @@
 {
     <span>@_message</span>
 }
+else if(_isOrderPlace)
+{
+    <span>Thank you for your order ! You can check your orders
+        <a href="orders">here
+        </a> 
+    </span>
+}
 else
 {
     <div>
@@ -39,7 +46,7 @@ else
         }
         <div class="cart-product-price">
             Total (@_cartProducts.Count): $@_cartProducts.Sum(product => @product.Price )
+            <button onclick="@PlaceOrder" class="btn alert-success"> Place order </button>
         </div>
-
     </div>
 }

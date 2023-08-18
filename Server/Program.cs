@@ -7,7 +7,9 @@ global using BlazorEComm.Server.Services.PasswordService;
 global using BlazorEComm.Server.Services.TokenService;
 global using BlazorEComm.Server.Services.AuthService;
 global using BlazorEComm.Server.Services.HttpContextService;
+global using BlazorEComm.Server.Services.OrderService;
 global using BlazorEComm.Server.Data;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -34,6 +36,7 @@ builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options => 

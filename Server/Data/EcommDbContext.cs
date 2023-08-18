@@ -1,4 +1,5 @@
 ﻿using BlazorEComm.Shared.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlazorEComm.Server.Data;
 
@@ -48,6 +49,13 @@ public class EcommDbContext : DbContext
         modelBuilder.Entity<CartItem>()
             .HasKey(x => new {
                 x.UserId,
+                x.ProductId,
+                x.ProductTypeId
+            });
+
+        modelBuilder.Entity<OrderItem>()
+            .HasKey(x => new { 
+                x.OrderId,
                 x.ProductId,
                 x.ProductTypeId
             });
@@ -302,4 +310,8 @@ public class EcommDbContext : DbContext
     public DbSet<User> Users => Set<User>();
 
     public DbSet<CartItem> CartItems => Set<CartItem>();
+
+    public DbSet<Order> Orders => Set<Order>();
+
+    public DbSet<OrderItem> OrderItems => Set<OrderItem>();
 }

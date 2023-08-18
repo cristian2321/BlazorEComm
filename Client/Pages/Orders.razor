@@ -1,0 +1,32 @@
+﻿@page "/orders"
+<PageTitle> Orders </PageTitle>
+
+<center> <h3> Orders</h3></center>
+
+@if (_orders is null)
+{
+    <span>Loading your orders ...</span>
+}
+else if(!_orders.Any())
+{
+    <span>You have no orders, yet ...</span>
+}
+else
+{
+    @foreach (var order in _orders)
+    {
+        <div class="container">
+            <div class="image-wrapper">
+                <img src="@order.ProductImageUrl" class="image"/>
+            </div>
+            <div class="details">
+                <h4> @order.ProductName </h4>
+                <span> @order.OrderDate </span> <br/>
+                <a href="orders/@order.Id"> Show more ... </a>
+            </div>
+            <div class="order-price">
+                $@order.TotalPrice
+            </div>
+        </div>
+    }
+}
