@@ -3,4 +3,6 @@
 public interface IHttpContextService
 {
     Guid GetUserId();
+
+    string GetUserEmail();
 }

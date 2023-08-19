@@ -12,6 +12,8 @@ public class OrderService : IOrderService
     
     private const string BaseOrderUrl = "api/order";
     private const string RegisterUrl = "register";
+    private const string OrderFailUrl = "api/order/order-fail";
+    private const string CheckoutUrl = "api/payment/checkout";
 
     public OrderService(HttpClient httpClient, IAuthService authService, NavigationManager navigationManager)
     {
@@ -53,15 +55,28 @@ public class OrderService : IOrderService
     }
 
 
-    public async Task PlaceOrder()
+    public async Task<string> PlaceOrder()
     {
-        if (await _authService.IsUserAuthenticated())
+        if (!await _authService.IsUserAuthenticated())
         {
-            await _httpClient.PostAsync(BaseOrderUrl, null);
+            return RegisterUrl;
         }
-        else
+
+        var result = await _httpClient.PostAsync(CheckoutUrl, null);
+
+        return await result.Content.ReadAsStringAsync();
+    }
+
+    public async Task RemoveOrderCancelPayments()
+    {
+        if (!await _authService.IsUserAuthenticated())
         {
             _navigationManager.NavigateTo(RegisterUrl);
+        }
+
+        else
+        {
+             await _httpClient.PostAsync(OrderFailUrl, null);
         }
     }
 }

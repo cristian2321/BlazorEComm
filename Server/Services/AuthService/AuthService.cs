@@ -75,4 +75,7 @@ public class AuthService : IAuthService
 
     public async Task<bool> UserExists(string email, CancellationToken cancellationToken) =>
         await _ecommDbContext.Users.AnyAsync(user => user.Email.ToLower().Equals(email.ToLower()), cancellationToken);
+
+    public async Task<User?> GetUserByEmail(string email) =>
+        await _ecommDbContext.Users.FirstOrDefaultAsync(x => x.Email.Equals(email));
 }

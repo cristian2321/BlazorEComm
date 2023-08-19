@@ -4,9 +4,11 @@ namespace BlazorEComm.Client.Services.OrderService;
 
 public interface IOrderService
 {
-    Task PlaceOrder();
+    Task<string> PlaceOrder();
 
     Task<List<OrderOverviewDto>> GetOrders();
+
+    Task RemoveOrderCancelPayments();
 
     Task<OrderDetailsDto> GetOrderDetails(Guid orderId);
 }

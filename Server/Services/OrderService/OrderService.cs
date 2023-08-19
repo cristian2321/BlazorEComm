@@ -1,4 +1,5 @@
-﻿using BlazorEComm.Shared.Dtos;
+﻿using BlazorEComm.Server.Data;
+using BlazorEComm.Shared.Dtos;
 using BlazorEComm.Shared.Models;
 
 namespace BlazorEComm.Server.Services.OrderService;
@@ -20,6 +21,8 @@ public class OrderService : IOrderService
 
     public async Task<ServiceResponse<bool>> PlaceOrder(CancellationToken cancellationToken)
     {
+        var userId = _httpContextService.GetUserId();
+
         var products = (await _cartService.GetDbCartProducts(cancellationToken)).Data;
         if (products is null || !products.Any())
         {
@@ -30,13 +33,45 @@ public class OrderService : IOrderService
 
         var orderItems = GetOrdersItems(products);
 
-        var order = GetOrder(totalPrice, orderItems);
+        var order = GetOrder(userId, totalPrice, orderItems);
 
         _ecommDbContext.Orders.Add(order);
 
         _ecommDbContext.CartItems.RemoveRange(_ecommDbContext.CartItems
-            .Where(x => x.UserId == _httpContextService.GetUserId()));
+            .Where(x => x.UserId == userId));
        
+        await _ecommDbContext.SaveChangesAsync(cancellationToken);
+
+        return new ServiceResponse<bool> { Data = IsSucess };
+    }
+
+    public async Task<ServiceResponse<bool>> RemoveOrderCancelPayments(CancellationToken cancellationToken) 
+    {
+        var userId = _httpContextService.GetUserId();
+        var order = await _ecommDbContext.Orders
+            .Where(x => x.UserId == userId)
+            .Include(x=>x.OrderItems)
+            .OrderByDescending(x => x.OrderDate)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (order is null)
+        {
+            return new ServiceResponse<bool> {Data = !IsSucess, Succes = !IsSucess, Message = "Order not found" };
+        }
+
+        var cartItems = new List<CartItem>();
+        order.OrderItems.ForEach(x => cartItems.Add(new()
+        {
+            ProductId = x.ProductId,
+            ProductTypeId = x.ProductTypeId,
+            Quantity = x.Quantity,
+            UserId = userId
+        }));
+
+        await _ecommDbContext.AddRangeAsync(cartItems, cancellationToken);
+        _ecommDbContext.RemoveRange(order.OrderItems);
+        _ecommDbContext.Remove(order);
+
         await _ecommDbContext.SaveChangesAsync(cancellationToken);
 
         return new ServiceResponse<bool> { Data = IsSucess };
@@ -115,10 +150,10 @@ public class OrderService : IOrderService
         return orderItems;
     }
 
-    private Order GetOrder(decimal totalPrice, List<OrderItem> orderItems) =>
+    private static Order GetOrder(Guid userId, decimal totalPrice, List<OrderItem> orderItems) =>
         new()
         {
-            UserId = _httpContextService.GetUserId(),
+            UserId = userId,
             OrderDate = DateTime.Now,
             TotalPrice = totalPrice,
             OrderItems = orderItems

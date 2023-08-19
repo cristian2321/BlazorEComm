@@ -11,6 +11,9 @@ public class HttpContextService : IHttpContextService
         _httpContextAccessor = httpContextAccessor;
     }
 
+    public string GetUserEmail() =>
+        _httpContextAccessor!.HttpContext!.User.FindFirstValue(ClaimTypes.Name);
+
     public Guid GetUserId() => 
         Guid.Parse(_httpContextAccessor!.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier));
 }

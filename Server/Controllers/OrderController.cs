@@ -14,16 +14,22 @@ namespace BlazorEComm.Server.Controllers
             _orderService = orderService;
         }
 
-        [HttpPost]
-        public async Task<ServiceResponse<bool>> PlaceOrder(CancellationToken cancellationToken) =>
-            await _orderService.PlaceOrder(cancellationToken);
-
         [HttpGet]
-        public async Task<ServiceResponse<List<OrderOverviewDto>>> GetOrders(CancellationToken cancellationToken) =>
-            await _orderService.GetOrders(cancellationToken);
+        public async Task<ActionResult<ServiceResponse<List<OrderOverviewDto>>>> GetOrders(CancellationToken cancellationToken) =>
+            Ok(await _orderService.GetOrders(cancellationToken));
        
         [HttpGet("{orderId}")]
-        public async Task<ServiceResponse<OrderDetailsDto>> GetOrder(Guid orderId, CancellationToken cancellationToken) =>
-            await _orderService.GetOrderDetails(orderId, cancellationToken);
+        public async Task<ActionResult<ServiceResponse<List<OrderDetailsDto>>>> GetOrder(Guid orderId, CancellationToken cancellationToken) =>
+            Ok(await _orderService.GetOrderDetails(orderId, cancellationToken));
+       
+        [HttpPost("order-fail")]
+        public async Task<ActionResult<ServiceResponse<bool>>> RemoveOrderCancelPayments(CancellationToken cancellationToken)
+        {
+            var response = await _orderService.RemoveOrderCancelPayments(cancellationToken);
+
+            return response.Succes ?
+                Ok(response) :
+                BadRequest(response);
+        }
     }
 }

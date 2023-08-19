@@ -10,16 +10,16 @@ public partial class Cart
 
     [Inject]
     private IOrderService OrderService { get; set; } = default!;
+  
+    [Inject]
+    private NavigationManager NavigationManager { get; set; } = default!;
 
     private List<CartProductDto>? _cartProducts = null;
 
     private string _message = "Loading cart...";
-    private bool _isOrderPlace = false;
-
+    
     protected override async Task OnInitializedAsync()
     {
-        _isOrderPlace = false;
-
         await LoadCart();
     }
 
@@ -54,10 +54,7 @@ public partial class Cart
 
     private async Task PlaceOrder()
     {
-        await OrderService.PlaceOrder();
-
-        await CartService.GetCartItemsCount();
-        
-        _isOrderPlace = true;
+        string url =  await OrderService.PlaceOrder();
+        NavigationManager.NavigateTo(url);
     }
 }
