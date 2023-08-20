@@ -11,4 +11,6 @@ public interface IOrderService
     Task<ServiceResponse<OrderDetailsDto>> GetOrderDetails(Guid orderId, CancellationToken cancellationToken);
 
     Task<ServiceResponse<bool>> RemoveOrderCancelPayments(CancellationToken cancellationToken);
+
+    Task<ServiceResponse<bool>> UpdateOrderPaymentFlag(CancellationToken cancellationToken);
 }

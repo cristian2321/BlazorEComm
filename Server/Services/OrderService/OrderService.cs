@@ -18,6 +18,7 @@ public class OrderService : IOrderService
     }
 
     private const bool IsSucess = true;
+    private const string OrderNotFound = "Order not found";
 
     public async Task<ServiceResponse<bool>> PlaceOrder(CancellationToken cancellationToken)
     {
@@ -56,7 +57,7 @@ public class OrderService : IOrderService
 
         if (order is null)
         {
-            return new ServiceResponse<bool> {Data = !IsSucess, Succes = !IsSucess, Message = "Order not found" };
+            return new ServiceResponse<bool> {Data = !IsSucess, Succes = !IsSucess, Message = OrderNotFound};
         }
 
         var cartItems = new List<CartItem>();
@@ -92,6 +93,7 @@ public class OrderService : IOrderService
         orders.ForEach(x=> orderOverviews.Add(new OrderOverviewDto 
         {
             Id = x.Id,
+            IsPayment = x.IsPayment,
             OrderDate = x.OrderDate,
             TotalPrice = x.TotalPrice,
             ProductName = x.OrderItems.Count > 1 ? $"{x.OrderItems.First().Product.Title} and " +
@@ -124,6 +126,27 @@ public class OrderService : IOrderService
 
         response.Data = orderDetails;
         return response;
+    }
+
+    public async Task<ServiceResponse<bool>> UpdateOrderPaymentFlag(CancellationToken cancellationToken)
+    {
+        var userId = _httpContextService.GetUserId();
+        var order = await _ecommDbContext.Orders
+            .Where(x => x.UserId == userId)
+            .Include(x => x.OrderItems)
+            .OrderByDescending(x => x.OrderDate)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (order is null)
+        {
+            return new ServiceResponse<bool> { Data = !IsSucess, Succes = !IsSucess, Message = OrderNotFound };
+        }
+
+        order.IsPayment = IsSucess;
+
+        await _ecommDbContext.SaveChangesAsync(cancellationToken);
+
+        return new ServiceResponse<bool> { Data = IsSucess };
     }
 
     private static decimal GetTotalPriceForOrder(List<CartProductDto> products)

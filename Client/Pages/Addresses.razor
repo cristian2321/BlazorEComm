@@ -1,0 +1,50 @@
+﻿@page "/address"
+<center><h3>Addresses </h3> </center>
+
+@if ((_addresses is null || !_addresses.Any()) && !_existsAddress)
+{
+    <span> No Address yet ! You can add one <a href="addAddress">here</a> </span>
+}
+else if(_addresses is not null && _addresses.Any() && _existsAddress)
+{   <div>
+        <ul class="list-unstyled">
+        @foreach (var address in _addresses)
+        {
+                var index = _addresses.IndexOf(address) + 1;
+                <li class="media my-3">
+                    Address @index
+                </li>
+                <li class="media my-3">
+                    <label>FirstName: @address.FirstName</label>
+                </li>
+                <li class="media my-3">
+                    <label> LastName: @address.LastName </label>
+                </li>
+                <li class="media my-3">
+                    <label> Street: @address.Street</label>
+                </li>
+                <li class="media my-3">
+                    <label> City: @address.City</label>
+                </li>
+                <li class="media my-3">
+                    <label> Region: @address.Region </label>
+                </li>
+                <li class="media my-3">
+                    <label> Postal code: @address.PostalCode </label>
+                </li>
+                <li class="media my-3">
+                    <label> Country: @address.Country </label> 
+                </li>
+                <li class="media my-3">
+                    <labe> Principal: <input type="checkbox" disabled="disabled" checked="@address.Principal" /> </labe>
+                </li>
+        }
+        </ul>
+       
+    </div>
+    <center>
+        <a href="@AddAddressUrl">
+            Add address
+        </a>
+    </center>
+}

@@ -10,6 +10,8 @@ public class Order
 
     public DateTime OrderDate { get; set; } = DateTime.Now;
 
+    public bool IsPayment { get; set; } = false;
+
     [Column(TypeName = "decimal(18,2)")]
     public decimal TotalPrice { get; set; }
 

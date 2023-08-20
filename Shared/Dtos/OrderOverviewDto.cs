@@ -11,4 +11,6 @@ public class OrderOverviewDto
     public string ProductName { get; set; } = string.Empty;
 
     public string ProductImageUrl { get; set; } = string.Empty;
+
+    public bool IsPayment { get; set; } = false;
 }

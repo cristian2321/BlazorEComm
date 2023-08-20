@@ -31,5 +31,15 @@ namespace BlazorEComm.Server.Controllers
                 Ok(response) :
                 BadRequest(response);
         }
+
+        [HttpPost("order-succes")]
+        public async Task<ActionResult<ServiceResponse<bool>>> UpdateOrderPaymentFlag(CancellationToken cancellationToken)
+        {
+            var response = await _orderService.UpdateOrderPaymentFlag(cancellationToken);
+
+            return response.Succes ?
+                Ok(response) :
+                BadRequest(response);
+        }
     }
 }

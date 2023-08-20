@@ -22,7 +22,16 @@ else
             <div class="details">
                 <h4> @order.ProductName </h4>
                 <span> @order.OrderDate </span> <br/>
-                <a href="orders/@order.Id"> Show more ... </a>
+                <a href="orders/@order.Id"> Show more ... </a> <br/> <br/>
+
+                @if (order.IsPayment)
+                {
+                    <h6 class="text-success"> Order payed</h6>
+                }
+                else
+                {   
+                    <button @onclick="()=> CheckoutOrderById(order.Id)" class="btn alert-success center-text">Checkout</button>
+                }
             </div>
             <div class="order-price">
                 $@order.TotalPrice

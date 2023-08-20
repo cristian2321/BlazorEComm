@@ -314,4 +314,6 @@ public class EcommDbContext : DbContext
     public DbSet<Order> Orders => Set<Order>();
 
     public DbSet<OrderItem> OrderItems => Set<OrderItem>();
+
+    public DbSet<Address> Addresses => Set<Address>();
 }

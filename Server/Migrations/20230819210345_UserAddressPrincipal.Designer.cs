@@ -4,6 +4,7 @@ using BlazorEComm.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazorEComm.Server.Migrations
 {
     [DbContext(typeof(EcommDbContext))]
-    partial class EcommDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230819210345_UserAddressPrincipal")]
+    partial class UserAddressPrincipal
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,41 +32,34 @@ namespace BlazorEComm.Server.Migrations
 
                     b.Property<string>("City")
                         .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Country")
                         .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PostalCode")
                         .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Principal")
                         .HasColumnType("bit");
 
                     b.Property<string>("Region")
                         .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Street")
                         .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -116,19 +111,19 @@ namespace BlazorEComm.Server.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("a2cf00f7-abca-402f-a236-b157b57bc7cb"),
+                            Id = new Guid("75516464-2e91-4e6f-9752-711595463a4f"),
                             Name = "Books",
                             Url = "books"
                         },
                         new
                         {
-                            Id = new Guid("78e3aad2-c78b-497d-9efa-1dd23cc29ac5"),
+                            Id = new Guid("b8865054-a0cb-4953-883d-7cbb76627f91"),
                             Name = "Movies",
                             Url = "movie"
                         },
                         new
                         {
-                            Id = new Guid("8b692d28-1c19-456d-8e3a-87df4952c448"),
+                            Id = new Guid("8ba2ebfc-c9c0-4c5c-b087-632553f523b2"),
                             Name = "Video Games",
                             Url = "video-games"
                         });
@@ -139,9 +134,6 @@ namespace BlazorEComm.Server.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsPayment")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
@@ -216,8 +208,8 @@ namespace BlazorEComm.Server.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("08c96599-6a89-4280-bc02-d59fc38190a2"),
-                            CategoryId = new Guid("a2cf00f7-abca-402f-a236-b157b57bc7cb"),
+                            Id = new Guid("5f7a48ac-f48c-41a8-88f1-03250eb0ef43"),
+                            CategoryId = new Guid("75516464-2e91-4e6f-9752-711595463a4f"),
                             Description = "The Hitchhiker's Guide to the Galaxy[note 1] (sometimes referred to as HG2G,[1] HHGTTG,[2] H2G2,[3] or tHGttG) is a comedy science fiction franchise created by Douglas Adams. Originally a 1978 radio comedy broadcast on BBC Radio 4, it was later adapted to other formats, including stage shows, novels, comic books, a 1981 TV series, a 1984 text-based computer game, and 2005 feature film.",
                             Featured = true,
                             ImageUrl = "https://upload.wikimedia.org/wikipedia/en/b/bd/H2G2_UK_front_cover.jpg",
@@ -225,8 +217,8 @@ namespace BlazorEComm.Server.Migrations
                         },
                         new
                         {
-                            Id = new Guid("2f7d19a4-5af3-4c55-956f-f426f8f199c4"),
-                            CategoryId = new Guid("a2cf00f7-abca-402f-a236-b157b57bc7cb"),
+                            Id = new Guid("440d5cd2-ecb6-416a-9a92-385fcb2b102f"),
+                            CategoryId = new Guid("75516464-2e91-4e6f-9752-711595463a4f"),
                             Description = "Ready Player One is a 2011 science fiction novel, and the debut novel of American author Ernest Cline. The story, set in a dystopia in 2045, follows protagonist Wade Watts on his search for an Easter egg in a worldwide virtual reality game, the discovery of which would lead him to inherit the game creator's fortune. Cline sold the rights to publish the novel in June 2010, in a bidding war to the Crown Publishing Group (a division of Random House).[1] The book was published on August 16, 2011.[2] An audiobook was released the same day; it was narrated by Wil Wheaton, who was mentioned briefly in one of the chapters.[3][4]Ch. 20 In 2012, the book received an Alex Award from the Young Adult Library Services Association division of the American Library Association[5] and won the 2011 Prometheus Award.[6]",
                             Featured = false,
                             ImageUrl = "https://upload.wikimedia.org/wikipedia/en/a/a4/Ready_Player_One_cover.jpg",
@@ -234,8 +226,8 @@ namespace BlazorEComm.Server.Migrations
                         },
                         new
                         {
-                            Id = new Guid("66fe5019-886e-4cce-ae25-48fc1c37c4c6"),
-                            CategoryId = new Guid("a2cf00f7-abca-402f-a236-b157b57bc7cb"),
+                            Id = new Guid("cfb7ea5c-698f-47e0-85dd-2a583fac31f2"),
+                            CategoryId = new Guid("75516464-2e91-4e6f-9752-711595463a4f"),
                             Description = "Nineteen Eighty-Four (also stylised as 1984) is a dystopian social science fiction novel and cautionary tale written by English writer George Orwell. It was published on 8 June 1949 by Secker & Warburg as Orwell's ninth and final book completed in his lifetime. Thematically, it centres on the consequences of totalitarianism, mass surveillance and repressive regimentation of people and behaviours within society.[2][3] Orwell, a democratic socialist, modelled the totalitarian government in the novel after Stalinist Russia and Nazi Germany.[2][3][4] More broadly, the novel examines the role of truth and facts within politics and the ways in which they are manipulated.",
                             Featured = false,
                             ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/c/c3/1984first.jpg",
@@ -243,8 +235,8 @@ namespace BlazorEComm.Server.Migrations
                         },
                         new
                         {
-                            Id = new Guid("1b892919-bb6a-4d15-bfb9-be35345a725d"),
-                            CategoryId = new Guid("78e3aad2-c78b-497d-9efa-1dd23cc29ac5"),
+                            Id = new Guid("2dc9769b-ecab-4dc9-8ac2-9ed26ca30c7d"),
+                            CategoryId = new Guid("b8865054-a0cb-4953-883d-7cbb76627f91"),
                             Description = "The Matrix is a 1999 science fiction action film written and directed by the Wachowskis, and produced by Joel Silver. Starring Keanu Reeves, Laurence Fishburne, Carrie-Anne Moss, Hugo Weaving, and Joe Pantoliano, and as the first installment in the Matrix franchise, it depicts a dystopian future in which humanity is unknowingly trapped inside a simulated reality, the Matrix, which intelligent machines have created to distract humans while using their bodies as an energy source. When computer programmer Thomas Anderson, under the hacker alias \"Neo\", uncovers the truth, he \"is drawn into a rebellion against the machines\" along with other people who have been freed from the Matrix.",
                             Featured = false,
                             ImageUrl = "https://upload.wikimedia.org/wikipedia/en/c/c1/The_Matrix_Poster.jpg",
@@ -252,8 +244,8 @@ namespace BlazorEComm.Server.Migrations
                         },
                         new
                         {
-                            Id = new Guid("18b3acab-da6e-4d95-bd84-5a5272ef3abe"),
-                            CategoryId = new Guid("78e3aad2-c78b-497d-9efa-1dd23cc29ac5"),
+                            Id = new Guid("b4947c7f-2b82-41d3-84e2-df4bfdfd412d"),
+                            CategoryId = new Guid("b8865054-a0cb-4953-883d-7cbb76627f91"),
                             Description = "Back to the Future is a 1985 American science fiction film directed by Robert Zemeckis. Written by Zemeckis and Bob Gale, it stars Michael J. Fox, Christopher Lloyd, Lea Thompson, Crispin Glover, and Thomas F. Wilson. Set in 1985, the story follows Marty McFly (Fox), a teenager accidentally sent back to 1955 in a time-traveling DeLorean automobile built by his eccentric scientist friend Doctor Emmett \"Doc\" Brown (Lloyd). Trapped in the past, Marty inadvertently prevents his future parents' meeting—threatening his very existence—and is forced to reconcile the pair and somehow get back to the future.",
                             Featured = true,
                             ImageUrl = "https://upload.wikimedia.org/wikipedia/en/d/d2/Back_to_the_Future.jpg",
@@ -261,8 +253,8 @@ namespace BlazorEComm.Server.Migrations
                         },
                         new
                         {
-                            Id = new Guid("1df509b5-38e5-45e3-baa7-399dcb6fd2c1"),
-                            CategoryId = new Guid("78e3aad2-c78b-497d-9efa-1dd23cc29ac5"),
+                            Id = new Guid("fb92536a-ca1d-4620-ad6a-3c14e53d3a23"),
+                            CategoryId = new Guid("b8865054-a0cb-4953-883d-7cbb76627f91"),
                             Description = "Toy Story is a 1995 American computer-animated comedy film produced by Pixar Animation Studios and released by Walt Disney Pictures. The first installment in the Toy Story franchise, it was the first entirely computer-animated feature film, as well as the first feature film from Pixar. The film was directed by John Lasseter (in his feature directorial debut), and written by Joss Whedon, Andrew Stanton, Joel Cohen, and Alec Sokolow from a story by Lasseter, Stanton, Pete Docter, and Joe Ranft. The film features music by Randy Newman, was produced by Bonnie Arnold and Ralph Guggenheim, and was executive-produced by Steve Jobs and Edwin Catmull. The film features the voices of Tom Hanks, Tim Allen, Don Rickles, Wallace Shawn, John Ratzenberger, Jim Varney, Annie Potts, R. Lee Ermey, John Morris, Laurie Metcalf, and Erik von Detten. Taking place in a world where anthropomorphic toys come to life when humans are not present, the plot focuses on the relationship between an old-fashioned pull-string cowboy doll named Woody and an astronaut action figure, Buzz Lightyear, as they evolve from rivals competing for the affections of their owner, Andy Davis, to friends who work together to be reunited with Andy after being separated from him.",
                             Featured = false,
                             ImageUrl = "https://upload.wikimedia.org/wikipedia/en/1/13/Toy_Story.jpg",
@@ -270,8 +262,8 @@ namespace BlazorEComm.Server.Migrations
                         },
                         new
                         {
-                            Id = new Guid("8fc32e19-629e-4b08-be30-67ce7ee0cee5"),
-                            CategoryId = new Guid("8b692d28-1c19-456d-8e3a-87df4952c448"),
+                            Id = new Guid("3ab3aa11-488a-4ffe-8be6-d59015e1e6d0"),
+                            CategoryId = new Guid("8ba2ebfc-c9c0-4c5c-b087-632553f523b2"),
                             Description = "Half-Life 2 is a 2004 first-person shooter game developed and published by Valve. Like the original Half-Life, it combines shooting, puzzles, and storytelling, and adds features such as vehicles and physics-based gameplay.",
                             Featured = false,
                             ImageUrl = "https://upload.wikimedia.org/wikipedia/en/2/25/Half-Life_2_cover.jpg",
@@ -279,8 +271,8 @@ namespace BlazorEComm.Server.Migrations
                         },
                         new
                         {
-                            Id = new Guid("1d59509c-2313-48a2-b4d7-a98eaeb62310"),
-                            CategoryId = new Guid("8b692d28-1c19-456d-8e3a-87df4952c448"),
+                            Id = new Guid("3dfbf168-3bab-4cb7-a6e4-2bc4bbc01254"),
+                            CategoryId = new Guid("8ba2ebfc-c9c0-4c5c-b087-632553f523b2"),
                             Description = "Diablo II is an action role-playing hack-and-slash computer video game developed by Blizzard North and published by Blizzard Entertainment in 2000 for Microsoft Windows, Classic Mac OS, and macOS.",
                             Featured = false,
                             ImageUrl = "https://upload.wikimedia.org/wikipedia/en/d/d5/Diablo_II_Coverart.png",
@@ -288,8 +280,8 @@ namespace BlazorEComm.Server.Migrations
                         },
                         new
                         {
-                            Id = new Guid("8ff86c0d-7b0d-4133-87f8-cc64ec4a2901"),
-                            CategoryId = new Guid("8b692d28-1c19-456d-8e3a-87df4952c448"),
+                            Id = new Guid("59f0bc2c-1c5e-40d7-bb67-c80262dd69b1"),
+                            CategoryId = new Guid("8ba2ebfc-c9c0-4c5c-b087-632553f523b2"),
                             Description = "Day of the Tentacle, also known as Maniac Mansion II: Day of the Tentacle, is a 1993 graphic adventure game developed and published by LucasArts. It is the sequel to the 1987 game Maniac Mansion.",
                             Featured = true,
                             ImageUrl = "https://upload.wikimedia.org/wikipedia/en/7/79/Day_of_the_Tentacle_artwork.jpg",
@@ -297,8 +289,8 @@ namespace BlazorEComm.Server.Migrations
                         },
                         new
                         {
-                            Id = new Guid("7eae4217-40c9-44cb-8117-1bc1b822ffcb"),
-                            CategoryId = new Guid("8b692d28-1c19-456d-8e3a-87df4952c448"),
+                            Id = new Guid("2769b41c-55d1-4e28-af63-6295bfa32581"),
+                            CategoryId = new Guid("8ba2ebfc-c9c0-4c5c-b087-632553f523b2"),
                             Description = "The Xbox is a home video game console and the first installment in the Xbox series of video game consoles manufactured by Microsoft.",
                             Featured = false,
                             ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/4/43/Xbox-console.jpg",
@@ -306,8 +298,8 @@ namespace BlazorEComm.Server.Migrations
                         },
                         new
                         {
-                            Id = new Guid("cb1a692d-72f0-4f69-887e-7cd40053c64e"),
-                            CategoryId = new Guid("8b692d28-1c19-456d-8e3a-87df4952c448"),
+                            Id = new Guid("ff18d1e4-d9e9-45ea-a8ac-cfa480f18c59"),
+                            CategoryId = new Guid("8ba2ebfc-c9c0-4c5c-b087-632553f523b2"),
                             Description = "The Super Nintendo Entertainment System (SNES), also known as the Super NES or Super Nintendo, is a 16-bit home video game console developed by Nintendo that was released in 1990 in Japan and South Korea.",
                             Featured = false,
                             ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/e/ee/Nintendo-Super-Famicom-Set-FL.jpg",
@@ -332,52 +324,52 @@ namespace BlazorEComm.Server.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("816bc59c-107f-4138-800c-8a46f2c8e9c6"),
+                            Id = new Guid("00f8a06c-e673-4daf-afd6-ed3597be1d54"),
                             Name = "Default"
                         },
                         new
                         {
-                            Id = new Guid("dc67da92-60b8-4939-942a-27d98e4c5e75"),
+                            Id = new Guid("41801c40-a65c-4cf6-b05e-7fc5d7b8c213"),
                             Name = "Paperback"
                         },
                         new
                         {
-                            Id = new Guid("5a07249d-b8d5-40d7-97aa-2287a5f9603e"),
+                            Id = new Guid("d7f90218-d150-4911-9827-21c437e9e63a"),
                             Name = "E-Book"
                         },
                         new
                         {
-                            Id = new Guid("7f577522-97e8-4dc0-ba6b-dcdba53aab5f"),
+                            Id = new Guid("ef49538e-ecc5-4514-a11a-d5ddd80d883d"),
                             Name = "Audiobook"
                         },
                         new
                         {
-                            Id = new Guid("ef706891-f1e6-45fa-a70a-c2fe9d3b8c19"),
+                            Id = new Guid("1cb400fb-986d-4781-887d-3c5b8ad916da"),
                             Name = "Stream"
                         },
                         new
                         {
-                            Id = new Guid("618e48be-2d8d-4060-9870-145b9542f3cb"),
+                            Id = new Guid("fd6f1ace-f556-44da-8d00-adacbcd9fdd5"),
                             Name = "Blu-ray"
                         },
                         new
                         {
-                            Id = new Guid("890c94d0-3f7a-4f94-ab9e-ddb05298d145"),
+                            Id = new Guid("aec0cb0e-0631-4dd7-964d-da4cf935044c"),
                             Name = "VHS"
                         },
                         new
                         {
-                            Id = new Guid("24bb347c-8a59-4196-ab94-b6115e0228a4"),
+                            Id = new Guid("ce5ed6a5-fd85-4a39-8bfd-eda9e9b6cdd5"),
                             Name = "PC"
                         },
                         new
                         {
-                            Id = new Guid("7d19af50-709e-4a8e-af45-ac7078da2f9c"),
+                            Id = new Guid("328ddefc-7084-4f0d-9e80-1a7efa96f2e1"),
                             Name = "PlayStation"
                         },
                         new
                         {
-                            Id = new Guid("b81d96cf-b9ea-487a-884f-a39ac0d92f7b"),
+                            Id = new Guid("df9204b6-dd7d-4945-94ec-0b2e52950454"),
                             Name = "Xbox"
                         });
                 });
@@ -405,120 +397,120 @@ namespace BlazorEComm.Server.Migrations
                     b.HasData(
                         new
                         {
-                            ProductId = new Guid("08c96599-6a89-4280-bc02-d59fc38190a2"),
-                            ProductTypeId = new Guid("dc67da92-60b8-4939-942a-27d98e4c5e75"),
+                            ProductId = new Guid("5f7a48ac-f48c-41a8-88f1-03250eb0ef43"),
+                            ProductTypeId = new Guid("41801c40-a65c-4cf6-b05e-7fc5d7b8c213"),
                             OriginalPrice = 19.99m,
                             Price = 9.99m
                         },
                         new
                         {
-                            ProductId = new Guid("08c96599-6a89-4280-bc02-d59fc38190a2"),
-                            ProductTypeId = new Guid("5a07249d-b8d5-40d7-97aa-2287a5f9603e"),
+                            ProductId = new Guid("5f7a48ac-f48c-41a8-88f1-03250eb0ef43"),
+                            ProductTypeId = new Guid("d7f90218-d150-4911-9827-21c437e9e63a"),
                             OriginalPrice = 0m,
                             Price = 7.99m
                         },
                         new
                         {
-                            ProductId = new Guid("08c96599-6a89-4280-bc02-d59fc38190a2"),
-                            ProductTypeId = new Guid("7f577522-97e8-4dc0-ba6b-dcdba53aab5f"),
+                            ProductId = new Guid("5f7a48ac-f48c-41a8-88f1-03250eb0ef43"),
+                            ProductTypeId = new Guid("ef49538e-ecc5-4514-a11a-d5ddd80d883d"),
                             OriginalPrice = 29.99m,
                             Price = 19.99m
                         },
                         new
                         {
-                            ProductId = new Guid("2f7d19a4-5af3-4c55-956f-f426f8f199c4"),
-                            ProductTypeId = new Guid("dc67da92-60b8-4939-942a-27d98e4c5e75"),
+                            ProductId = new Guid("440d5cd2-ecb6-416a-9a92-385fcb2b102f"),
+                            ProductTypeId = new Guid("41801c40-a65c-4cf6-b05e-7fc5d7b8c213"),
                             OriginalPrice = 14.99m,
                             Price = 7.99m
                         },
                         new
                         {
-                            ProductId = new Guid("66fe5019-886e-4cce-ae25-48fc1c37c4c6"),
-                            ProductTypeId = new Guid("dc67da92-60b8-4939-942a-27d98e4c5e75"),
+                            ProductId = new Guid("cfb7ea5c-698f-47e0-85dd-2a583fac31f2"),
+                            ProductTypeId = new Guid("41801c40-a65c-4cf6-b05e-7fc5d7b8c213"),
                             OriginalPrice = 0m,
                             Price = 6.99m
                         },
                         new
                         {
-                            ProductId = new Guid("1b892919-bb6a-4d15-bfb9-be35345a725d"),
-                            ProductTypeId = new Guid("ef706891-f1e6-45fa-a70a-c2fe9d3b8c19"),
+                            ProductId = new Guid("2dc9769b-ecab-4dc9-8ac2-9ed26ca30c7d"),
+                            ProductTypeId = new Guid("1cb400fb-986d-4781-887d-3c5b8ad916da"),
                             OriginalPrice = 0m,
                             Price = 3.99m
                         },
                         new
                         {
-                            ProductId = new Guid("1b892919-bb6a-4d15-bfb9-be35345a725d"),
-                            ProductTypeId = new Guid("618e48be-2d8d-4060-9870-145b9542f3cb"),
+                            ProductId = new Guid("2dc9769b-ecab-4dc9-8ac2-9ed26ca30c7d"),
+                            ProductTypeId = new Guid("fd6f1ace-f556-44da-8d00-adacbcd9fdd5"),
                             OriginalPrice = 0m,
                             Price = 9.99m
                         },
                         new
                         {
-                            ProductId = new Guid("1b892919-bb6a-4d15-bfb9-be35345a725d"),
-                            ProductTypeId = new Guid("890c94d0-3f7a-4f94-ab9e-ddb05298d145"),
+                            ProductId = new Guid("2dc9769b-ecab-4dc9-8ac2-9ed26ca30c7d"),
+                            ProductTypeId = new Guid("aec0cb0e-0631-4dd7-964d-da4cf935044c"),
                             OriginalPrice = 0m,
                             Price = 19.99m
                         },
                         new
                         {
-                            ProductId = new Guid("18b3acab-da6e-4d95-bd84-5a5272ef3abe"),
-                            ProductTypeId = new Guid("ef706891-f1e6-45fa-a70a-c2fe9d3b8c19"),
+                            ProductId = new Guid("b4947c7f-2b82-41d3-84e2-df4bfdfd412d"),
+                            ProductTypeId = new Guid("1cb400fb-986d-4781-887d-3c5b8ad916da"),
                             OriginalPrice = 0m,
                             Price = 3.99m
                         },
                         new
                         {
-                            ProductId = new Guid("1df509b5-38e5-45e3-baa7-399dcb6fd2c1"),
-                            ProductTypeId = new Guid("ef706891-f1e6-45fa-a70a-c2fe9d3b8c19"),
+                            ProductId = new Guid("fb92536a-ca1d-4620-ad6a-3c14e53d3a23"),
+                            ProductTypeId = new Guid("1cb400fb-986d-4781-887d-3c5b8ad916da"),
                             OriginalPrice = 0m,
                             Price = 2.99m
                         },
                         new
                         {
-                            ProductId = new Guid("8fc32e19-629e-4b08-be30-67ce7ee0cee5"),
-                            ProductTypeId = new Guid("24bb347c-8a59-4196-ab94-b6115e0228a4"),
+                            ProductId = new Guid("3ab3aa11-488a-4ffe-8be6-d59015e1e6d0"),
+                            ProductTypeId = new Guid("ce5ed6a5-fd85-4a39-8bfd-eda9e9b6cdd5"),
                             OriginalPrice = 29.99m,
                             Price = 19.99m
                         },
                         new
                         {
-                            ProductId = new Guid("8fc32e19-629e-4b08-be30-67ce7ee0cee5"),
-                            ProductTypeId = new Guid("7d19af50-709e-4a8e-af45-ac7078da2f9c"),
+                            ProductId = new Guid("3ab3aa11-488a-4ffe-8be6-d59015e1e6d0"),
+                            ProductTypeId = new Guid("328ddefc-7084-4f0d-9e80-1a7efa96f2e1"),
                             OriginalPrice = 0m,
                             Price = 69.99m
                         },
                         new
                         {
-                            ProductId = new Guid("8fc32e19-629e-4b08-be30-67ce7ee0cee5"),
-                            ProductTypeId = new Guid("b81d96cf-b9ea-487a-884f-a39ac0d92f7b"),
+                            ProductId = new Guid("3ab3aa11-488a-4ffe-8be6-d59015e1e6d0"),
+                            ProductTypeId = new Guid("df9204b6-dd7d-4945-94ec-0b2e52950454"),
                             OriginalPrice = 59.99m,
                             Price = 49.99m
                         },
                         new
                         {
-                            ProductId = new Guid("1d59509c-2313-48a2-b4d7-a98eaeb62310"),
-                            ProductTypeId = new Guid("24bb347c-8a59-4196-ab94-b6115e0228a4"),
+                            ProductId = new Guid("3dfbf168-3bab-4cb7-a6e4-2bc4bbc01254"),
+                            ProductTypeId = new Guid("ce5ed6a5-fd85-4a39-8bfd-eda9e9b6cdd5"),
                             OriginalPrice = 24.99m,
                             Price = 9.99m
                         },
                         new
                         {
-                            ProductId = new Guid("8ff86c0d-7b0d-4133-87f8-cc64ec4a2901"),
-                            ProductTypeId = new Guid("24bb347c-8a59-4196-ab94-b6115e0228a4"),
+                            ProductId = new Guid("59f0bc2c-1c5e-40d7-bb67-c80262dd69b1"),
+                            ProductTypeId = new Guid("ce5ed6a5-fd85-4a39-8bfd-eda9e9b6cdd5"),
                             OriginalPrice = 0m,
                             Price = 14.99m
                         },
                         new
                         {
-                            ProductId = new Guid("7eae4217-40c9-44cb-8117-1bc1b822ffcb"),
-                            ProductTypeId = new Guid("816bc59c-107f-4138-800c-8a46f2c8e9c6"),
+                            ProductId = new Guid("2769b41c-55d1-4e28-af63-6295bfa32581"),
+                            ProductTypeId = new Guid("00f8a06c-e673-4daf-afd6-ed3597be1d54"),
                             OriginalPrice = 299m,
                             Price = 159.99m
                         },
                         new
                         {
-                            ProductId = new Guid("1b892919-bb6a-4d15-bfb9-be35345a725d"),
-                            ProductTypeId = new Guid("816bc59c-107f-4138-800c-8a46f2c8e9c6"),
+                            ProductId = new Guid("2dc9769b-ecab-4dc9-8ac2-9ed26ca30c7d"),
+                            ProductTypeId = new Guid("00f8a06c-e673-4daf-afd6-ed3597be1d54"),
                             OriginalPrice = 399m,
                             Price = 79.99m
                         });

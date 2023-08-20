@@ -52,9 +52,9 @@ public partial class Cart
         await CartService.UpdateQuantity(product);
     }
 
-    private async Task PlaceOrder()
+    private async Task CheckoutOrder()
     {
-        string url =  await OrderService.PlaceOrder();
+        string url =  await OrderService.CheckoutOrder();
         NavigationManager.NavigateTo(url);
     }
 }

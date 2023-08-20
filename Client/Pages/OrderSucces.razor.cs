@@ -5,8 +5,15 @@ namespace BlazorEComm.Client.Pages;
 public partial class OrderSucces
 {
     [Inject]
-    private ICartService CartService { get; set; } = default!;
+    private IOrderService OrderService { get; set; } = default!;
+    
+    [Inject]
+    private NavigationManager NavigationManager { get; set; } = default!;
 
-    protected override async Task OnInitializedAsync() => 
-        await CartService.GetCartItemsCount();
+    protected override async Task OnInitializedAsync()
+    {
+        await OrderService.UpdateOrderPaymentFlag();
+
+        NavigationManager.NavigateTo(NavigationManager.BaseUri);
+    }
 }
