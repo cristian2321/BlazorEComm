@@ -15,8 +15,6 @@ public class TokenService : ITokenService
         _configuration = configuration;
     }
 
-    private const string KeyConfig = "AppSettings:Token";
-
     public string CreateToken(User user) =>
         new JwtSecurityTokenHandler()
             .WriteToken(
@@ -29,6 +27,6 @@ public class TokenService : ITokenService
                     expires: DateTime.Now.AddDays(1),
                     signingCredentials: new SigningCredentials(
                         new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                            _configuration.GetSection(KeyConfig).Value)),
+                            _configuration.GetSection(AppSetting.TokenKey).Value)),
                                 SecurityAlgorithms.HmacSha512Signature)));
 }

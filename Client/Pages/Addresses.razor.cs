@@ -16,32 +16,17 @@ public partial class Addresses
     private List<Address>? _addresses = default;
     private bool _existsAddress = true;
 
-    private const string RegisterUrl = "register";
-    private const string AddAddressUrl = "addAddress";
-    private const string DeleteAddressUrl = "deleteAddress";
-    private const string UpdateAddressUrl = "updateAddress";
-
     protected override async Task OnInitializedAsync()
     {
-        if (await AuthService.IsUserAuthenticated())
-        {
-            _addresses = await AddressService.GetAddresses();
-            _existsAddress = _addresses is not null && _addresses.Any();
-        }
+        await AuthService.ValidateUserAuthenticated();
 
-        else
-        {
-            NavigationManager.NavigateTo(RegisterUrl);
-        }
+        _addresses = await AddressService.GetAddresses();
+        _existsAddress = _addresses is not null && _addresses.Any();
     }
 
-    public void NavigateToUpdate(Guid addressId) 
-    {
-        NavigationManager.NavigateTo($"{UpdateAddressUrl}/{addressId}");
-    }
+    public void NavigateToUpdate(Guid addressId) => 
+        NavigationManager.NavigateTo($"{ClientApiEndpoints.AddressUpdateUrl}/{addressId}");
 
-    public void NavigateToDelete(Guid addressId)
-    {
-        NavigationManager.NavigateTo($"{DeleteAddressUrl}/{addressId}");
-    }
+    public void NavigateToDelete(Guid addressId) =>
+        NavigationManager.NavigateTo($"{ClientApiEndpoints.AddressDeleteUrl}/{addressId}");
 }

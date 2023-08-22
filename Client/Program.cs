@@ -6,6 +6,8 @@ global using BlazorEComm.Client.Services.CartService;
 global using BlazorEComm.Client.Services.AuthService;
 global using BlazorEComm.Client.Services.OrderService;
 global using BlazorEComm.Client.Services.AddressService;
+global using BlazorEComm.Shared.Constants;
+global using BlazorEComm.Shared.Messages;
 
 using BlazorEComm.Client;
 using Microsoft.AspNetCore.Components.Web;

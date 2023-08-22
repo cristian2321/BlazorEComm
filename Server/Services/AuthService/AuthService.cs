@@ -1,4 +1,5 @@
 ﻿using BlazorEComm.Server.Services.TokenService;
+using BlazorEComm.Shared.Messages;
 using BlazorEComm.Shared.Models;
 
 namespace BlazorEComm.Server.Services.AuthService;
@@ -16,21 +17,15 @@ public class AuthService : IAuthService
         _passwordService = passwordService;
     }
 
-    private const bool IsSucces = true;
 
-    private const string MessageRegisterSucces = "Registration successful !";
-    private const string MessageUserExist = "User already exists !";
-    private const string MessageUserNotFound = "User not found !";
-    private const string MessageWrongPassword = "Wrong password !";
-  
     public async Task<ServiceResponse<string>> Register(User user, string password, CancellationToken cancellationToken)
     {
         if (await UserExists(user.Email, cancellationToken))
         {
             return new ServiceResponse<string>
             {
-                Succes = !IsSucces,
-                Message = MessageUserExist
+                Succes = !ConstantServerServices.IsSucces,
+                Message = MessagesServerServices.MessageUserExist
             };
         }
 
@@ -44,7 +39,7 @@ public class AuthService : IAuthService
         return new ServiceResponse<string>
         {
             Data = user.Id.ToString(),
-            Message = MessageRegisterSucces
+            Message = MessagesServerServices.MessageRegisterSucces
         };
     }
   
@@ -55,16 +50,16 @@ public class AuthService : IAuthService
         var user = await _ecommDbContext.Users.FirstOrDefaultAsync(x => x.Email.ToLower() == email.ToLower(), cancellationToken);
         if (user == null)
         {
-            response.Succes = !IsSucces;
-            response.Message = MessageUserNotFound;
+            response.Succes = !ConstantServerServices.IsSucces;
+            response.Message = MessagesServerServices.MessageUserNotFound;
 
             return response;
         }
 
         if (!_passwordService.VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
         {
-            response.Succes = !IsSucces;
-            response.Message = MessageWrongPassword;
+            response.Succes = !ConstantServerServices.IsSucces;
+            response.Message = MessagesServerServices.MessageWrongPassword;
 
             return response;
         }

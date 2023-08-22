@@ -25,18 +25,23 @@ public partial class Search
 
     public void SearchProducts() 
     {
-        NavigationManager.NavigateTo($"search/{_searchText}/1");
+        string uri = $"{ClientApiEndpoints.BaseSearchUrl}/{_searchText}/{ClientConstants.DefaultPage}";
+        NavigationManager.NavigateTo(uri);
     }
 
     public async Task HandleSearch(KeyboardEventArgs args) 
     {
-        if (args.Key is null || args.Key.Equals("Enter")) 
+        switch (args.Key)
         {
-            SearchProducts();
-        }
-        else if (_searchText.Length > 1)
-        {
-            _suggestions = await ProductService.GetProductsSearchSuggestions(_searchText);
+            case not null when !args.Key.Equals(MessagesClientSharedComponements.EnterValue):
+                if (_searchText.Length > 1)
+                {
+                    _suggestions = await ProductService.GetProductsSearchSuggestions(_searchText);
+                }
+                break;
+            default:
+                SearchProducts();
+                break;
         }
     }
 }

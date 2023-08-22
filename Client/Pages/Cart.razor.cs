@@ -16,12 +16,10 @@ public partial class Cart
 
     private List<CartProductDto>? _cartProducts = null;
 
-    private string _message = "Loading cart...";
-    
-    protected override async Task OnInitializedAsync()
-    {
+    private string _message = MessagesClientPages.MessageLoadingCart;
+
+    protected override async Task OnInitializedAsync() =>
         await LoadCart();
-    }
 
     private async Task RemoveProductFromCart(Guid productId, Guid productTypeId)
     {
@@ -33,10 +31,11 @@ public partial class Cart
     private async Task LoadCart()
     {
         await CartService.GetCartItemsCount();
+       
         _cartProducts = await CartService.GetCartProducts();
         if (_cartProducts == null || !_cartProducts.Any())
         {
-            _message = "Your cart is empty.";
+            _message = MessagesClientPages.MessageCartEmpty;
         }
     }
 
@@ -46,15 +45,12 @@ public partial class Cart
         
         if (product.Quantity < 1)
         {
-            product.Quantity = 1;
+            product.Quantity = ClientConstants.ProductDefaultQuantity;
         }     
         
         await CartService.UpdateQuantity(product);
     }
 
-    private async Task CheckoutOrder()
-    {
-        string url =  await OrderService.CheckoutOrder();
-        NavigationManager.NavigateTo(url);
-    }
+    private async Task CheckoutOrder() => 
+        NavigationManager.NavigateTo(await OrderService.CheckoutOrder());
 }

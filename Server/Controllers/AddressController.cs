@@ -6,7 +6,7 @@ namespace BlazorEComm.Server.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-//[Authorize]
+[Authorize]
 public class AddressController : ControllerBase
 {
     private readonly IAddressService _addressService;

@@ -1,5 +1,4 @@
 ﻿using BlazorEComm.Shared;
-using BlazorEComm.Shared.Models;
 
 namespace BlazorEComm.Client.Services.AddressService;
 
@@ -12,11 +11,9 @@ public class AddressService : IAddressService
         _httpClient = httpClient;
     }
 
-    private const string BaseAddressUrl = "api/Address";
-
     public async Task<Address> AddAddress(Address address)
     {
-        var response = await _httpClient.PostAsJsonAsync(BaseAddressUrl, address);
+        var response = await _httpClient.PostAsJsonAsync(ClientApiEndpoints.BaseApiAddressUrl, address);
         var serviceResponse = await response.Content.ReadFromJsonAsync<ServiceResponse<Address>>();
      
         return serviceResponse is not null && serviceResponse.Data is not null ?
@@ -26,7 +23,8 @@ public class AddressService : IAddressService
 
     public async Task<List<Address>> GetAddresses()
     {
-        var response = await _httpClient.GetFromJsonAsync<ServiceResponse<List<Address>>>(BaseAddressUrl);
+        var response = await _httpClient.GetFromJsonAsync<ServiceResponse<List<Address>>>
+            (ClientApiEndpoints.BaseApiAddressUrl);
        
         return response is not null && response.Data is not null && response.Data.Any() ? 
             response.Data : default!;
@@ -34,7 +32,7 @@ public class AddressService : IAddressService
 
     public async Task<bool> UpdateAddress(Address address)
     {
-        var response = await _httpClient.PutAsJsonAsync(BaseAddressUrl, address);
+        var response = await _httpClient.PutAsJsonAsync(ClientApiEndpoints.BaseApiAddressUrl, address);
         if (response is null)
         {
             return default;
@@ -46,7 +44,7 @@ public class AddressService : IAddressService
 
     public async Task<bool> DeleteAddress(Guid addressId)
     {
-        var response = await _httpClient.DeleteAsync($"{BaseAddressUrl}/{addressId}");
+        var response = await _httpClient.DeleteAsync($"{ClientApiEndpoints.BaseApiAddressUrl}/{addressId}");
         if (response is null)
         {
             return default;
@@ -59,7 +57,8 @@ public class AddressService : IAddressService
 
     public async Task<Address?> GetAddress(Guid addressId)
     {
-        var response = await _httpClient.GetFromJsonAsync<ServiceResponse<Address>>($"{BaseAddressUrl}/{addressId}");
+        var response = await _httpClient.GetFromJsonAsync<ServiceResponse<Address>>
+            ($"{ClientApiEndpoints.BaseApiAddressUrl}/{addressId}");
 
         return response is not null && response.Data is not null ?
             response.Data : default!;

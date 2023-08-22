@@ -16,7 +16,7 @@ public class CategoryService : ICategoryService
     public async Task GetCategories()
     {
         var response = await _httpClient.GetFromJsonAsync<ServiceResponse<List<Category>>>
-            ("api/category");
+            (ClientApiEndpoints.BaseApiCategoryUrl);
         if (response is not null && response.Data is not null)
         {
             Categories = response.Data;

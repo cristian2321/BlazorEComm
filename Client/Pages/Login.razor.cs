@@ -29,13 +29,10 @@ public partial class Login
 
     private string _returnUrl = string.Empty;
 
-    private const string AuthToken = "authToken";
-    private const string ReturnUrl = "returnUrl";
-
     protected override void OnInitialized()
     {
-        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
-        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue(ReturnUrl, out var url))
+        if (QueryHelpers.ParseQuery(NavigationManager.ToAbsoluteUri(NavigationManager.Uri).Query)
+            .TryGetValue(ClientApiEndpoints.ReturnUrl, out var url))
         {
             _returnUrl = url;
         }
@@ -43,12 +40,12 @@ public partial class Login
 
     private async Task HandleLogin()
     {
-        var result = await AuthService.Login(_userLogin);
-        if (result.Succes)
+        var loginResult = await AuthService.Login(_userLogin);
+        if (loginResult.Succes)
         {
             _errorMessage = string.Empty;
 
-            await LocalStorageService.SetItemAsync(AuthToken, result.Data);
+            await LocalStorageService.SetItemAsync(ClientConstants.AuthToken, loginResult.Data);
 
             await AuthenticationStateProvider.GetAuthenticationStateAsync();
 
@@ -60,7 +57,7 @@ public partial class Login
         }
         else
         {
-            _errorMessage = result.Message;
+            _errorMessage = loginResult.Message;
         }
     }
 }

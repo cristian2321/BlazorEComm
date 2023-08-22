@@ -7,17 +7,15 @@ public partial class EcommNavMenu
     [Inject]
     private ICategoryService CategoryService { get; set; } = default!;
 
-    private bool collapseNavMenu = true;
-    
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    private bool _collapseNavMenu = true;
 
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
+ 
+    private string? NavMenuCssClass => 
+        _collapseNavMenu ? ClientCssConstants.Collaspe : null;
 
-    protected override async Task OnInitializedAsync()
-    {
+    private void ToggleNavMenu() =>
+        _collapseNavMenu = !_collapseNavMenu;
+
+    protected override async Task OnInitializedAsync() =>
         await CategoryService.GetCategories();
-    }
 }

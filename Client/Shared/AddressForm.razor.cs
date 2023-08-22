@@ -10,27 +10,26 @@ public partial class AddressForm
     [Inject]
     NavigationManager NavigationManager { get; set; } = default!;
 
-    private const string AddressUrl = "/address";
-
-    private string _submitText = string.Empty;
-    private string _message = string.Empty;
-    private Address _address = new();
-
     [Parameter]
     public bool Add { get; set; } = default!;
 
     [Parameter]
     public Guid AddressId { get; set; }
 
+    private string _submitText = string.Empty;
+    private string _message = string.Empty;
+    private Address _address = new();
+
+
     protected override async Task OnInitializedAsync()
     {
         if (Add)
         {
-            _submitText = "Add address";
+            _submitText = MessagesClientSharedComponements.MessageAddAddress;
         }
         else
         {
-            _submitText = "Update address";
+            _submitText = MessagesClientSharedComponements.MessageUpdateAddress;
 
             var address = await AddressService.GetAddress(AddressId);
             if (address is null)
@@ -42,14 +41,14 @@ public partial class AddressForm
         }
     }
 
-    private async Task HandleAddressCrud()
+    private async Task HandleAddressAddOrUpdate()
     {
         if (Add)
         {
             var response = await AddressService.AddAddress(_address);
             if (response is not null)
             {
-                NavigationManager.NavigateTo(AddressUrl);
+                NavigationManager.NavigateTo(ClientApiEndpoints.BaseAddressUrl);
             }
         }
 
@@ -58,11 +57,11 @@ public partial class AddressForm
             var response = await AddressService.UpdateAddress(_address);
             if (response)
             {
-                NavigationManager.NavigateTo(AddressUrl);
+                NavigationManager.NavigateTo(ClientApiEndpoints.BaseAddressUrl);
             }
             else
             {
-                _message = "Update did not work";
+                _message = MessagesClientSharedComponements.MessageUpdateAddressNotWork;
             }
         }
     }

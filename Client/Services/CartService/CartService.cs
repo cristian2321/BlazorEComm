@@ -21,19 +21,11 @@ public class CartService : ICartService
         _authService = authService;
     }
 
-    private const string AddCartUrl = "api/cart/add";
-    private const string BaseCartUrl = "api/cart";
-    private const string Cart = "cart";
-    private const string CartItemsCount = "cartItemsCount";
-    private const string CartItemsCountUrl = "api/cart/count";
-    private const string CartProductsUrl = "api/cart/products";
-    private const string UpdateQuantityCartUrl = "api/cart/update-quantity";
-
     public async Task AddToCard(CartItem cartItem)
     {
         if (await _authService.IsUserAuthenticated())
         {
-            await _httpClient.PostAsJsonAsync(AddCartUrl, cartItem);
+            await _httpClient.PostAsJsonAsync(ClientApiEndpoints.CartAddUrl, cartItem);
         }
         else
         {
@@ -51,7 +43,7 @@ public class CartService : ICartService
                 sameItem.Quantity += cartItem.Quantity;
             }
 
-            await _localStorageService.SetItemAsync(Cart, cart);
+            await _localStorageService.SetItemAsync(ClientConstants.Cart, cart);
         }
 
         await GetCartItemsCount();
@@ -61,7 +53,8 @@ public class CartService : ICartService
     {
         if (await _authService.IsUserAuthenticated())
         {
-            var response = await _httpClient.GetFromJsonAsync<ServiceResponse<List<CartProductDto>>>(BaseCartUrl);
+            var response = await _httpClient.GetFromJsonAsync<ServiceResponse<List<CartProductDto>>>
+                (ClientApiEndpoints.BaseApiCartUrl);
 
             return response is not null && response.Data is not null ? 
                 response.Data : new();
@@ -74,7 +67,7 @@ public class CartService : ICartService
                 return new();
             }
              
-            var response = await _httpClient.PostAsJsonAsync(CartProductsUrl, cartItems);
+            var response = await _httpClient.PostAsJsonAsync(ClientApiEndpoints.CartProductsUrl, cartItems);
 
             var cartProducts =
                 await response.Content.ReadFromJsonAsync<ServiceResponse<List<CartProductDto>>>();
@@ -88,7 +81,7 @@ public class CartService : ICartService
     {
         if (await _authService.IsUserAuthenticated())
         { 
-            await _httpClient.DeleteAsync($"{BaseCartUrl}/{productId}/{productTypeId}");
+            await _httpClient.DeleteAsync($"{ClientApiEndpoints.BaseApiCartUrl}/{productId}/{productTypeId}");
         }
         else
         {
@@ -100,7 +93,7 @@ public class CartService : ICartService
             {
                 cart.Remove(cartItem);
 
-                await _localStorageService.SetItemAsync(Cart, cart);
+                await _localStorageService.SetItemAsync(ClientConstants.Cart, cart);
             }
         }
     }
@@ -116,7 +109,7 @@ public class CartService : ICartService
                 ProductTypeId = cartProduct.ProductTypeId,  
             };
 
-            await _httpClient.PutAsJsonAsync(UpdateQuantityCartUrl, request);
+            await _httpClient.PutAsJsonAsync(ClientApiEndpoints.CartUpdateQuantityUrl, request);
         }
         else
         {
@@ -128,7 +121,7 @@ public class CartService : ICartService
             {
                 cardItem.Quantity = cartProduct.Quantity;
 
-                await _localStorageService.SetItemAsync(Cart, cart);
+                await _localStorageService.SetItemAsync(ClientConstants.Cart, cart);
             }
         } 
     }
@@ -141,11 +134,11 @@ public class CartService : ICartService
             return;
         }
 
-        await _httpClient.PostAsJsonAsync(BaseCartUrl, localCart);
+        await _httpClient.PostAsJsonAsync(ClientApiEndpoints.BaseApiCartUrl, localCart);
 
         if (emptyLocalCart)
         {
-            await _localStorageService.RemoveItemAsync(Cart);
+            await _localStorageService.RemoveItemAsync(ClientConstants.Cart);
         }
     }
 
@@ -153,19 +146,19 @@ public class CartService : ICartService
     {
         if (await _authService.IsUserAuthenticated())
         {
-            var result = await _httpClient.GetFromJsonAsync<ServiceResponse<int>>(CartItemsCountUrl);
+            var result = await _httpClient.GetFromJsonAsync<ServiceResponse<int>>(ClientApiEndpoints.CartItemsCountUrl);
             if (result is not null)
             {
                 var count = result.Data;
 
-                await _localStorageService.SetItemAsync(CartItemsCount, count);
+                await _localStorageService.SetItemAsync(ClientConstants.CartItemsCount, count);
             }
         }
         else
         {
             var carts = await GetCarts();
 
-            await _localStorageService.SetItemAsync(CartItemsCount,
+            await _localStorageService.SetItemAsync(ClientConstants.CartItemsCount,
                 carts is not null ?
                     carts.Count: 0);
         }
@@ -175,7 +168,7 @@ public class CartService : ICartService
 
     private async Task<List<CartItem>> GetCarts()
     {
-        var cart = await _localStorageService.GetItemAsync<List<CartItem>>(Cart);
+        var cart = await _localStorageService.GetItemAsync<List<CartItem>>(ClientConstants.Cart);
 
         return cart ??= new();
     }

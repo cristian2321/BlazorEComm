@@ -10,26 +10,20 @@ public partial class ProductList : IDisposable
     public void Dispose() =>
         ProductService.ProductsChanged -= StateHasChanged;
 
-    protected override void OnInitialized()
-    {
+    protected override void OnInitialized() => 
         ProductService.ProductsChanged += StateHasChanged;
-    }
 
     private static string GetPriceText(Product product)
     {
-        var variants = product.ProductVariants;
-
-        if (!variants.Any())
+        if (!product.ProductVariants.Any())
         {
             return string.Empty;
         }
 
-        if (variants.Count == 1)
+        return product.ProductVariants.Count switch
         {
-            return $"${variants.First().Price}";
-        }
-
-        decimal minPrice = variants.Min(x => x.Price);
-        return $"Starting at ${minPrice}";
+            1 => $"${product.ProductVariants.First().Price}",
+            _ => $"{MessagesClientSharedComponements.MessageStartAt}: {product.ProductVariants.Min(x => x.Price)}",
+        };
     }
 }

@@ -9,13 +9,10 @@ namespace BlazorEComm.Client.Pages
         private IAuthService AuthService { get; set; } = default!;
 
         private readonly UserChangePasswordDto _userChangePassword = new();
+       
         private string _message = string.Empty;
 
-        private async Task ChangePassword() 
-        {
-            var result = await AuthService.ChangePassword(_userChangePassword);
-
-            _message = result.Message;  
-        }
+        private async Task ChangePassword() => 
+            _message = (await AuthService.ChangePassword(_userChangePassword)).Message;
     }
 }

@@ -18,26 +18,25 @@ public partial class UserButton
     [Inject]
     private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
 
-    private bool showUserMenu = false;
-    
-    private string? UserMenuCssClass => showUserMenu ? "show-menu" : null;
-   
-    private const string AuthToken = "authToken";
+    private bool _showUserMenu = false;
 
-    private void ToggleUserMenu()
-    {
-        showUserMenu = !showUserMenu;
-    }
+    private string? GetUserMenuCssClass() =>
+        _showUserMenu ? ClientCssConstants.ShowMenu : null;
+
+
+    private void ToggleUserMenu() => 
+        _showUserMenu = !_showUserMenu;
 
     private async Task HideUserMenu()
     {
         await Task.Delay(200);
-        showUserMenu = false;
+
+        _showUserMenu = default;
     }
 
     private async Task Logout()
     {
-        await LocalStorageService.RemoveItemAsync(AuthToken);
+        await LocalStorageService.RemoveItemAsync(ClientConstants.AuthToken);
 
         await CartService.GetCartItemsCount();
 

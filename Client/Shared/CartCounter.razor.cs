@@ -5,8 +5,6 @@ namespace BlazorEComm.Client.Shared;
 
 public partial class CartCounter : IDisposable
 {
-    private const string CartItemsCount = "cartItemsCount";
-
     [Inject]
     private ICartService CartService { get; set; } = default!;
    
@@ -14,7 +12,7 @@ public partial class CartCounter : IDisposable
     private ISyncLocalStorageService LocalStorageService { get; set; } = default!;
 
     private int GetCartItemsCount() =>
-        LocalStorageService.GetItem<int>(CartItemsCount);
+        LocalStorageService.GetItem<int>(ClientConstants.CartItemsCount);
 
     protected override void OnInitialized() =>
         CartService.OnChange += StateHasChanged;

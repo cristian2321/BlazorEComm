@@ -7,6 +7,9 @@ public partial class Orders
 {
     [Inject]
     private IOrderService OrderService { get; set; } = default!;
+    
+    [Inject]
+    private IAuthService AuthService { get; set; } = default!;
 
     [Inject]
     private NavigationManager NavigationManager { get; set; } = default!;
@@ -15,12 +18,11 @@ public partial class Orders
 
     protected async override Task OnInitializedAsync()
     {
+        await AuthService.ValidateUserAuthenticated();
+
         _orders = await OrderService.GetOrders();
     }
 
-    private async Task CheckoutOrderById(Guid orderId)
-    {
-        string url = await OrderService.CheckoutOrderById(orderId);
-        NavigationManager.NavigateTo(url);
-    }
+    private async Task CheckoutOrderById(Guid orderId) => 
+        NavigationManager.NavigateTo(await OrderService.CheckoutOrderById(orderId));
 }

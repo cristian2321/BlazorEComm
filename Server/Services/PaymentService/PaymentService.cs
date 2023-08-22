@@ -1,6 +1,7 @@
 ﻿using BlazorEComm.Server.Data;
 using BlazorEComm.Shared.Dtos;
 using BlazorEComm.Shared.Models;
+using Microsoft.Extensions.Options;
 using Stripe;
 using Stripe.Checkout;
 
@@ -11,28 +12,20 @@ public class PaymentService : IPaymentService
     private readonly ICartService _cartService;
     private readonly IHttpContextService _httpContextService;
     private readonly IOrderService _orderService;
-    private readonly IConfiguration _configuration;
     private readonly EcommDbContext _ecommDbContext;
-
-    private const string OrderCancelUrlKey = "AppSettings:OrderCancelUrl";
-    private const string OrderSuccesUrlKey = "AppSettings:OrderSuccesUrl";
-    private const string PaymentCurrencyKey = "AppSettings:PaymentCurrency";
-    private const string PaymentMethodKey = "AppSettings:PaymentMethod";
-    private const string PaymentModeKey = "AppSettings:PaymentMode";
-    private const string StripeKey = "AppSettings:StripeKey";
+    private readonly IOptions<AppSetting> _options;
 
     public PaymentService(ICartService cartService, IHttpContextService httpContextService, 
-        IOrderService orderService, IConfiguration configuration, EcommDbContext ecommDbContext)
+        IOrderService orderService, EcommDbContext ecommDbContext, IOptions<AppSetting> options)
     {
         _cartService = cartService;
         _httpContextService = httpContextService;
         _orderService = orderService;
-        _configuration = configuration;
+        _options = options;
         _ecommDbContext = ecommDbContext;
 
-        StripeConfiguration.ApiKey = _configuration[StripeKey];
+        StripeConfiguration.ApiKey = _options.Value.StripeKey;
     }
-
 
     public async Task<Session> CreateCheckoutSession(CancellationToken cancellationToken)
     {
@@ -59,7 +52,7 @@ public class PaymentService : IPaymentService
             PriceData = new()
             {
                 UnitAmountDecimal = x.Price * 100,
-                Currency = _configuration[PaymentCurrencyKey],
+                Currency = _options.Value.PaymentCurrency,
                 ProductData = new()
                 {
                     Name = x.Title,
@@ -87,7 +80,7 @@ public class PaymentService : IPaymentService
             PriceData = new()
             {
                 UnitAmountDecimal = x.TotalPrice / x.Quantity * 100,
-                Currency = _configuration[PaymentCurrencyKey],
+                Currency = _options.Value.PaymentCurrency,
                 ProductData = new()
                 {
                     Name = x.Product.Title,
@@ -107,11 +100,11 @@ public class PaymentService : IPaymentService
         return service.Create(new SessionCreateOptions
         {
             CustomerEmail = _httpContextService.GetUserEmail(),
-            PaymentMethodTypes = new List<string> { _configuration[PaymentMethodKey] },
+            PaymentMethodTypes = new List<string> { _options.Value.PaymentMethod },
             LineItems = lineItems,
-            Mode = _configuration[PaymentModeKey],
-            SuccessUrl = _configuration[OrderSuccesUrlKey],
-            CancelUrl = _configuration[OrderCancelUrlKey],
+            Mode = _options.Value.PaymentMode,
+            SuccessUrl = _options.Value.OrderSuccesUrl,
+            CancelUrl = _options.Value.OrderCancelUrl,
         });
     }
 }

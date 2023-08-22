@@ -1,4 +1,5 @@
-﻿using BlazorEComm.Shared.Models;
+﻿using BlazorEComm.Shared.Messages;
+using BlazorEComm.Shared.Models;
 
 namespace BlazorEComm.Server.Services.AddressService;
 
@@ -13,10 +14,6 @@ public class AddressService : IAddressService
         _httpContextService = httpContextService;
     }
 
-    private const bool IsDelete = true;
-    private const bool IsPrincipal = true;
-    private const bool IsSucces = true;
-    private const string AddressNotFound = "Address does not exists !";
 
     public async Task<ServiceResponse<Address>> AddAddress(Address address, CancellationToken cancellationToken)
     {
@@ -38,18 +35,18 @@ public class AddressService : IAddressService
         {
             return new()
             {
-                Data = !IsSucces,
-                Succes = !IsSucces,
-                Message = AddressNotFound
+                Data = !ConstantServerServices.IsSucces,
+                Succes = !ConstantServerServices.IsSucces,
+                Message = MessagesServerServices.MessageAddressNotFound
             };
         }
 
-        await SetPrincipalAddress(address.Data, address.Data.UserId, cancellationToken, IsDelete);
+        await SetPrincipalAddress(address.Data, address.Data.UserId, cancellationToken, ConstantServerServices.IsDelete);
         
         _ecommDbContext.Remove(address.Data);
         await _ecommDbContext.SaveChangesAsync(cancellationToken);
        
-        return new() { Data = IsSucces };
+        return new() { Data = ConstantServerServices.IsSucces };
     }
 
     public async Task<ServiceResponse<List<Address>>> GetAddresses(CancellationToken cancellationToken) =>
@@ -89,8 +86,8 @@ public class AddressService : IAddressService
             return new ()
             {
                 Data = default,
-                Succes = !IsSucces,
-                Message = AddressNotFound
+                Succes = !ConstantServerServices.IsSucces,
+                Message = MessagesServerServices.MessageAddressNotFound
             };
         }
 
@@ -116,7 +113,7 @@ public class AddressService : IAddressService
 
                 if (firstAddress is not null)
                 {
-                    firstAddress.Principal = IsPrincipal;
+                    firstAddress.Principal = ConstantServerServices.IsPrincipal;
                 }
 
                 return;
@@ -125,12 +122,12 @@ public class AddressService : IAddressService
             var addressPrincipal = await GetAddressPrincipal(userId, cancellationToken);
             if (addressPrincipal is not null && addressPrincipal.Id != address.Id)
             {
-                addressPrincipal.Principal = !IsPrincipal;
+                addressPrincipal.Principal = !ConstantServerServices.IsPrincipal;
             }
         }
         else if (!(await AnyAddressPrincipal(userId, cancellationToken)))
         {
-            address.Principal = IsPrincipal;
+            address.Principal = ConstantServerServices.IsPrincipal;
         }
     }
 

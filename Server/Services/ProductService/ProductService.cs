@@ -1,4 +1,5 @@
 ﻿using BlazorEComm.Shared.Dtos;
+using BlazorEComm.Shared.Messages;
 using BlazorEComm.Shared.Models;
 
 namespace BlazorEComm.Server.Services.ProductService;
@@ -25,7 +26,7 @@ public class ProductService : IProductService
             new()
             {
                 Succes = false,
-                Message = $"Product not found for product Id:{productId}"
+                Message = $"{MessagesServerServices.MessageProductNotFound}: {productId}"
             } :
             new() { Data = product };
     }

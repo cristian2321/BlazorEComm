@@ -7,7 +7,10 @@ namespace BlazorEComm.Client.Pages
     {
         [Inject]
         private IOrderService OrderService { get; set; } = default!;
-        
+
+        [Inject]
+        private IAuthService AuthService { get; set; } = default!;
+
         [Parameter]
         public Guid OrderId { get; set; }
 
@@ -15,7 +18,9 @@ namespace BlazorEComm.Client.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            _orderDetails = await OrderService.GetOrderDetails(OrderId);
+            await AuthService.ValidateUserAuthenticated();
+
+            _orderDetails = await OrderService.GetOrderDetails(OrderId);    
         }
     }
 }

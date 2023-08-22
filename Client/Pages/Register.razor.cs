@@ -16,19 +16,19 @@ public partial class Register
     private string _message = string.Empty;
     private string _messageCssClass = string.Empty;
 
-    private const string TextSucces = "text-success";
-    private const string TextDanger = "text-danger";
-    private const string LoginUrl = "login";
-
     private async Task HandleRegistration()
     {
         var result = await AuthService.Register(_userRegister);
-        _message = result.Message;
-     
-        _messageCssClass = result.Succes ?
-            TextSucces :
-            TextDanger;
 
-        NavigationManager.NavigateTo(LoginUrl);
+        if (result.Succes)
+        {
+            _messageCssClass = ClientCssConstants.TextSucces;  
+            NavigationManager.NavigateTo(ClientApiEndpoints.BaseLoginUrl);
+        }
+        else
+        {
+            _message = result.Message;
+            _messageCssClass = ClientCssConstants.TextDanger;
+        }
     }
 }

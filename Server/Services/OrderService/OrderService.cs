@@ -1,5 +1,5 @@
-﻿using BlazorEComm.Server.Data;
-using BlazorEComm.Shared.Dtos;
+﻿using BlazorEComm.Shared.Dtos;
+using BlazorEComm.Shared.Messages;
 using BlazorEComm.Shared.Models;
 
 namespace BlazorEComm.Server.Services.OrderService;
@@ -17,9 +17,6 @@ public class OrderService : IOrderService
         _httpContextService = httpContextService;
     }
 
-    private const bool IsSucess = true;
-    private const string OrderNotFound = "Order not found";
-
     public async Task<ServiceResponse<bool>> PlaceOrder(CancellationToken cancellationToken)
     {
         var userId = _httpContextService.GetUserId();
@@ -27,7 +24,7 @@ public class OrderService : IOrderService
         var products = (await _cartService.GetDbCartProducts(cancellationToken)).Data;
         if (products is null || !products.Any())
         {
-            return new ServiceResponse<bool> { Data = !IsSucess, Message = "No products in the cart" };
+            return new ServiceResponse<bool> { Data = !ConstantServerServices.IsSucces, Message = "No products in the cart" };
         }
 
         decimal totalPrice = GetTotalPriceForOrder(products);
@@ -43,7 +40,7 @@ public class OrderService : IOrderService
        
         await _ecommDbContext.SaveChangesAsync(cancellationToken);
 
-        return new ServiceResponse<bool> { Data = IsSucess };
+        return new ServiceResponse<bool> { Data = ConstantServerServices.IsSucces };
     }
 
     public async Task<ServiceResponse<bool>> RemoveOrderCancelPayments(CancellationToken cancellationToken) 
@@ -57,7 +54,12 @@ public class OrderService : IOrderService
 
         if (order is null)
         {
-            return new ServiceResponse<bool> {Data = !IsSucess, Succes = !IsSucess, Message = OrderNotFound};
+            return new ServiceResponse<bool> 
+            {
+                Data = !ConstantServerServices.IsSucces, 
+                Succes = !ConstantServerServices.IsSucces, 
+                Message = MessagesServerServices.MessageOrderNotFound
+            };
         }
 
         var cartItems = new List<CartItem>();
@@ -75,7 +77,10 @@ public class OrderService : IOrderService
 
         await _ecommDbContext.SaveChangesAsync(cancellationToken);
 
-        return new ServiceResponse<bool> { Data = IsSucess };
+        return new ServiceResponse<bool> 
+        {
+            Data = ConstantServerServices.IsSucces 
+        };
     }
 
     public async Task<ServiceResponse<List<OrderOverviewDto>>> GetOrders(CancellationToken cancellationToken)
@@ -114,7 +119,7 @@ public class OrderService : IOrderService
 
         if (order is null)
         {
-            response.Succes = !IsSucess;
+            response.Succes = !ConstantServerServices.IsSucces;
             response.Message = "Order does not exists !";
 
             return response;
@@ -139,14 +144,19 @@ public class OrderService : IOrderService
 
         if (order is null)
         {
-            return new ServiceResponse<bool> { Data = !IsSucess, Succes = !IsSucess, Message = OrderNotFound };
+            return new ServiceResponse<bool> 
+            {
+                Data = !ConstantServerServices.IsSucces, 
+                Succes = !ConstantServerServices.IsSucces, 
+                Message = MessagesServerServices.MessageOrderNotFound 
+            };
         }
 
-        order.IsPayment = IsSucess;
+        order.IsPayment = ConstantServerServices.IsSucces;
 
         await _ecommDbContext.SaveChangesAsync(cancellationToken);
 
-        return new ServiceResponse<bool> { Data = IsSucess };
+        return new ServiceResponse<bool> { Data = ConstantServerServices.IsSucces };
     }
 
     private static decimal GetTotalPriceForOrder(List<CartProductDto> products)

@@ -1,4 +1,5 @@
 ﻿using BlazorEComm.Shared.Dtos;
+using BlazorEComm.Shared.Messages;
 using BlazorEComm.Shared.Models;
 
 namespace BlazorEComm.Server.Services.CartService;
@@ -14,8 +15,6 @@ public class CartService : ICartService
         _httpContextService = httpContextService;
     }
 
-    private const bool IsSucces = true;
-    private const string MessageErrorCartNotExists = "Cart item does not exists !";
 
     public async Task<ServiceResponse<bool>> AddToCart(CartItem cartItem, CancellationToken cancellationToken)
     {
@@ -37,7 +36,7 @@ public class CartService : ICartService
 
         await _ecommDbContext.SaveChangesAsync(cancellationToken);
 
-        return new ServiceResponse<bool> { Data = IsSucces };
+        return new ServiceResponse<bool> { Data = ConstantServerServices.IsSucces };
     }
 
     public async Task<ServiceResponse<bool>> UpdateQuantity(CartItem cartItem, CancellationToken cancellationToken)
@@ -46,13 +45,13 @@ public class CartService : ICartService
 
         if (dbCartItem is null)
         {
-            return GetServiceResponseWithError(MessageErrorCartNotExists);
+            return GetServiceResponseWithError(MessagesServerServices.MessageCartNotExists);
         }
 
         dbCartItem.Quantity = cartItem.Quantity;
         await _ecommDbContext.SaveChangesAsync(cancellationToken);
 
-        return new ServiceResponse<bool> { Data = IsSucces };
+        return new ServiceResponse<bool> { Data = ConstantServerServices.IsSucces };
     }
 
     public async Task<ServiceResponse<bool>> RemoveItemFromCart(Guid productId, Guid productTypeId, 
@@ -62,14 +61,14 @@ public class CartService : ICartService
 
         if (dbCartItem is null)
         {
-            return GetServiceResponseWithError(MessageErrorCartNotExists);
+            return GetServiceResponseWithError(MessagesServerServices.MessageCartNotExists);
         }
 
         _ecommDbContext.CartItems.Remove(dbCartItem);
 
         await _ecommDbContext.SaveChangesAsync(cancellationToken);
 
-        return new ServiceResponse<bool> { Data = IsSucces };
+        return new ServiceResponse<bool> { Data = ConstantServerServices.IsSucces };
     }
 
     public async Task<ServiceResponse<int>> GetCartItemsCount(CancellationToken cancellationToken) =>
@@ -171,8 +170,8 @@ public class CartService : ICartService
     private static ServiceResponse<bool> GetServiceResponseWithError(string message) => 
         new()
         {
-            Data = !IsSucces,
+            Data = !ConstantServerServices.IsSucces,
             Message = message,
-            Succes = !IsSucces
+            Succes = !ConstantServerServices.IsSucces
         };
 }

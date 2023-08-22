@@ -11,6 +11,7 @@ global using BlazorEComm.Server.Services.OrderService;
 global using BlazorEComm.Server.Data;
 global using BlazorEComm.Server.Services.PaymentService;
 global using BlazorEComm.Server.Services.AddressService;
+global using BlazorEComm.Shared.Settings;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -18,10 +19,11 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.Configure<AppSetting>(builder.Configuration.GetSection(AppSetting.Key));
+builder.Services.Configure<ConnectionStringsSetting>(builder.Configuration.GetSection(ConnectionStringsSetting.Key));
 
 builder.Services.AddDbContext<EcommDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")
+    options.UseSqlServer(builder.Configuration.GetConnectionString(ConnectionStringsSetting.DefaultConnectionKey)
 ));
 
 builder.Services.AddControllersWithViews();
@@ -51,8 +53,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuer = false,
             ValidateIssuerSigningKey = true,         
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
-                .GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value)),
-
+                .GetBytes(builder.Configuration[AppSetting.TokenKey])),
         };
     });
 

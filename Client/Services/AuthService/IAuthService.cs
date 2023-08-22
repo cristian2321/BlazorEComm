@@ -11,5 +11,7 @@ public interface IAuthService
 
     Task<ServiceResponse<bool>> ChangePassword(UserChangePasswordDto userChangePassword);
 
+    Task ValidateUserAuthenticated();
+
     Task<bool> IsUserAuthenticated();
 }

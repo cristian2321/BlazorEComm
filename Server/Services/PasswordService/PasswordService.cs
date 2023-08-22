@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using BlazorEComm.Shared.Messages;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace BlazorEComm.Server.Services.PasswordService;
@@ -14,9 +15,7 @@ public class PasswordService : IPasswordService
         _httpContextService = httpContextService;
     }
 
-    private const bool IsSucces = true;
-    private const string MessageChangePassword = "Password changed successful !"; 
-    private const string MessageUserNotFound = "User not found !";
+
 
     public async Task<ServiceResponse<bool>> ChangePassword(string newPassword, 
         CancellationToken cancellationToken)
@@ -28,8 +27,8 @@ public class PasswordService : IPasswordService
         {
             return new()
             {
-                Succes = !IsSucces,
-                Message = MessageUserNotFound
+                Succes = !ConstantServerServices.IsSucces,
+                Message = MessagesServerServices.MessageUserNotFound
             };
         };
 
@@ -42,8 +41,8 @@ public class PasswordService : IPasswordService
 
         return new()
         {
-            Data = IsSucces,
-            Message = MessageChangePassword,
+            Data = ConstantServerServices.IsSucces,
+            Message = MessagesServerServices.MessageChangePassword,
         };
     }
 

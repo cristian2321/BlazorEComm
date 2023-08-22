@@ -1,6 +1,5 @@
 ﻿using BlazorEComm.Shared;
 using BlazorEComm.Shared.Dtos;
-using Microsoft.AspNetCore.Components;
 
 namespace BlazorEComm.Client.Services.OrderService;
 
@@ -8,102 +7,62 @@ public class OrderService : IOrderService
 { 
     private readonly HttpClient _httpClient;
     private readonly IAuthService _authService;
-    private readonly NavigationManager _navigationManager;
-    
-    private const string BaseOrderUrl = "api/order";
-    private const string RegisterUrl = "register";
-    private const string OrderFailUrl = "api/order/order-fail";
-    private const string OrderSuccesUrl = "api/order/order-succes";
-    private const string CheckoutUrl = "api/payment/checkout";
 
-    public OrderService(HttpClient httpClient, IAuthService authService, NavigationManager navigationManager)
+    public OrderService(HttpClient httpClient, IAuthService authService)
     {
         _httpClient = httpClient;
         _authService = authService;
-        _navigationManager = navigationManager;
     }
 
     public async Task<OrderDetailsDto> GetOrderDetails(Guid orderId)
     {
-        if (await _authService.IsUserAuthenticated())
-        {
-            var result = await _httpClient.GetFromJsonAsync<ServiceResponse<OrderDetailsDto>>($"{BaseOrderUrl}/{orderId}");
+        await _authService.ValidateUserAuthenticated();
+        
+        var result = await _httpClient.GetFromJsonAsync<ServiceResponse<OrderDetailsDto>>
+         ($"{ClientApiEndpoints.BaseApiOrderUrl}/{orderId}");
 
-            return result is not null && result.Data is not null ?
-                result.Data : default!;
-        }
-        else
-        {
-            _navigationManager.NavigateTo(RegisterUrl);
-            return default!;
-        }
+        return result is not null && result.Data is not null ?
+            result.Data : default!;
     }
 
     public async Task<List<OrderOverviewDto>> GetOrders()
     {
-        if (await _authService.IsUserAuthenticated())
-        {
-            var result = await _httpClient.GetFromJsonAsync<ServiceResponse<List<OrderOverviewDto>>>(BaseOrderUrl);
+        await _authService.ValidateUserAuthenticated();
+       
+        var result = await _httpClient.GetFromJsonAsync<ServiceResponse<List<OrderOverviewDto>>>
+                  (ClientApiEndpoints.BaseApiOrderUrl);
 
-            return result is not null && result.Data is not null ?
-                result.Data : default!;
-        }
-        else
-        {
-            _navigationManager.NavigateTo(RegisterUrl);
-            return default!;
-        }
+        return result is not null && result.Data is not null ?
+            result.Data : default!;
     }
-
 
     public async Task<string> CheckoutOrder()
     {
-        if (!await _authService.IsUserAuthenticated())
-        {
-            return RegisterUrl;
-        }
+        await _authService.ValidateUserAuthenticated();
 
-        var result = await _httpClient.PostAsync(CheckoutUrl, null);
+        var result = await _httpClient.PostAsync(ClientApiEndpoints.OrderCheckoutUrl, null);
 
         return await result.Content.ReadAsStringAsync();
     }
 
-
     public async Task<string> CheckoutOrderById(Guid orderId)
     {
-        if (!await _authService.IsUserAuthenticated())
-        {
-            return RegisterUrl;
-        }
+        await _authService.ValidateUserAuthenticated();
 
-        var result = await _httpClient.PostAsync($"{CheckoutUrl}/{orderId}", null);
+        var result = await _httpClient.PostAsync($"{ClientApiEndpoints.OrderCheckoutUrl}/{orderId}", null);
 
         return await result.Content.ReadAsStringAsync();
     }
 
     public async Task RemoveOrderCancelPayments()
     {
-        if (await _authService.IsUserAuthenticated())
-        {
-            await _httpClient.PostAsync(OrderFailUrl, null);
-        }
-
-        else
-        {
-            _navigationManager.NavigateTo(RegisterUrl);
-        }
+        await _authService.ValidateUserAuthenticated();
+        await _httpClient.PostAsync(ClientApiEndpoints.OrderFailUrl, null);
     }
 
     public async Task UpdateOrderPaymentFlag()
     {
-        if (await _authService.IsUserAuthenticated())
-        {
-            await _httpClient.PostAsync(OrderSuccesUrl, null);
-        }
-
-        else
-        {
-            _navigationManager.NavigateTo(RegisterUrl);
-        }
+        await _authService.ValidateUserAuthenticated();
+        await _httpClient.PostAsync(ClientApiEndpoints.OrderSuccesUrl, null);
     }
 }

@@ -8,24 +8,28 @@ public partial class AddressDelete
     IAddressService AddressService { get; set; } = default!;
 
     [Inject]
+    IAuthService AuthService { get; set; } = default!;
+
+    [Inject]
     NavigationManager NavigationManager { get; set; } = default!;
 
     [Parameter]
     public Guid AddressId { get; set; }
 
-    private const string AddressUrl = "/address";
     private string _message = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
+        await AuthService.ValidateUserAuthenticated();
+
         var response = await AddressService.DeleteAddress(AddressId);
         if (response)
         {
-            NavigationManager.NavigateTo(AddressUrl);
+            NavigationManager.NavigateTo(ClientApiEndpoints.BaseAddressUrl);
         }
-        else 
+        else
         {
-            _message = "Delete did not work";
+            _message = MessagesClientPages.MessageDeleteNoWork;
         }
     }
 }
