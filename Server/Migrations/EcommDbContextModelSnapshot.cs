@@ -53,7 +53,7 @@ namespace BlazorEComm.Server.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
-                    b.Property<bool>("Principal")
+                    b.Property<bool>("IsPrincipal")
                         .HasColumnType("bit");
 
                     b.Property<string>("Region")

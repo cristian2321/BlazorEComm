@@ -50,7 +50,7 @@ namespace BlazorEComm.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("Principal")
+                    b.Property<bool>("IsPrincipal")
                         .HasColumnType("bit");
 
                     b.Property<string>("Region")

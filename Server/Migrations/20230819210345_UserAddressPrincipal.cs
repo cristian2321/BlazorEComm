@@ -215,7 +215,7 @@ namespace BlazorEComm.Server.Migrations
                 keyValue: new Guid("da1c5723-2610-4024-915d-5ef07adcb3ce"));
 
             migrationBuilder.AddColumn<bool>(
-                name: "Principal",
+                name: "IsPrincipal",
                 table: "Addresses",
                 type: "bit",
                 nullable: false,
@@ -499,7 +499,7 @@ namespace BlazorEComm.Server.Migrations
                 keyValue: new Guid("b8865054-a0cb-4953-883d-7cbb76627f91"));
 
             migrationBuilder.DropColumn(
-                name: "Principal",
+                name: "IsPrincipal",
                 table: "Addresses");
 
             migrationBuilder.InsertData(

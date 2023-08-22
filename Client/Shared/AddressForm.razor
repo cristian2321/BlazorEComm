@@ -1,0 +1,45 @@
+﻿<EditForm Model="@_address" OnValidSubmit="HandleAddressCrud">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label for="firstName"> FirstName </label>
+        <InputText id="firstName" @bind-Value="@_address.FirstName" class="form-control"> </InputText>
+        <ValidationMessage For="@(()=> _address.FirstName)" />
+    </div>
+    <div class="mb-3">
+        <label for="lastName"> LastName </label>
+        <InputText id="lastName" @bind-Value="@_address.LastName" class="form-control"> </InputText>
+        <ValidationMessage For="@(()=> _address.LastName)" />
+    </div>
+    <div class="mb-3">
+        <label for="street"> Street </label>
+        <InputText id="street" @bind-Value="@_address.Street" class="form-control"> </InputText>
+        <ValidationMessage For="@(()=> _address.Street)" />
+    </div>
+    <div class="mb-3">
+        <label for="city"> City </label>
+        <InputText id="city" @bind-Value="@_address.City" class="form-control"> </InputText>
+        <ValidationMessage For="@(()=> _address.City)" />
+    </div>
+    <div class="mb-3">
+        <label for="region"> Region </label>
+        <InputText id="region" @bind-Value="@_address.Region" class="form-control"> </InputText>
+        <ValidationMessage For="@(()=> _address.Region)" />
+    </div>
+    <div class="mb-3">
+        <label for="postalCode"> PostalCode </label>
+        <InputText id="postalCode" @bind-Value="@_address.PostalCode" class="form-control"> </InputText>
+        <ValidationMessage For="@(()=> _address.PostalCode)" />
+    </div>
+    <div class="mb-3">
+        <label for="country"> Country </label>
+        <InputText id="country" @bind-Value="@_address.Country" class="form-control"> </InputText>
+        <ValidationMessage For="@(()=> _address.Country)" />
+    </div>
+    <div class="mb-3">
+        <label for="principal"> Principal </label>
+        <InputCheckbox DisplayName="Principal" @bind-Value="@_address.Principal"></InputCheckbox>
+        <ValidationMessage For="@(()=> _address.Principal)" />
+    </div>
+    <button type="submit" class="btn btn-primary">@_submitText </button>
+</EditForm>
+@_message

@@ -18,6 +18,8 @@ public partial class Addresses
 
     private const string RegisterUrl = "register";
     private const string AddAddressUrl = "addAddress";
+    private const string DeleteAddressUrl = "deleteAddress";
+    private const string UpdateAddressUrl = "updateAddress";
 
     protected override async Task OnInitializedAsync()
     {
@@ -33,8 +35,13 @@ public partial class Addresses
         }
     }
 
-    private void NavigateToAdd() 
+    public void NavigateToUpdate(Guid addressId) 
     {
-        NavigationManager.NavigateTo(AddAddressUrl);
+        NavigationManager.NavigateTo($"{UpdateAddressUrl}/{addressId}");
+    }
+
+    public void NavigateToDelete(Guid addressId)
+    {
+        NavigationManager.NavigateTo($"{DeleteAddressUrl}/{addressId}");
     }
 }

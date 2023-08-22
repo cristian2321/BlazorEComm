@@ -6,42 +6,59 @@
     <span> No Address yet ! You can add one <a href="addAddress">here</a> </span>
 }
 else if(_addresses is not null && _addresses.Any() && _existsAddress)
-{   <div>
-        <ul class="list-unstyled">
-        @foreach (var address in _addresses)
-        {
-                var index = _addresses.IndexOf(address) + 1;
-                <li class="media my-3">
-                    Address @index
-                </li>
-                <li class="media my-3">
-                    <label>FirstName: @address.FirstName</label>
-                </li>
-                <li class="media my-3">
-                    <label> LastName: @address.LastName </label>
-                </li>
-                <li class="media my-3">
-                    <label> Street: @address.Street</label>
-                </li>
-                <li class="media my-3">
-                    <label> City: @address.City</label>
-                </li>
-                <li class="media my-3">
-                    <label> Region: @address.Region </label>
-                </li>
-                <li class="media my-3">
-                    <label> Postal code: @address.PostalCode </label>
-                </li>
-                <li class="media my-3">
-                    <label> Country: @address.Country </label> 
-                </li>
-                <li class="media my-3">
-                    <labe> Principal: <input type="checkbox" disabled="disabled" checked="@address.Principal" /> </labe>
-                </li>
-        }
-        </ul>
-       
+{  
+    <div>
+        <table id="addresses">
+            <tr>
+                <th>First and last name</th>
+                <th>Principal</th>
+                <th>Street</th>
+                <th>Postal code</th>
+                <th>Country</th>
+                <th>Region</th>
+                <th>City</th>
+            </tr>
+            @foreach (var address in _addresses)
+            {
+                <tr>
+                    <td>
+                        @address.FirstName  @address.LastName
+                    </td>
+                   
+                    <td>
+                       <center> 
+                           <input type="checkbox" disabled="disabled" checked="@address.Principal" />
+                       </center>
+                     </td>
+
+                    <td>
+                        @address.Street
+                    </td>
+                    
+                    <td>
+                        @address.PostalCode
+                    </td>
+                    
+                    <td>
+                        @address.Country
+                    </td>
+                    
+                    <td>
+                        @address.Region
+                    </td>
+                  
+                    <td>
+                        @address.City
+                    </td>
+                    <td>
+                        <button @onclick="@(()=> NavigateToUpdate(address.Id))"> Update </button>
+                        <button @onclick="@(()=> NavigateToDelete(address.Id))"> Delete </button>
+                    </td>
+                </tr>
+            }
+        </table>       
     </div>
+    <br/>
     <center>
         <a href="@AddAddressUrl">
             Add address
