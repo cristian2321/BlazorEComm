@@ -1,0 +1,46 @@
+﻿@page "/admin/product-variants"
+<h3>Product-variants</h3>
+
+<div class="header">
+    <div class="col">Product</div>
+    <div class="col">Product Type</div>
+    <div class="col">Price</div>
+    <div class="col">Original Price</div>
+    <div class="col">Visible</div>
+    <div class="col"></div>
+</div>
+
+
+@foreach (var productTypes in _productVariants)
+{
+    <div class="row">
+        <div class="col col-center">
+            @productTypes.Product
+        </div>
+        <div class="col col-center">
+            @productTypes.ProductType
+        </div>
+        <div class="col col-center">
+            $@productTypes.Price
+        </div>
+        <div class="col col-center">
+            $@productTypes.OriginalPrice
+        </div>
+        <div class="col col-center">
+            <span>@(productTypes.Visible ? "✔️" : "")</span>
+        </div>
+        <div class="col">
+            <button class="btn btn-primary" @onclick="(() => NavigateToEditProductVariant(productTypes.ProductId, productTypes.ProductTypeId))">
+                Update
+            </button>
+            <button class="btn btn-primary" @onclick="(() => NavigateToDeleteProductVariant(productTypes.ProductId, productTypes.ProductTypeId))">
+                Delete
+            </button>
+        </div>
+    </div>
+}
+
+
+<button class="btn btn-primary" @onclick="NavigateToAddProductVariant">
+    Add new product variant
+</button>

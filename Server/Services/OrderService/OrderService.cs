@@ -6,25 +6,34 @@ namespace BlazorEComm.Server.Services.OrderService;
 
 public class OrderService : IOrderService
 {
-    private readonly EcommDbContext _ecommDbContext;
     private readonly ICartService _cartService;
     private readonly IHttpContextService _httpContextService;
+    private readonly IRepository _repository;
+    private readonly IOrderExtensionRepository _orderExtensionRepository;
     
-    public OrderService(EcommDbContext ecommDbContext, ICartService cartService, IHttpContextService httpContextService)
+    public OrderService(ICartService cartService, 
+        IHttpContextService httpContextService,
+        IRepository repository,
+        IOrderExtensionRepository orderExtensionRepository)
     {
-        _ecommDbContext = ecommDbContext;
         _cartService = cartService;
         _httpContextService = httpContextService;
+        _repository = repository;
+        _orderExtensionRepository = orderExtensionRepository;
     }
 
     public async Task<ServiceResponse<bool>> PlaceOrder(CancellationToken cancellationToken)
     {
         var userId = _httpContextService.GetUserId();
 
-        var products = (await _cartService.GetDbCartProducts(cancellationToken)).Data;
+        var products = (await _cartService.GetCartProducts(cancellationToken)).Data;
         if (products is null || !products.Any())
         {
-            return new ServiceResponse<bool> { Data = !ConstantServerServices.IsSucces, Message = "No products in the cart" };
+            return new ()
+            {
+                Succes = !ConstantServerServices.IsSucces, 
+                Message = MessagesServerServices.MessageCartProductsEmpty 
+            };
         }
 
         decimal totalPrice = GetTotalPriceForOrder(products);
@@ -33,76 +42,70 @@ public class OrderService : IOrderService
 
         var order = GetOrder(userId, totalPrice, orderItems);
 
-        _ecommDbContext.Orders.Add(order);
+        var added = _repository.Add(order);
+        if (added)
+        {
+            var cartItems = await _cartService.GetCartItems(cancellationToken);
+            if (cartItems is not null && cartItems.Any())
+            {
+                _cartService.RemoveRangeCartItems(cartItems);
+            }
 
-        _ecommDbContext.CartItems.RemoveRange(_ecommDbContext.CartItems
-            .Where(x => x.UserId == userId));
-       
-        await _ecommDbContext.SaveChangesAsync(cancellationToken);
+            added = await _repository.SaveChangesAsync(cancellationToken);
+        }
 
-        return new ServiceResponse<bool> { Data = ConstantServerServices.IsSucces };
+        return new ServiceResponse<bool> { Data = added };
     }
 
-    public async Task<ServiceResponse<bool>> RemoveOrderCancelPayments(CancellationToken cancellationToken) 
+    public async Task<ServiceResponse<bool>> RemoveOrderCancelPayments(CancellationToken cancellationToken)
     {
+        bool transitionValid = true;
         var userId = _httpContextService.GetUserId();
-        var order = await _ecommDbContext.Orders
-            .Where(x => x.UserId == userId)
-            .Include(x=>x.OrderItems)
-            .OrderByDescending(x => x.OrderDate)
-            .FirstOrDefaultAsync(cancellationToken);
+        var order = await _orderExtensionRepository.GetOrder(userId, cancellationToken);
 
         if (order is null)
         {
-            return new ServiceResponse<bool> 
+            return new ServiceResponse<bool>
             {
-                Data = !ConstantServerServices.IsSucces, 
-                Succes = !ConstantServerServices.IsSucces, 
+                Data = !ConstantServerServices.IsSucces,
+                Succes = !ConstantServerServices.IsSucces,
                 Message = MessagesServerServices.MessageOrderNotFound
             };
         }
 
-        var cartItems = new List<CartItem>();
-        order.OrderItems.ForEach(x => cartItems.Add(new()
+        var cartItems = GetCartItemsFromOrder(userId, order);
+
+        transitionValid = AddCartItems(transitionValid, cartItems);
+
+        if (transitionValid)
         {
-            ProductId = x.ProductId,
-            ProductTypeId = x.ProductTypeId,
-            Quantity = x.Quantity,
-            UserId = userId
-        }));
+            _orderExtensionRepository.RemoveRangeOrderItems(order);
 
-        await _ecommDbContext.AddRangeAsync(cartItems, cancellationToken);
-        _ecommDbContext.RemoveRange(order.OrderItems);
-        _ecommDbContext.Remove(order);
+            transitionValid = _repository.Delete(order);
+            if (transitionValid)
+            {
+                await _repository.SaveChangesAsync(cancellationToken);
+            }
+        }
 
-        await _ecommDbContext.SaveChangesAsync(cancellationToken);
-
-        return new ServiceResponse<bool> 
-        {
-            Data = ConstantServerServices.IsSucces 
-        };
+        return new ServiceResponse<bool> { Data = transitionValid };
     }
 
     public async Task<ServiceResponse<List<OrderOverviewDto>>> GetOrders(CancellationToken cancellationToken)
     {
         var response = new ServiceResponse<List<OrderOverviewDto>>();
 
-        var orders = await _ecommDbContext.Orders
-            .Where(x => x.UserId == _httpContextService.GetUserId())
-            .Include(x=> x.OrderItems)
-            .ThenInclude(x=>x.Product)
-            .OrderByDescending(x=>x.OrderDate)
-            .ToListAsync(cancellationToken);
+        var orders = await _orderExtensionRepository.GetOrdersWithProducts(cancellationToken);
 
         var orderOverviews = new List<OrderOverviewDto>();
-        orders.ForEach(x=> orderOverviews.Add(new OrderOverviewDto 
+        orders.ForEach(x => orderOverviews.Add(new OrderOverviewDto
         {
             Id = x.Id,
             IsPayment = x.IsPayment,
             OrderDate = x.OrderDate,
             TotalPrice = x.TotalPrice,
             ProductName = x.OrderItems.Count > 1 ? $"{x.OrderItems.First().Product.Title} and " +
-                $"{x.OrderItems.Count -1} more ..." : x.OrderItems.First().Product.Title,
+                $"{x.OrderItems.Count - 1} more ..." : x.OrderItems.First().Product.Title,
             ProductImageUrl = x.OrderItems.First().Product.ImageUrl
         }));
 
@@ -115,12 +118,12 @@ public class OrderService : IOrderService
     {
         var response = new ServiceResponse<OrderDetailsDto>();
 
-        var order = await GetOrder(orderId, cancellationToken);
+        var order = await _orderExtensionRepository.GetOrderWithItemsAndProducts(orderId, cancellationToken);
 
         if (order is null)
         {
             response.Succes = !ConstantServerServices.IsSucces;
-            response.Message = "Order does not exists !";
+            response.Message = MessagesServerServices.MessageOrderNotExist;
 
             return response;
         }
@@ -133,14 +136,13 @@ public class OrderService : IOrderService
         return response;
     }
 
+    public async Task<List<OrderItem>> GetOrderItemsWithProducts(Guid orderId, CancellationToken cancellationToken) =>
+        await _orderExtensionRepository.GetOrderItemsWithProducts(orderId, cancellationToken);    
+
     public async Task<ServiceResponse<bool>> UpdateOrderPaymentFlag(CancellationToken cancellationToken)
     {
         var userId = _httpContextService.GetUserId();
-        var order = await _ecommDbContext.Orders
-            .Where(x => x.UserId == userId)
-            .Include(x => x.OrderItems)
-            .OrderByDescending(x => x.OrderDate)
-            .FirstOrDefaultAsync(cancellationToken);
+        var order = await _orderExtensionRepository.GetOrder(userId, cancellationToken);
 
         if (order is null)
         {
@@ -154,9 +156,39 @@ public class OrderService : IOrderService
 
         order.IsPayment = ConstantServerServices.IsSucces;
 
-        await _ecommDbContext.SaveChangesAsync(cancellationToken);
+        await _repository.SaveChangesAsync(cancellationToken);
 
         return new ServiceResponse<bool> { Data = ConstantServerServices.IsSucces };
+    }
+
+    private static List<CartItem> GetCartItemsFromOrder(Guid userId, Order order)
+    {
+        var cartItems = new List<CartItem>();
+
+        order.OrderItems.ForEach(x => cartItems.Add(new()
+        {
+            ProductId = x.ProductId,
+            ProductTypeId = x.ProductTypeId,
+            Quantity = x.Quantity,
+            UserId = userId
+        }));
+
+        return cartItems;
+    }
+
+    private bool AddCartItems(bool added, List<CartItem> cartItems)
+    {
+        foreach (var cartItem in cartItems)
+        {
+            if (!added)
+            {
+                break;
+            }
+
+            added = _repository.Add(cartItem);
+        }
+
+        return added;
     }
 
     private static decimal GetTotalPriceForOrder(List<CartProductDto> products)
@@ -191,20 +223,7 @@ public class OrderService : IOrderService
             TotalPrice = totalPrice,
             OrderItems = orderItems
         };
-
-    private async Task<Order?> GetOrder(Guid orderId, CancellationToken cancellationToken)
-    {
-        return await _ecommDbContext.Orders
-            .Where(x => x.Id == orderId &&
-                x.UserId == _httpContextService.GetUserId())
-            .Include(x => x.OrderItems)
-            .ThenInclude(x => x.Product)
-            .Include(x => x.OrderItems)
-            .ThenInclude(x => x.ProductType)
-            .OrderByDescending(x => x.OrderDate)
-            .FirstOrDefaultAsync(cancellationToken);
-    }
-    
+ 
     private static OrderDetailsDto GetOrderDetails(Order order) =>
         new()
         {

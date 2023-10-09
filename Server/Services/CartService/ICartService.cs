@@ -1,4 +1,5 @@
-﻿using BlazorEComm.Shared.Dtos;
+﻿using BlazorEComm.Server.Data;
+using BlazorEComm.Shared.Dtos;
 using BlazorEComm.Shared.Models;
 
 namespace BlazorEComm.Server.Services.CartService;
@@ -13,7 +14,9 @@ public interface ICartService
 
     Task<ServiceResponse<int>> GetCartItemsCount(CancellationToken cancellationToken);
 
-    Task<ServiceResponse<List<CartProductDto>>> GetDbCartProducts(CancellationToken cancellationToken);
+    Task<ServiceResponse<List<CartProductDto>>> GetCartProducts(CancellationToken cancellationToken);
+
+    Task<List<CartItem>> GetCartItems(CancellationToken cancellationToken);
 
     Task<ServiceResponse<bool>> AddToCart(CartItem cartItem, CancellationToken cancellationToken);
 
@@ -21,4 +24,5 @@ public interface ICartService
 
     Task<ServiceResponse<bool>> RemoveItemFromCart(Guid productId, Guid productTypeId, CancellationToken cancellationToken);
 
+    void RemoveRangeCartItems(List<CartItem> cartItems);
 }

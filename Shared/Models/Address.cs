@@ -2,7 +2,7 @@
 
 namespace BlazorEComm.Shared.Models;
 
-public class Address
+public class Address: Entity
 {
     public Guid Id { get; set; }
 

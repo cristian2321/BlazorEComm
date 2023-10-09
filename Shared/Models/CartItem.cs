@@ -1,6 +1,6 @@
 ﻿namespace BlazorEComm.Shared.Models;
 
-public class CartItem
+public class CartItem: Entity
 {
     public Guid UserId { get; set; }
 

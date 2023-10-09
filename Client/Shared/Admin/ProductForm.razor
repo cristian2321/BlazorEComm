@@ -1,0 +1,50 @@
+﻿<EditForm Model="@_product" OnValidSubmit="HandleAddOrUpdateProduct">
+    <DataAnnotationsValidator />
+    <div class="mb-0">
+        <label for="title">Title</label>
+        <InputText id="title" @bind-Value="_product.Title" class="form-control"></InputText>
+        <ValidationMessage For="@(()=> _product.Title)" />
+    </div>
+    <div class="mb-0">
+        <label for="imageUrl">Image Url</label>
+        <InputText id="imageUrl" @bind-Value="_product.ImageUrl" class="form-control"></InputText>
+        <ValidationMessage For="@(()=> _product.ImageUrl)" />
+    </div>
+    <div class="mb-3">
+        <label for="categoryName"> Category name </label>
+        @if (Add)
+        {
+            <select class="form-select" @bind="_categoryNameSelect">
+                @foreach (var categoryName in _categoriesNames)
+                {
+                    <option> @categoryName </option>
+                }
+            </select>
+        }
+        else
+        {
+            <input type="text" id="productType" disabled="disabled" class="form-control" value="@_product.CategoryName" />
+        }
+        <ValidationMessage For="@(()=> _product.CategoryName)" />
+    </div>
+    <div class="mb-0">
+        <label for="description">Description</label>
+        <InputTextArea id="description" @bind-Value="_product.Description" class="form-control"></InputTextArea>
+        <ValidationMessage For="@(()=> _product.Description)" />
+    </div>
+    <div class="mb-3">
+        <label for="visible"> Visible </label>
+        <br />
+        <InputCheckbox @bind-Value="_product.Visible"></InputCheckbox>
+        <ValidationMessage For="@(()=> _product.Visible)" />
+    </div>
+    <div class="mb-3">
+        <label for="featured"> Featured </label>
+        <br />
+        <InputCheckbox @bind-Value="_product.Featured"></InputCheckbox>
+        <ValidationMessage For="@(()=> _product.Featured)" />
+    </div>
+    <button type="submit" class="btn btn-primary">
+        @_submitText
+    </button>
+</EditForm>

@@ -1,19 +1,21 @@
-﻿using BlazorEComm.Shared.Messages;
+﻿using BlazorEComm.Server.Repository.Extensions.Interfaces;
+using BlazorEComm.Shared.Messages;
 using BlazorEComm.Shared.Models;
 
 namespace BlazorEComm.Server.Services.AddressService;
 
 public class AddressService : IAddressService
 {
-    private readonly EcommDbContext _ecommDbContext;
+    private readonly IRepository _repository;
+    private readonly IAddressExtensionRepository _addressExtensionRepository;
     private readonly IHttpContextService _httpContextService;
 
-    public AddressService(EcommDbContext ecommDbContext, IHttpContextService httpContextService)
+    public AddressService(IRepository repository, IAddressExtensionRepository addressExtensionRepository, IHttpContextService httpContextService)
     {
-        _ecommDbContext = ecommDbContext;
+        _repository = repository;
+        _addressExtensionRepository = addressExtensionRepository;
         _httpContextService = httpContextService;
     }
-
 
     public async Task<ServiceResponse<Address>> AddAddress(Address address, CancellationToken cancellationToken)
     {
@@ -22,66 +24,68 @@ public class AddressService : IAddressService
 
         await SetPrincipalAddress(address, userId, cancellationToken);
 
-        _ecommDbContext.Add(address);
-        await _ecommDbContext.SaveChangesAsync(cancellationToken);
+        var added = _repository.Add(address);
+        if (added)
+        {
+            added = await _repository.SaveChangesAsync(cancellationToken);
+        }
 
-        return new ServiceResponse<Address> { Data = address };
+        return added ?
+            new () { Data = address }: 
+            new()
+            {
+                Succes = !ConstantServerServices.IsSucces,
+                Message = MessagesServerServices.MessageAddressNotAdded
+            };
     }
 
     public async Task<ServiceResponse<bool>> DeleteAddress(Guid addressId, CancellationToken cancellationToken)
     {
-        var address = await GetAddress(addressId, cancellationToken);
-        if (address is null || address.Data is null)
+        var address = await _addressExtensionRepository.GetAddress(addressId, cancellationToken);
+        if (address is null || address is null)
         {
             return new()
             {
-                Data = !ConstantServerServices.IsSucces,
                 Succes = !ConstantServerServices.IsSucces,
                 Message = MessagesServerServices.MessageAddressNotFound
             };
         }
 
-        await SetPrincipalAddress(address.Data, address.Data.UserId, cancellationToken, ConstantServerServices.IsDelete);
-        
-        _ecommDbContext.Remove(address.Data);
-        await _ecommDbContext.SaveChangesAsync(cancellationToken);
-       
-        return new() { Data = ConstantServerServices.IsSucces };
-    }
+        await SetPrincipalAddress(address, address.UserId, cancellationToken, ConstantServerServices.IsDelete);
 
-    public async Task<ServiceResponse<List<Address>>> GetAddresses(CancellationToken cancellationToken) =>
-        new()
-        {
-            Data = await _ecommDbContext.Addresses
-                .Where(x => x.UserId == _httpContextService.GetUserId())
-                .OrderByDescending(x=>x.Principal)
-                .ToListAsync(cancellationToken)
-        };
+        var deleted = _repository.Delete(address);
+        
+        return deleted ? 
+            new() { Data = await _repository.SaveChangesAsync(cancellationToken) }:
+            new() { Data = deleted };
+    }
 
     public async Task<ServiceResponse<Address?>> GetAddress(Guid addressId, CancellationToken cancellationToken)
     {
-        var address = await _ecommDbContext.Addresses.FirstOrDefaultAsync(x => x.Id == addressId, 
-            cancellationToken);
+        var address = await _addressExtensionRepository.GetAddress(addressId, cancellationToken);
 
-        return address is not null? 
-            new()
-            {
-                Data = address
-            }:
-            new()
-            {
-                Data = default
-            };
+        return address is not null ?
+         new()
+         {
+             Data = address
+         } :
+         new()
+         {
+             Data = default
+         };
     }
+
+    public async Task<ServiceResponse<List<Address>>> GetAddresses(CancellationToken cancellationToken) =>
+        new() { Data = await _addressExtensionRepository.GetAddresses(cancellationToken) };
 
     public async Task<ServiceResponse<Address?>> UpdateAddress(Address address, CancellationToken cancellationToken)
     {
         var userId = _httpContextService.GetUserId();
         address.UserId = userId;
 
-        var oldAddress = await GetAddress(address.Id, cancellationToken);
+        var oldAddress = await _addressExtensionRepository.GetAddress(address.Id, cancellationToken);
 
-        if (oldAddress is null || oldAddress.Data is null)
+        if (oldAddress is null)
         {
             return new ()
             {
@@ -91,14 +95,24 @@ public class AddressService : IAddressService
             };
         }
 
-        oldAddress.Data.Principal = address.Principal;
-        await SetPrincipalAddress(oldAddress.Data, userId, cancellationToken);
+        oldAddress.Principal = address.Principal;
+        await SetPrincipalAddress(oldAddress, userId, cancellationToken);
 
-        UpdateOldAddress(address, oldAddress.Data);
+        UpdateOldAddress(address, oldAddress);
 
-        await _ecommDbContext.SaveChangesAsync(cancellationToken);
+        var updated = _repository.Update(oldAddress);
+        if (updated)
+        {
+            updated = await _repository.SaveChangesAsync(cancellationToken);
+        }
 
-        return new () { Data = address };
+        return updated ?
+            new() { Data = address } :
+            new()
+            {
+                Succes = !ConstantServerServices.IsSucces,
+                Message = MessagesServerServices.MessageAddressNotUpdated
+            };
     }
 
     private async Task SetPrincipalAddress(Address address, Guid userId, CancellationToken cancellationToken, bool isDeleted = false)
@@ -107,11 +121,9 @@ public class AddressService : IAddressService
         {
             if (isDeleted)
             {
-                var firstAddress = await _ecommDbContext.Addresses.FirstOrDefaultAsync(x => x.UserId == userId &&
-                        !x.Principal, 
-                    cancellationToken);
+                var firstAddress = await _addressExtensionRepository.GetAddressNotPrincipal(userId, cancellationToken);
 
-                if (firstAddress is not null)
+                if (firstAddress is not null && firstAddress is not null)
                 {
                     firstAddress.Principal = ConstantServerServices.IsPrincipal;
                 }
@@ -119,28 +131,17 @@ public class AddressService : IAddressService
                 return;
             }
             
-            var addressPrincipal = await GetAddressPrincipal(userId, cancellationToken);
+            var addressPrincipal = await _addressExtensionRepository.GetAddressPrincipal(userId, cancellationToken);
             if (addressPrincipal is not null && addressPrincipal.Id != address.Id)
             {
                 addressPrincipal.Principal = !ConstantServerServices.IsPrincipal;
             }
         }
-        else if (!(await AnyAddressPrincipal(userId, cancellationToken)))
+        else if (!(await _addressExtensionRepository.AnyAddressPrincipal(userId, cancellationToken)))
         {
             address.Principal = ConstantServerServices.IsPrincipal;
         }
     }
-
-    private async Task<Address?> GetAddressPrincipal(Guid userId, CancellationToken cancellationToken) =>
-        await _ecommDbContext.Addresses
-                .FirstOrDefaultAsync(x => x.UserId == userId && x.Principal,
-                    cancellationToken);
-
-    private async Task<bool> AnyAddressPrincipal(Guid userId, CancellationToken cancellationToken) =>
-        await _ecommDbContext.Addresses
-            .AnyAsync(x => x.UserId == userId &&
-                    x.Principal,
-                cancellationToken);
 
     private static void UpdateOldAddress(Address address, Address oldAddress)
     {
@@ -152,5 +153,4 @@ public class AddressService : IAddressService
         oldAddress.Country = address.Country;
         oldAddress.PostalCode = address.PostalCode;
     }
-
 }

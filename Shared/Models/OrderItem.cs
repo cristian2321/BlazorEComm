@@ -2,7 +2,7 @@
 
 namespace BlazorEComm.Shared.Models;
 
-public class OrderItem
+public class OrderItem: Entity
 {
     public Order Order { get; set; } = default!;
 

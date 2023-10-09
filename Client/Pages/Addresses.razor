@@ -51,8 +51,8 @@ else if(_addresses is not null && _addresses.Any() && _existsAddress)
                         @address.City
                     </td>
                     <td>
-                        <button @onclick="@(()=> NavigateToUpdate(address.Id))"> Update </button>
-                        <button @onclick="@(()=> NavigateToDelete(address.Id))"> Delete </button>
+                        <button class="btn btn-primary" @onclick="@(()=> NavigateToUpdate(address.Id))"> Update </button>
+                        <button class="btn btn-primary" @onclick="@(()=> NavigateToDelete(address.Id))"> Delete </button>
                     </td>
                 </tr>
             }

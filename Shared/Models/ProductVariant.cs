@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace BlazorEComm.Shared.Models;
 
-public class ProductVariant
+public class ProductVariant: Entity
 {
     [JsonIgnore]
     public Product? Product { get; set; }
@@ -19,4 +19,8 @@ public class ProductVariant
 
     [Column(TypeName = "decimal(18,2)")]
     public decimal OriginalPrice { get; set; }
+
+    public bool Visible { get; set; } = true;
+
+    public bool Deleted { get; set; } = false;
 }

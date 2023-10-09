@@ -6,22 +6,23 @@ namespace BlazorEComm.Server.Services.PasswordService;
 
 public class PasswordService : IPasswordService
 {
-    private readonly EcommDbContext _ecommDbContext;
     private readonly IHttpContextService _httpContextService;
+    private readonly IRepository _repository;
+    private readonly IUserExtensionRepository _userExtensionRepository;
 
-    public PasswordService(EcommDbContext ecommDbContext, IHttpContextService httpContextService)
+    public PasswordService(IHttpContextService httpContextService,
+        IRepository repository, 
+        IUserExtensionRepository userExtensionRepository)
     {
-        _ecommDbContext = ecommDbContext;
         _httpContextService = httpContextService;
+        _repository = repository;
+        _userExtensionRepository = userExtensionRepository;
     }
-
-
 
     public async Task<ServiceResponse<bool>> ChangePassword(string newPassword, 
         CancellationToken cancellationToken)
     {
-        var user = await _ecommDbContext.Users.FindAsync(new object?[] { _httpContextService.GetUserId() }, 
-            cancellationToken: cancellationToken);
+        var user = await _userExtensionRepository.FindUser(_httpContextService.GetUserId(), cancellationToken);
 
         if (user == null)
         {
@@ -37,7 +38,7 @@ public class PasswordService : IPasswordService
         user.PasswordSalt = passwordSalt;
         user.PasswordHash = passwordHash;
 
-        await _ecommDbContext.SaveChangesAsync(cancellationToken);
+        await _repository.SaveChangesAsync(cancellationToken);
 
         return new()
         {

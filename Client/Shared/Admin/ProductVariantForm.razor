@@ -1,0 +1,56 @@
+﻿<EditForm Model="@_productVariant" OnValidSubmit="HandleAddOrUpdateProductVariant">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label for="product"> Product </label>
+        @if (Add)
+        {
+            <select class="form-select" @bind="_productSelect">
+                @foreach (var titles in _productTitles)
+                {
+                    <option> @titles </option>
+                }
+            </select>
+        }
+        else
+        {
+            <input type="text" id="product" disabled="disabled" class="form-control" value="@_productVariant.Product"/>
+        } 
+        <ValidationMessage For="@(()=> _productVariant.Product)" />
+    </div>
+    <div class="mb-3">
+        <label for="productType"> Product-type </label>
+        @if (Add)
+        {
+            <select class="form-select" @bind="_productTypeSelect">
+                @foreach (var productTypeName in _productTypeNames)
+                {
+                    <option> @productTypeName </option>
+                }
+            </select>
+        }      
+        else
+        {
+            <input type="text" id="productType" disabled="disabled" class="form-control" value="@_productVariant.ProductType" />
+        }
+        <ValidationMessage For="@(()=> _productVariant.ProductType)" />
+    </div>
+    <div class="mb-3">
+        <label for="price"> Price </label>
+        <InputNumber id="price" @bind-Value="@_productVariant.Price" class="form-control"> </InputNumber>
+        <ValidationMessage For="@(()=> _productVariant.Price)" />
+    </div>
+    <div class="mb-3">
+        <label for="originalPrice"> Original Price </label>
+        <InputNumber id="originalPrice" @bind-Value="@_productVariant.OriginalPrice" class="form-control"> </InputNumber>
+        <ValidationMessage For="@(()=> _productVariant.OriginalPrice)" />
+    </div>
+    <div class="mb-3">
+        <label for="visible"> Visible </label>
+        <br />
+        <InputCheckbox @bind-Value="_productVariant.Visible"></InputCheckbox>
+        <ValidationMessage For="@(()=> _productVariant.Visible)" />
+    </div>
+    <button type="submit" class="btn btn-primary">
+        @_submitText
+    </button>
+</EditForm>

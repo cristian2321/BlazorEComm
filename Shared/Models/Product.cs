@@ -2,7 +2,7 @@
 
 namespace BlazorEComm.Shared.Models;
 
-public class Product
+public class Product: Entity
 {
     public Guid Id { get; set; }
    
@@ -13,6 +13,10 @@ public class Product
     public string ImageUrl { get; set; } = string.Empty;
 
     public bool Featured { get; set; } = false;
+    
+    public bool Visible { get; set; } = true;
+
+    public bool Deleted { get; set; } = false;
 
     public Guid CategoryId { get; set; }
    

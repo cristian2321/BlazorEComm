@@ -48,7 +48,7 @@ namespace BlazorEComm.Server.Controllers
         [HttpGet]
         public async Task<ActionResult<ServiceResponse<List<CartProductDto>>>> GetDbCartProducts(CancellationToken cancellationToken)
         {
-            var carts = await _cartService.GetDbCartProducts(cancellationToken);
+            var carts = await _cartService.GetCartProducts(cancellationToken);
             return Ok(carts) ;
         }
     }

@@ -1,0 +1,22 @@
+﻿<EditForm Model="@_category" OnValidSubmit="HandleAddOrUpdateCategory">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label for="name"> Name </label>
+        <InputText id="name" @bind-Value="@_category.Name" class="form-control"> </InputText>
+        <ValidationMessage For="@(()=> _category.Name)" />
+    </div>
+    <div class="mb-3">
+        <label for="url"> Url </label>
+        <InputText id="url" @bind-Value="@_category.Url" class="form-control"> </InputText>
+        <ValidationMessage For="@(()=> _category.Url)" />
+    </div>
+    <div class="mb-3">
+        <label for="visible"> Visible </label>
+        <br/>
+        <InputCheckbox @bind-Value="_category.Visible"></InputCheckbox>
+        <ValidationMessage For="@(()=> _category.Visible)" />
+    </div>
+    <button type="submit" class="btn btn-primary">
+        @_submitText
+    </button>
+</EditForm>

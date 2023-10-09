@@ -40,10 +40,10 @@ public partial class ProductDetails
     private async Task AddToCart() 
     {
         var productVariant = GetSectedVariants();
-       
+
         if (productVariant is not null)
         {
-            await CartService.AddToCard(new ()
+            await CartService.AddToCard(new()
             {
                 ProductId = productVariant.ProductId,
                 ProductTypeId = productVariant.ProductTypeId,

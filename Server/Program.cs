@@ -12,6 +12,13 @@ global using BlazorEComm.Server.Data;
 global using BlazorEComm.Server.Services.PaymentService;
 global using BlazorEComm.Server.Services.AddressService;
 global using BlazorEComm.Shared.Settings;
+global using BlazorEComm.Server.Services.ProductTypeService;
+global using BlazorEComm.Server.Services.ProductVariantService;
+global using BlazorEComm.Server.Services.ProductService.Interfaces;
+global using BlazorEComm.Server.Services.ConfigurationService;
+global using BlazorEComm.Server.Repository;
+global using BlazorEComm.Server.Repository.Extensions;
+global using BlazorEComm.Server.Repository.Extensions.Interfaces;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -26,16 +33,31 @@ builder.Services.AddDbContext<EcommDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString(ConnectionStringsSetting.DefaultConnectionKey)
 ));
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IHttpContextService, HttpContextService>();
+
+builder.Services.AddScoped<IRepository, Repository>();
+
+builder.Services.AddScoped<IAddressExtensionRepository, AddressExtensionRepository>();
+builder.Services.AddScoped<ICartExtensionRepository, CartExtensionRepository>();
+builder.Services.AddScoped<ICategoryExtensionRepository, CategoryExtensionRepository>();
+builder.Services.AddScoped<IConfigurationExtensionRepository, ConfigurationExtensionRepository>();
+builder.Services.AddScoped<IOrderExtensionRepository, OrderExtensionRepository>(); 
+builder.Services.AddScoped<IProductExtensionRepository, ProductExtensionRepository>();
+builder.Services.AddScoped<IProductTypeExtensionRepository, ProductTypeExtensionRepository>(); 
+builder.Services.AddScoped<IProductVariantExtensionRepository, ProductVariantExtensionRepository>();
+builder.Services.AddScoped<IUserExtensionRepository, UserExtensionRepository>();
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<IHttpContextService, HttpContextService>();
+builder.Services.AddScoped<IConfigurationService, ConfigurationService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IAdminProductService, AdminProductService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IPasswordService, PasswordService>();
@@ -43,6 +65,8 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IAddressService, AddressService>();
+builder.Services.AddScoped<IProductTypeService, ProductTypeService>();
+builder.Services.AddScoped<IProductVariantService, ProductVariantService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options => 

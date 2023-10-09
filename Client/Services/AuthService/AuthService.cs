@@ -2,6 +2,7 @@
 using BlazorEComm.Shared.Dtos;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using System.Security.Claims;
 
 namespace BlazorEComm.Client.Services.AuthService;
 
@@ -30,7 +31,8 @@ public class AuthService : IAuthService
         return default!;
     }
 
-    public async Task<bool> IsUserAuthenticated() => (await _authenticationStateProvider.GetAuthenticationStateAsync()).User.Identity!.IsAuthenticated;
+    public async Task<bool> IsUserAuthenticated() =>
+        (await _authenticationStateProvider.GetAuthenticationStateAsync()).User.Identity!.IsAuthenticated;
 
     public async Task<ServiceResponse<string>> Login(UserLoginDto userLogin) =>
         await (await _httpClient.PostAsJsonAsync(ClientApiEndpoints.BaseApiLoginUrl, userLogin))
@@ -47,5 +49,17 @@ public class AuthService : IAuthService
         {
             _navigationManager.NavigateTo(ClientApiEndpoints.BaseRegisterUrl);
         }
+    }
+
+    public async Task<bool> IsUserAuthenticatedWithRoleAdmin()
+    {
+        var user = (await _authenticationStateProvider.GetAuthenticationStateAsync()).User;
+        if (user is null || user.Identity is null || !user.Identity.IsAuthenticated)
+        {
+            return !ClientConstants.IsSucces;
+        }
+
+        var adminRole = user.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role);
+        return adminRole is not null;
     }
 }

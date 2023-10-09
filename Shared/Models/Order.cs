@@ -2,7 +2,7 @@
 
 namespace BlazorEComm.Shared.Models;
 
-public class Order
+public class Order: Entity
 {
     public Guid Id { get; set; }
 

@@ -2,6 +2,8 @@
 
 public class ClientConstants
 {
+    public const bool IsSucces = true;
+
     public const int DefaultPage = 1;
     public const int ProductDefaultQuantity = 1;
 

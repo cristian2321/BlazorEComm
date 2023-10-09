@@ -4,6 +4,10 @@ public class AppSetting
 {
     public const string Key = "AppSettings";
 
+    public string AllowedShippingCountry { get; set; } = string.Empty;
+
+    public int DecimalMultiplier { get; set; } 
+    
     public string OrderCancelUrl { get; set; } = string.Empty;
 
     public string OrderSuccesUrl { get; set; } = string.Empty;

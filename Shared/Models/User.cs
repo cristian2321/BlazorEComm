@@ -1,6 +1,6 @@
 ﻿namespace BlazorEComm.Shared.Models;
 
-public class User
+public class User: Entity
 {
     public Guid Id { get; set; }
 
@@ -13,4 +13,6 @@ public class User
     public DateTime DateCreated { get; set; } = DateTime.Now;
 
     public List<Address> Addresses { get; set; } = new();
+
+    public string Role { get; set; } = "Customer";
 }

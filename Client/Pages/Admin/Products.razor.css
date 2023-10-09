@@ -1,0 +1,51 @@
+﻿.header {
+    display: flex;
+    font-weight: 600;
+    text-align: center;
+    border-bottom: 1px solid lightgray;
+    margin-bottom: 6px;
+    padding-bottom: 6px;
+}
+
+.row {
+    display: flex;
+    padding: 6px;
+}
+
+.col {
+    flex: 1;
+}
+
+.col-visible {
+    text-align: center;
+}
+
+button-page{
+    text-decoration: none;
+    display: inline-block;
+    padding: 8px 16px;
+}
+
+    button-page:hover {
+        background-color: #ddd;
+        color: black;
+    }
+
+.previous {
+    background-color: #f1f1f1;
+    color: black;
+}
+
+.next {
+    background-color: #04AA6D;
+    color: white;
+}
+
+.round {
+    border-radius: 50%;
+}
+
+.img {
+    height:100px;
+    width:100px;
+}

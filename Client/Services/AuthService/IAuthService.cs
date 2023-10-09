@@ -14,4 +14,6 @@ public interface IAuthService
     Task ValidateUserAuthenticated();
 
     Task<bool> IsUserAuthenticated();
+
+    Task<bool> IsUserAuthenticatedWithRoleAdmin();
 }

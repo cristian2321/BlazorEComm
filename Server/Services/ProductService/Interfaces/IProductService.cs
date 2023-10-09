@@ -1,7 +1,7 @@
 ﻿using BlazorEComm.Shared.Dtos;
 using BlazorEComm.Shared.Models;
 
-namespace BlazorEComm.Server.Services.ProductService;
+namespace BlazorEComm.Server.Services.ProductService.Interfaces;
 
 public interface IProductService
 {
@@ -14,6 +14,6 @@ public interface IProductService
     Task<ServiceResponse<ProductSearchResultDto>> SearchProducts(string searchText, int page, CancellationToken cancellationToken);
 
     Task<ServiceResponse<List<string>>> GetProductSearchSuggestions(string searchText, CancellationToken cancellationToken);
-  
+
     Task<ServiceResponse<List<Product>>> GetFeaturedProducts(CancellationToken cancellationToken);
 }

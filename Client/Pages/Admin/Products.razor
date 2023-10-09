@@ -1,0 +1,76 @@
+﻿@page "/admin/Products"
+<PageTitle> Products </PageTitle>
+<h3>Products</h3>
+
+<div class="header">
+    <div class="col">Title </div>
+    <div class="col">Image </div>
+    <div class="col">Category </div>
+    <div class="col">Visible</div>
+    <div class="col">Featured</div>
+    <div class="col"></div>
+</div>
+
+@if (ProductService.AdminProducts is null || !ProductService.AdminProducts.Any())
+{
+    <span>Loading Products...</span>
+}
+else
+{
+    @foreach (var product in ProductService.AdminProducts)
+    {
+        <div class="row">
+            <div class="col">
+                <a href="/products/@product.Id">
+                    @product.Title
+                </a>
+            </div>
+            <div class="col">
+                <a href="/products/@product.Id">
+                    <img class="img" src="@product.ImageUrl"
+                         alt="@product.Title" />
+                </a>
+            </div>
+            <div class="col col-visible">
+                @product.CategoryName
+            </div>
+            <div class="col col-visible">
+                <span>@(product.Visible ? "✔️" : "")</span>
+            </div>
+            <div class="col col-visible">
+                <span>@(product.Featured ? "✔️" : "")</span>
+            </div>
+      
+            <div class="col">
+                <button class="btn btn-primary" @onclick="(() => NavigateToEditProduct(product.Id))">
+                    Update
+                </button>
+                <button class="btn btn-primary" @onclick="(() => NavigateToDeleteProduct(product.Id))">
+                    Delete
+                </button>
+            </div>
+        </div>
+    }
+
+    @if (ProductService.PageProductsAdmin != 0)
+    {
+        <button class="next" @onclick="GoToPreviousPage">
+            Page @GetPreviousBoutonPage()
+        </button>
+    }
+
+    @if (_productsCount == ProductService.AdminProducts.Count)
+    {
+        <button class="next" @onclick="GoToNextPage">
+            Page @GetNextBoutonPage()
+        </button>
+    }
+
+    <br/>
+    <br />
+    <br />
+
+    <button class="btn btn-primary" @onclick="NavigateToAddProduct">
+         Add new product
+    </button>
+}

@@ -1,0 +1,17 @@
+﻿<EditForm Model="@_productType" OnValidSubmit="HandleAddOrUpdateProductType">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label for="name"> Name </label>
+        <InputText id="name" @bind-Value="@_productType.Name" class="form-control"> </InputText>
+        <ValidationMessage For="@(()=> _productType.Name)" />
+    </div>
+    <div class="mb-3">
+        <label for="visible"> Visible </label>
+        <br />
+        <InputCheckbox @bind-Value="_productType.Visible"></InputCheckbox>
+        <ValidationMessage For="@(()=> _productType.Visible)" />
+    </div>
+    <button type="submit" class="btn btn-primary">
+        @_submitText
+    </button>
+</EditForm>

@@ -1,4 +1,5 @@
-﻿using BlazorEComm.Shared.Dtos;
+﻿using BlazorEComm.Server.Data;
+using BlazorEComm.Shared.Dtos;
 using BlazorEComm.Shared.Messages;
 using BlazorEComm.Shared.Models;
 
@@ -6,42 +7,60 @@ namespace BlazorEComm.Server.Services.CartService;
 
 public class CartService : ICartService
 {
-    private readonly EcommDbContext _ecommDbContext;
     private readonly IHttpContextService _httpContextService;
+    private readonly IRepository _repository;
+    private readonly ICartExtensionRepository _cartExtensionRepository;
+    private readonly IProductExtensionRepository _productExtensionRepository;
+    private readonly IProductVariantExtensionRepository _productVariantExtensionRepository;
 
-    public CartService(EcommDbContext ecommDbContext, IHttpContextService httpContextService)
+    public CartService(ICartExtensionRepository cartExtensionRepository, 
+        IRepository repository,  
+        IProductExtensionRepository productExtensionRepository,
+        IProductVariantExtensionRepository productVariantExtensionRepository,
+        IHttpContextService httpContextService)
     {
-        _ecommDbContext = ecommDbContext;
+        _cartExtensionRepository = cartExtensionRepository;
+        _repository = repository;
+        _productExtensionRepository = productExtensionRepository;
+        _productVariantExtensionRepository = productVariantExtensionRepository;
         _httpContextService = httpContextService;
     }
 
-
     public async Task<ServiceResponse<bool>> AddToCart(CartItem cartItem, CancellationToken cancellationToken)
     {
+        bool addedOrUpdated;
+
         cartItem.UserId = _httpContextService.GetUserId();
-       
-        var sameItem = await GetDbCartItem(cartItem.ProductId, 
-            cartItem.ProductTypeId, 
-            cancellationToken, 
+
+        var sameItem = await _cartExtensionRepository.GetDbCartItem(cartItem.ProductId,
+            cartItem.ProductTypeId,
+            cancellationToken,
             cartItem.UserId);
 
         if (sameItem is null)
         {
-            _ecommDbContext.Add(cartItem);
+            addedOrUpdated = _repository.Add(cartItem);
         }
         else
         {
             sameItem.Quantity += cartItem.Quantity;
+
+            addedOrUpdated = _repository.Update(sameItem);
         }
 
-        await _ecommDbContext.SaveChangesAsync(cancellationToken);
+        if (addedOrUpdated)
+        {
+            addedOrUpdated = await _repository.SaveChangesAsync(cancellationToken);
+        }
 
-        return new ServiceResponse<bool> { Data = ConstantServerServices.IsSucces };
+        return addedOrUpdated ?
+            new() { Data = ConstantServerServices.IsSucces } :
+            GetServiceResponseWithError(MessagesServerServices.MessageCartNotAdded);
     }
 
     public async Task<ServiceResponse<bool>> UpdateQuantity(CartItem cartItem, CancellationToken cancellationToken)
     {
-        var dbCartItem = await GetDbCartItem(cartItem.ProductId, cartItem.ProductTypeId, cancellationToken);
+        var dbCartItem = await _cartExtensionRepository.GetDbCartItem(cartItem.ProductId, cartItem.ProductTypeId, cancellationToken);
 
         if (dbCartItem is null)
         {
@@ -49,37 +68,51 @@ public class CartService : ICartService
         }
 
         dbCartItem.Quantity = cartItem.Quantity;
-        await _ecommDbContext.SaveChangesAsync(cancellationToken);
 
-        return new ServiceResponse<bool> { Data = ConstantServerServices.IsSucces };
+        var updated = _repository.Update(dbCartItem);
+
+        if (updated)
+        {
+            updated = await _repository.SaveChangesAsync(cancellationToken);
+        }
+
+        return updated ?
+                new() { Data = ConstantServerServices.IsSucces } :
+                GetServiceResponseWithError(MessagesServerServices.MessageCartNotUpdated);
     }
 
-    public async Task<ServiceResponse<bool>> RemoveItemFromCart(Guid productId, Guid productTypeId, 
+    public async Task<ServiceResponse<bool>> RemoveItemFromCart(Guid productId, Guid productTypeId,
         CancellationToken cancellationToken)
     {
-        var dbCartItem = await GetDbCartItem(productId, productTypeId, cancellationToken);
+        var dbCartItem = await _cartExtensionRepository.GetDbCartItem(productId, productTypeId, cancellationToken);
 
         if (dbCartItem is null)
         {
             return GetServiceResponseWithError(MessagesServerServices.MessageCartNotExists);
         }
 
-        _ecommDbContext.CartItems.Remove(dbCartItem);
+        var deleted = _repository.Delete(dbCartItem);
 
-        await _ecommDbContext.SaveChangesAsync(cancellationToken);
+        if (deleted)
+        {
+            deleted = await _repository.SaveChangesAsync(cancellationToken);
+        }
 
-        return new ServiceResponse<bool> { Data = ConstantServerServices.IsSucces };
+        return deleted ?
+          new() { Data = ConstantServerServices.IsSucces } :
+          GetServiceResponseWithError(MessagesServerServices.MessageCartNotDeleted);
     }
 
     public async Task<ServiceResponse<int>> GetCartItemsCount(CancellationToken cancellationToken) =>
-        new ()
-        {
-            Data = (await _ecommDbContext.CartItems
-                .Where(x => x.UserId == _httpContextService.GetUserId())
-                .CountAsync(cancellationToken))
-        };
+       new() { Data = await _cartExtensionRepository.GetCartItemsCount(cancellationToken) };
 
-    public async Task<ServiceResponse<List<CartProductDto>>> GetCartProducts(List<CartItem> cartItems, 
+    public async Task<List<CartItem>> GetCartItems(CancellationToken cancellationToken) =>
+        await _cartExtensionRepository.GetCartItems(cancellationToken);
+
+    public async Task<ServiceResponse<List<CartProductDto>>> GetCartProducts(CancellationToken cancellationToken) =>
+        await GetCartProducts(await GetCartItems(cancellationToken), cancellationToken);
+
+    public async Task<ServiceResponse<List<CartProductDto>>> GetCartProducts(List<CartItem> cartItems,
         CancellationToken cancellationToken)
     {
         var result = new ServiceResponse<List<CartProductDto>>
@@ -87,36 +120,20 @@ public class CartService : ICartService
             Data = new List<CartProductDto>()
         };
 
-        foreach (var item in cartItems)
+        foreach (var cartItem in cartItems)
         {
-            var product = await _ecommDbContext.Products
-                .Where(p => p.Id == item.ProductId)
-                .Select(x=> new 
-                { 
-                    x.Id, 
-                    x.Title, 
-                    x.ImageUrl
-                })
-                .FirstOrDefaultAsync(cancellationToken);
+            var product = await _productExtensionRepository
+                .GetProductCartById(cartItem.ProductId, cancellationToken);
 
-            if (product == null)
+            if (product is null)
             {
                 continue;
             }
 
-            var productVariant = await _ecommDbContext.ProductVariants
-                .Where(v => v.ProductId == item.ProductId
-                    && v.ProductTypeId == item.ProductTypeId)
-                .Include(v => v.ProductType)
-                .Select(x => new
-                {
-                    x.Price,
-                    x.ProductTypeId,
-                    ProductTypeName = x.ProductType!.Name
-                })
-                .FirstOrDefaultAsync(cancellationToken);
+            var productVariant = await _productVariantExtensionRepository
+                .GetProductTypeCart(cartItem.ProductId, cartItem.ProductTypeId, cancellationToken);
 
-            if (productVariant == null)
+            if (productVariant is null)
             {
                 continue;
             }
@@ -129,7 +146,7 @@ public class CartService : ICartService
                 Price = productVariant.Price,
                 ProductType = productVariant.ProductTypeName,
                 ProductTypeId = productVariant.ProductTypeId,
-                Quantity = item.Quantity
+                Quantity = cartItem.Quantity
             };
 
             result.Data.Add(cartProduct);
@@ -138,36 +155,24 @@ public class CartService : ICartService
         return result;
     }
 
-    public async Task<ServiceResponse<List<CartProductDto>>> GetDbCartProducts(CancellationToken cancellationToken) =>
-        await GetCartProducts(await _ecommDbContext.CartItems
-            .Where(x => x.UserId == _httpContextService.GetUserId())
-            .ToListAsync(cancellationToken), cancellationToken);
-
     public async Task<ServiceResponse<List<CartProductDto>>> StoreCartItems(List<CartItem> cartItems,
         CancellationToken cancellationToken)
     {
-        cartItems.ForEach(cartItem => cartItem.UserId = _httpContextService.GetUserId());
+        cartItems.ForEach(cartItem => 
+        {
+            cartItem.UserId = _httpContextService.GetUserId();
 
-        await _ecommDbContext.CartItems.AddRangeAsync(cartItems, cancellationToken);
-
-        await _ecommDbContext.SaveChangesAsync(cancellationToken);
-
-        return await GetDbCartProducts(cancellationToken);
+            _repository.Add(cartItem);
+        });
+ 
+        return await GetCartProducts(cancellationToken);
     }
 
-    private async Task<CartItem?> GetDbCartItem(Guid productId, Guid productTypeId,
-        CancellationToken cancellationToken,
-        Guid userId = default)
-    {
-        userId = userId == default ? _httpContextService.GetUserId() : userId;
 
-        return await _ecommDbContext.CartItems.FirstOrDefaultAsync(x => x.UserId == userId &&
-                    x.ProductId == productId &&
-                    x.ProductTypeId == productTypeId,
-                cancellationToken);
-    }
+    public void RemoveRangeCartItems(List<CartItem> cartItems) =>
+       _cartExtensionRepository.RemoveRangeCartItems(cartItems);
 
-    private static ServiceResponse<bool> GetServiceResponseWithError(string message) => 
+    private static ServiceResponse<bool> GetServiceResponseWithError(string message) =>
         new()
         {
             Data = !ConstantServerServices.IsSucces,

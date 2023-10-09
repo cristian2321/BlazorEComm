@@ -1,0 +1,36 @@
+﻿@page "/admin/product-types"
+
+<h3>Product-types</h3>
+
+<div class="header">
+    <div class="col">Name</div>
+    <div class="col">Visible</div>
+    <div class="col"></div>
+</div>
+
+
+@foreach (var productTypes in _productTypes)
+{
+    <div class="row">
+        <div class="col">
+            @productTypes.Name
+        </div>
+        <div class="col col-visible">
+            <span>@(productTypes.Visible ? "✔️" : "")</span>
+        </div>
+        <div class="col">
+            <button class="btn btn-primary" @onclick="(() => NavigateToEditProductType(productTypes.Id))">
+                Update
+            </button>
+            <button class="btn btn-primary" @onclick="(() => NavigateToDeleteProductType(productTypes.Id))">
+                Delete
+            </button>
+        </div>
+    </div>
+}
+
+<left>
+    <button class="btn btn-primary" @onclick="NavigateToAddProductType">
+        Add new product type
+    </button>
+</left>
