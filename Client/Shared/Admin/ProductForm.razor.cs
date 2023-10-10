@@ -1,5 +1,7 @@
 using BlazorEComm.Shared.Dtos;
+using BlazorEComm.Shared.Models;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using System.Text.Json;
 
 namespace BlazorEComm.Client.Shared.Admin;
@@ -84,5 +86,28 @@ public partial class ProductForm
         }
 
         _product.CategoryName = _categoryNameSelect;
+    }
+
+    private async Task OnFileChange(InputFileChangeEventArgs e) 
+    {
+        var format = "image/png";
+        foreach (var image in e.GetMultipleFiles(int.MaxValue))
+        {
+            var resizedImage = await image.RequestImageFileAsync(format, 200, 200);
+            var buffer = new byte[resizedImage.Size];
+            await resizedImage.OpenReadStream().ReadAsync(buffer);
+            var imageData = $"data:{format};base64,{Convert.ToBase64String(buffer)}";
+            
+            _product.Images.Add(new Image { Data = imageData });
+        }
+    }
+
+    void RemoveImage(Guid idImage) 
+    {
+        var image = _product.Images.FirstOrDefault(x => x.Id == idImage); ;
+        if (image is not null)
+        {
+            _product.Images.Remove(image);
+        }
     }
 }

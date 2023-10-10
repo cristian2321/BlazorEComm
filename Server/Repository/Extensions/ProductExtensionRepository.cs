@@ -22,6 +22,7 @@ public class ProductExtensionRepository : IProductExtensionRepository
                 x.Title.ToLower().Contains(searchText) || x.Description.ToLower().Contains(searchText))
             .Include(x => x.ProductVariants.Where(x => x.Visible && !x.Deleted &&
                 x.ProductType != null && x.ProductType.Visible && !x.ProductType.Deleted))
+            .Include(x => x.Images)
             .ToListAsync(cancellationToken);
 
     public async Task<List<Product>> FindProductsBySearchTextWithPage(string searchText, float pageResults, int page, CancellationToken cancellationToken) =>
@@ -30,6 +31,7 @@ public class ProductExtensionRepository : IProductExtensionRepository
                 p.Description.ToLower().Contains(searchText.ToLower()))
             .Include(x => x.ProductVariants.Where(p => p.Visible && !p.Deleted &&
                 p.ProductType != null && p.ProductType.Visible && !p.ProductType.Deleted))
+            .Include(x => x.Images)
             .Skip((page - 1) * (int)pageResults)
             .Take((int)pageResults)
             .ToListAsync(cancellationToken);
@@ -49,6 +51,7 @@ public class ProductExtensionRepository : IProductExtensionRepository
         await _ecommDbContext.Products
             .Where(x => !x.Deleted && x.Category != null)
             .Include(x => x.Category)
+            .Include(x=> x.Images)
             .OrderByDescending(x => x.Featured)
             .Skip(page * productsByPage)
             .Take(productsByPage)
@@ -58,6 +61,7 @@ public class ProductExtensionRepository : IProductExtensionRepository
         await _ecommDbContext.Products
              .Where(x => x.Id == productId && !x.Deleted)
              .Include(x => x.Category)
+             .Include(x => x.Images)
              .FirstOrDefaultAsync(cancellationToken);
 
     public async Task<List<string>> GetProductTitles(CancellationToken cancellationToken) =>
@@ -79,6 +83,7 @@ public class ProductExtensionRepository : IProductExtensionRepository
             .Include(x => x.ProductVariants.Where(x => x.Visible && !x.Deleted && x.ProductType != null && 
                 x.ProductType.Visible && !x.ProductType.Deleted))
             .ThenInclude(x => x.ProductType)
+            .Include(x => x.Images)    
             .FirstOrDefaultAsync(cancellationToken);
 
     public async Task<List<Product>> GetProducts(CancellationToken cancellationToken) =>
@@ -93,6 +98,7 @@ public class ProductExtensionRepository : IProductExtensionRepository
                 x.Category.Url.ToLower() == categoryUrl.ToLower() && x.Visible && !x.Deleted)
             .Include(x => x.ProductVariants.Where(x => x.Visible && !x.Deleted &&
                 x.ProductType != null && x.ProductType.Visible && !x.ProductType.Deleted))
+            .Include(x=>x.Images)
             .ToListAsync(cancellationToken);
 
     public async Task<List<Product>> GetFeaturedProducts(CancellationToken cancellationToken) => 
@@ -100,5 +106,9 @@ public class ProductExtensionRepository : IProductExtensionRepository
             .Where(x => x.Visible && !x.Deleted && x.Featured)
             .Include(x => x.ProductVariants.Where(x => x.Visible && !x.Deleted && 
                 x.ProductType != null && x.ProductType.Visible && !x.ProductType.Deleted))
+            .Include(x => x.Images)    
             .ToListAsync(cancellationToken);
+
+    public void RemoveProductsImages(List<Image> images) =>
+        _ecommDbContext.Images.RemoveRange(images);
 }

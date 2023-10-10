@@ -133,6 +133,8 @@ public class AdminProductService : IAdminProductService
         dbProduct.Visible = product.Visible;
         await UpdateProductCategory(product, dbProduct, cancellationToken);
 
+        UpdateProductImages(product, dbProduct);
+
         var updated = _repository.Update(dbProduct);
         if (updated)
         {
@@ -196,5 +198,12 @@ public class AdminProductService : IAdminProductService
         {
             dbProduct.CategoryId = (await _categoryService.GetCategoryIdByName(product.CategoryName, cancellationToken))!.Data;
         }
+    }
+
+    private void UpdateProductImages(ProductDto product, Product dbProduct)
+    {
+        var productsImages = dbProduct.Images;
+        _productExtensionRepository.RemoveProductsImages(productsImages);
+        dbProduct.Images = product.Images;
     }
 }

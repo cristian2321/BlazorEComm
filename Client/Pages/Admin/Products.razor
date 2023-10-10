@@ -26,10 +26,22 @@ else
                 </a>
             </div>
             <div class="col">
-                <a href="/products/@product.Id">
-                    <img class="img" src="@product.ImageUrl"
-                         alt="@product.Title" />
-                </a>
+                @if (product.Images.Any())
+                {
+                    <ProductImages Data="@product.Images.First().Data"
+                                   ImageCount="product.Images.Count"
+                                   ProductId="product.Id"
+                                   Title="@product.Title">
+                    </ProductImages>
+                }
+                else
+                {
+                    <ProductImages ImageUrl="@product.ImageUrl"
+                                   ImageCount="product.Images.Count"
+                                   ProductId="product.Id"
+                                   Title="@product.Title">
+                    </ProductImages>
+                }
             </div>
             <div class="col col-visible">
                 @product.CategoryName

@@ -12,6 +12,8 @@ public class Product: Entity
 
     public string ImageUrl { get; set; } = string.Empty;
 
+    public List<Image> Images { get; set; } = new List<Image>();
+
     public bool Featured { get; set; } = false;
     
     public bool Visible { get; set; } = true;

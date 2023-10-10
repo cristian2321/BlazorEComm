@@ -19,6 +19,8 @@ public class ProductDto
     public bool Visible { get; set; } = true;
 
     public bool Deleted { get; set; } = false;
+
+    public List<Image> Images { get; set; } = new List<Image>();
 }
 
 public static class ProductExtension
@@ -32,7 +34,8 @@ public static class ProductExtension
             ImageUrl = product.ImageUrl,
             Featured = product.Featured,
             Description = product.Description,
-            Id = product.Id
+            Id = product.Id,
+            Images = product.Images
         };
 
     public static ProductDto GetProductDtoFromProduct(this Product product) =>
@@ -45,6 +48,7 @@ public static class ProductExtension
             Featured = product.Featured,
             Description = product.Description,
             Id = product.Id,
-            CategoryName = product.Category!.Name
+            CategoryName = product.Category!.Name,
+            Images = product.Images
         };
 }

@@ -8,12 +8,23 @@ else
         @foreach (var product in ProductService.Products)
         {
             <li class="media my-3">
-                <div class="media-img-wrapper mr-2">
-                    <a href="/products/@product.Id">
-                        <img class="media-img" src="@product.ImageUrl"
-                             alt="@product.Title" />
-                    </a>
-                </div>
+                @if (product.Images.Any())
+                {
+                    <ProductImages 
+                        Data="@product.Images.First().Data" 
+                        ImageCount="product.Images.Count"
+                        ProductId="product.Id" 
+                        Title="@product.Title">
+                    </ProductImages>
+                }
+                else
+                {
+                    <ProductImages ImageUrl="@product.ImageUrl"
+                                   ImageCount="product.Images.Count"
+                                   ProductId="product.Id" 
+                                   Title="@product.Title">
+                    </ProductImages>
+                }
                 <div class="media-body">
                     <a href="/products/@product.Id">
                         <h4 class="mb-0">

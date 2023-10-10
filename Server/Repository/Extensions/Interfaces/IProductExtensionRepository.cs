@@ -28,4 +28,6 @@ public interface IProductExtensionRepository
     Task<List<Product>> GetProductsByCategory(string categoryUrl, CancellationToken cancellationToken);
 
     Task<List<Product>> GetFeaturedProducts(CancellationToken cancellationToken);
+
+    void RemoveProductsImages(List<Image> images);
 }

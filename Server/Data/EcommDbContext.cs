@@ -69,4 +69,6 @@ public class EcommDbContext : DbContext
     public DbSet<Address> Addresses => Set<Address>();
 
     public DbSet<Configuration> Configurations => Set<Configuration>();
+
+    public DbSet<Image> Images => Set<Image>();
 }
