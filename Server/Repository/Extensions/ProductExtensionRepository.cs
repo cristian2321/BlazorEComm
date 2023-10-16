@@ -13,7 +13,7 @@ public class ProductExtensionRepository : IProductExtensionRepository
     }
 
     public async Task<bool> AnyDbProduct(string title, CancellationToken cancellationToken) =>
-        await _ecommDbContext.Products.AnyAsync(x => x.Title.ToLower() == title.ToLower(),
+        await _ecommDbContext.Products.AnyAsync(x => x.Title.ToLower() == title.ToLower() && !x.Deleted,
             cancellationToken);
 
     public async Task<List<Product>> FindProductsBySearchText(string searchText, CancellationToken cancellationToken) =>
@@ -71,11 +71,13 @@ public class ProductExtensionRepository : IProductExtensionRepository
             .Select(x => x.Title)
             .ToListAsync(cancellationToken);
 
-    public async Task<Guid> GetProductIdByTitle(string title, CancellationToken cancellationToken) =>
-        await _ecommDbContext.Products
-             .Where(p => p.Title.ToLower() == title.ToLower())
+    public async Task<Guid> GetProductIdByTitle(string title, CancellationToken cancellationToken)
+    {
+        return await _ecommDbContext.Products
+             .Where(p => p.Title.ToLower() == title.ToLower() && !p.Deleted)
              .Select(x => x.Id)
              .FirstOrDefaultAsync(cancellationToken);
+    }
 
     public async Task<Product?> GetProduct(Guid productId, CancellationToken cancellationToken) =>
         await _ecommDbContext.Products

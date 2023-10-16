@@ -1,4 +1,5 @@
-﻿using BlazorEComm.Shared.Dtos;
+﻿using BlazorEComm.Shared.Constants;
+using BlazorEComm.Shared.Dtos;
 using BlazorEComm.Shared.Messages;
 using BlazorEComm.Shared.Models;
 
@@ -84,7 +85,14 @@ public class AdminProductService : IAdminProductService
     public async Task<ServiceResponse<List<ProductDto>>> GetProducts(int page, CancellationToken cancellationToken)
     {
         var products = new List<ProductDto>();
-        var configValue = await _configurationService.GetConfigValue(ConstantServerServices.ConfigKeyProductsByPage, cancellationToken);
+        var languageConfigResult = await _configurationService.GetConfigurationValue(ClientConstants.DefaultLanguage, string.Empty, cancellationToken);
+        if (languageConfigResult is null || !languageConfigResult.Succes || string.IsNullOrWhiteSpace(languageConfigResult.Data))
+        {
+            return new() { Data = products };
+        }
+
+        var configValue = await _configurationService.GetConfigurationValue(ConstantServerServices.ConfigKeyProductsByPage,
+            languageConfigResult.Data,  cancellationToken);
 
         int productsByPage = configValue.Data is null || !configValue.Succes ?
             ConstantServerServices.DefaultPageProducts :

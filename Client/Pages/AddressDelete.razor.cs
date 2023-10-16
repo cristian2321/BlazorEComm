@@ -11,7 +11,7 @@ public partial class AddressDelete
     IAuthService AuthService { get; set; } = default!;
 
     [Inject]
-    NavigationManager NavigationManager { get; set; } = default!;
+    IRedirectService RedirectService { get; set; } = default!;
 
     [Parameter]
     public Guid AddressId { get; set; }
@@ -25,7 +25,7 @@ public partial class AddressDelete
         var response = await AddressService.DeleteAddress(AddressId);
         if (response)
         {
-            NavigationManager.NavigateTo(ClientApiEndpoints.BaseAddressUrl);
+            RedirectService.NavigateTo(ClientApiEndpoints.BaseAddressUrl);
         }
         else
         {

@@ -15,7 +15,7 @@ public partial class ProductForm
     public ICategoryService CategoryService { get; set; } = default!;
 
     [Inject]
-    public NavigationManager NavigationManager { get; set; } = default!;
+    public IRedirectService RedirectService { get; set; } = default!;
 
     [Parameter, EditorRequired]
     public bool Add { get; set; }
@@ -75,7 +75,7 @@ public partial class ProductForm
             await ProductService.UpdateProduct(_product!);
         }
 
-        NavigationManager.NavigateTo(ClientApiEndpoints.AdminProductsUrl);
+        RedirectService.NavigateTo(ClientApiEndpoints.AdminProductsUrl);
     }
 
     private void SetSelectedCategoryName()

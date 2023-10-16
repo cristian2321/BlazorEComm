@@ -5,17 +5,8 @@ namespace BlazorEComm.Client.Pages.Admin;
 public partial class ProductAdd
 {
     [Inject]
-    private IAuthService AuthService { get; set; } = default!;
+    private IAdminService AdminService { get; set; } = default!;
 
-    [Inject]
-    private NavigationManager NavigationManager { get; set; } = default!;
-
-    protected override async Task OnInitializedAsync()
-    {
-        var authentificateRole = await AuthService.IsUserAuthenticatedWithRoleAdmin();
-        if (!authentificateRole)
-        {
-            NavigationManager.NavigateTo(ClientApiEndpoints.BaseRegisterUrl);
-        }
-    }
+    protected override async Task OnInitializedAsync() => 
+        _ = await AdminService.IsUserWithAdminRole();
 }

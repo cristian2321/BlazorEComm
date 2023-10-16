@@ -1,9 +1,13 @@
-﻿<center><h2>Top Products of Today</h2></center>
-@if (ProductService.Products == null || ProductService.Products.Count == 0)
+﻿<center><h2>@_title</h2></center>
+@if (ProductService.Products is null)
 {
-    <span>@ProductService.Message</span>
+    <span>@ProductService.GetLoadingProductsMessage()</span>
 }
-else
+else if (ProductService.Products is not null && !ProductService.Products.Any())
+{
+    <span>@ProductService.GetEmptyProductMessage()</span>
+}
+else if (ProductService.Products is not null && ProductService.Products.Any())
 {
     <div class="container">
         @foreach (var product in ProductService.Products)

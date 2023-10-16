@@ -15,7 +15,7 @@ public partial class Login
     private ILocalStorageService LocalStorageService { get; set; } = default!;
 
     [Inject]
-    private NavigationManager NavigationManager { get; set; } = default!;
+    private IRedirectService RedirectService { get; set; } = default!;
   
     [Inject]
     private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
@@ -26,12 +26,11 @@ public partial class Login
     private readonly UserLoginDto _userLogin = new();
 
     private string _errorMessage = string.Empty;
-
     private string _returnUrl = string.Empty;
 
     protected override void OnInitialized()
     {
-        if (QueryHelpers.ParseQuery(NavigationManager.ToAbsoluteUri(NavigationManager.Uri).Query)
+        if (QueryHelpers.ParseQuery(RedirectService.ToAbsoluteUri(RedirectService.GetUri()).Query)
             .TryGetValue(ClientApiEndpoints.ReturnUrl, out var url))
         {
             _returnUrl = url;
@@ -53,7 +52,7 @@ public partial class Login
 
             await CartService.GetCartItemsCount();
 
-            NavigationManager.NavigateTo(_returnUrl);
+            RedirectService.NavigateTo(_returnUrl);
         }
         else
         {

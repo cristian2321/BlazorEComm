@@ -27,6 +27,5 @@ internal static class SeedDataId
     internal static readonly Guid IdProductType7 = new("b0411ee6-270c-4b51-95fc-005753b6b925");
     internal static readonly Guid IdProductType8 = new("34739b09-bae6-4147-a7dd-7e652ace033b");
     internal static readonly Guid IdProductType9 = new("c5f532ae-6a91-4673-8198-805e5170b0ed");
-    internal static readonly Guid IdProductType10 = new("117d3eb0-41cb-4e42-af6c-10b5021eb428");
-    internal static readonly Guid IdConfig1 = new("007181e9-de7a-411d-9544-225663b78196");
+    internal static readonly Guid IdProductType10 = new("117d3eb0-41cb-4e42-af6c-10b5021eb428");  
 } 

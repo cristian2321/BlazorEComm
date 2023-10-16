@@ -8,26 +8,23 @@ public partial class ProductDelete
     private IProductService ProductService { get; set; } = default!;
 
     [Inject]
-    private IAuthService AuthService { get; set; } = default!;
+    private IAdminService AdminService { get; set; } = default!;
 
     [Inject]
-    private NavigationManager NavigationManager { get; set; } = default!;
+    private IRedirectService RedirectService { get; set; } = default!;
 
     [Parameter]
     public Guid ProductId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        var authentificateRole = await AuthService.IsUserAuthenticatedWithRoleAdmin();
-        if (!authentificateRole)
+        if (await AdminService.IsUserWithAdminRole())
         {
-            NavigationManager.NavigateTo(ClientApiEndpoints.BaseRegisterUrl);
-        }
-
-        var response = await ProductService.DeleteProduct(ProductId);
-        if (response)
-        {
-            NavigationManager.NavigateTo(ClientApiEndpoints.AdminProductsUrl);
+            var response = await ProductService.DeleteProduct(ProductId);
+            if (response)
+            {
+                RedirectService.NavigateTo(ClientApiEndpoints.AdminProductsUrl);
+            }
         }
     }
 }

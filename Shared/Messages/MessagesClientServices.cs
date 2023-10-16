@@ -2,5 +2,5 @@
 
 public class MessagesClientServices
 {
-    public const string MessageNoProductFound = "No products found";
+    public const string MessageNoProductsFound = "No products found";
 }

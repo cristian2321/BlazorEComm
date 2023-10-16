@@ -11,7 +11,7 @@ public partial class Addresses
     IAddressService AddressService { get; set; } = default!;
 
     [Inject]
-    NavigationManager NavigationManager { get; set; } = default!;
+    IRedirectService RedirectService { get; set; } = default!;
 
     private List<Address>? _addresses = default;
     private bool _existsAddress = true;
@@ -24,9 +24,9 @@ public partial class Addresses
         _existsAddress = _addresses is not null && _addresses.Any();
     }
 
-    public void NavigateToUpdate(Guid addressId) => 
-        NavigationManager.NavigateTo($"{ClientApiEndpoints.AddressUpdateUrl}/{addressId}");
+    public void NavigateToUpdate(Guid addressId) =>
+        RedirectService.NavigateTo($"{ClientApiEndpoints.AddressUpdateUrl}/{addressId}");
 
     public void NavigateToDelete(Guid addressId) =>
-        NavigationManager.NavigateTo($"{ClientApiEndpoints.AddressDeleteUrl}/{addressId}");
+        RedirectService.NavigateTo($"{ClientApiEndpoints.AddressDeleteUrl}/{addressId}");
 }

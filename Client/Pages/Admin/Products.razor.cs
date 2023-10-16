@@ -8,10 +8,10 @@ public partial class Products : IDisposable
     private IProductService ProductService { get; set; } = default!;
   
     [Inject]
-    private NavigationManager NavigationManager { get; set; } = default!;
+    private IRedirectService RedirectService { get; set; } = default!;
 
     [Inject]
-    private IAuthService AuthService { get; set; } = default!;
+    private IAdminService AdminService { get; set; } = default!;
 
     private const int DefaultPage = 0;
 
@@ -19,8 +19,7 @@ public partial class Products : IDisposable
     
     protected override async Task OnInitializedAsync()
     {
-        var authentificateRole = await AuthService.IsUserAuthenticatedWithRoleAdmin();
-        if (authentificateRole)
+        if (await AdminService.IsUserWithAdminRole())
         {
             ProductService.PageProductsAdmin = DefaultPage;
 
@@ -28,23 +27,23 @@ public partial class Products : IDisposable
 
             _productsCount = ProductService.AdminProducts.Count;
         }
-        else
-        {
-            NavigationManager.NavigateTo(NavigationManager.BaseUri);
-        }
     }
 
     public void NavigateToAddProduct() =>
-        NavigationManager.NavigateTo(ClientApiEndpoints.AdminProductAddUrl);
+        RedirectService.NavigateTo(ClientApiEndpoints.AdminProductAddUrl);
 
     public void NavigateToDeleteProduct(Guid productId) =>
-        NavigationManager.NavigateTo($"{ClientApiEndpoints.AdminProductDeleteUrl}/{productId}");
+        RedirectService.NavigateTo($"{ClientApiEndpoints.AdminProductDeleteUrl}/{productId}");
 
     public void NavigateToEditProduct(Guid productId) =>
-        NavigationManager.NavigateTo($"{ClientApiEndpoints.AdminProductUpdateUrl}/{productId}");
+        RedirectService.NavigateTo($"{ClientApiEndpoints.AdminProductUpdateUrl}/{productId}");
 
-    public void Dispose() =>
+    public void Dispose() 
+    {
         ProductService.ProductsChanged -= StateHasChanged;
+        
+        GC.SuppressFinalize(this);
+    }
 
     private async Task GetProducts()
     {

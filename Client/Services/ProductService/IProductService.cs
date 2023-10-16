@@ -7,9 +7,7 @@ public interface IProductService
 {
     event Action? ProductsChanged;
 
-    string Message { get; set; }
-
-    List<Product> Products { get; set; }
+    List<Product> ? Products { get; set; }
 
     List<ProductDto> AdminProducts { get; set; }
 
@@ -40,4 +38,8 @@ public interface IProductService
     Task<List<string>> GetProductsSearchSuggestions(string searchText);
 
     Task<List<string>> GetProductTitles();
+
+    string GetLoadingProductsMessage();
+
+    string GetEmptyProductMessage();
 }

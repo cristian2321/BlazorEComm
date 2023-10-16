@@ -8,10 +8,10 @@ public partial class ProductVariantDelete
     private IProductVariantService ProductVariantService { get; set; } = default!;
 
     [Inject]
-    private IAuthService AuthService { get; set; } = default!;
+    private IAdminService AdminService { get; set; } = default!;
 
     [Inject]
-    private NavigationManager NavigationManager { get; set; } = default!;
+    private IRedirectService RedirectService { get; set; } = default!;
   
     [Parameter]
     public Guid ProductId { get; set; }
@@ -21,16 +21,13 @@ public partial class ProductVariantDelete
 
     protected override async Task OnInitializedAsync()
     {
-        var authentificateRole = await AuthService.IsUserAuthenticatedWithRoleAdmin();
-        if (!authentificateRole)
+        if (await AdminService.IsUserWithAdminRole())
         {
-            NavigationManager.NavigateTo(ClientApiEndpoints.BaseRegisterUrl);
-        }
-
-        var response = await ProductVariantService.DeleteProductVariant(ProductId, ProductTypeId);
-        if (response)
-        {
-            NavigationManager.NavigateTo(ClientApiEndpoints.AdminProductVariantsUrl);
+            var response = await ProductVariantService.DeleteProductVariant(ProductId, ProductTypeId);
+            if (response)
+            {
+                RedirectService.NavigateTo(ClientApiEndpoints.AdminProductVariantsUrl);
+            }
         }
     }
 }

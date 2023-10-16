@@ -6,28 +6,25 @@ public partial class CategoryDelete
 {
     [Inject]
     private ICategoryService CategoryService { get; set; } = default !;
-
+    
     [Inject]
-    private IAuthService AuthService { get; set; } = default!;
-
+    private IAdminService AdminService { get; set; } = default!;
+    
     [Inject]
-    private NavigationManager NavigationManager { get; set; } = default !;
+    private IRedirectService RedirectService { get; set; } = default !;
     
     [Parameter]
     public Guid CategoryId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        var authentificateRole = await AuthService.IsUserAuthenticatedWithRoleAdmin();
-        if (!authentificateRole)
+        if (await AdminService.IsUserWithAdminRole())
         {
-            NavigationManager.NavigateTo(ClientApiEndpoints.BaseRegisterUrl);
-        }
-
-        var response = await CategoryService.DeleteCategory(CategoryId);
-        if (response)
-        {
-            NavigationManager.NavigateTo(ClientApiEndpoints.AdminCategoriesUrl);
-        }
+            var response = await CategoryService.DeleteCategory(CategoryId);
+            if (response)
+            {
+                RedirectService.NavigateTo(ClientApiEndpoints.AdminCategoriesUrl);
+            }
+        } 
     }
 }

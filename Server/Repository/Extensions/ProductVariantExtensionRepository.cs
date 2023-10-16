@@ -71,7 +71,7 @@ public class ProductVariantExtensionRepository : IProductVariantExtensionReposit
             .FirstOrDefaultAsync(cancellationToken);
 
     public async Task<ProductVariant?> GetProductVariantByProductIdAndProductTypeId(Guid productId, Guid productTypeId, CancellationToken cancellationToken) => 
-        await _ecommDbContext.ProductVariants.FirstOrDefaultAsync(x => x.ProductId == productId && x.ProductTypeId == productTypeId, cancellationToken);
+        await _ecommDbContext.ProductVariants.FirstOrDefaultAsync(x => x.ProductId == productId && x.ProductTypeId == productTypeId && !x.Deleted, cancellationToken);
 
     public async Task<List<ProductVariantDto>> GetProductVariants(CancellationToken cancellationToken) =>
         await ( from pv in _ecommDbContext.ProductVariants

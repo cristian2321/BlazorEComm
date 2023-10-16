@@ -1,18 +1,16 @@
-﻿using BlazorEComm.Shared.Models;
+﻿using BlazorEComm.Shared.Dtos;
 
 namespace BlazorEComm.Server.Services.ConfigurationService;
 
 public interface IConfigurationService 
 {
-    Task<ServiceResponse<string>> GetConfigValue(string configKey, CancellationToken cancellationToken);
+    Task<ServiceResponse<string>> GetConfigurationValue(string configurationKey, string configurationLanguage, CancellationToken cancellationToken);
 
-    Task<ServiceResponse<Configuration>> GetConfiguration(Guid configurationId, CancellationToken cancellationToken);
+    Task<ServiceResponse<List<ConfigurationDto>>> GetConfigurations(CancellationToken cancellationToken);
 
-    Task<ServiceResponse<List<Configuration>>> GetConfigurations(CancellationToken cancellationToken);
+    Task<ServiceResponse<List<ConfigurationDto>>> AddConfiguration(ConfigurationDto configuration, CancellationToken cancellationToken);
 
-    Task<ServiceResponse<List<Configuration>>> AddConfiguration(Configuration configuration, CancellationToken cancellationToken);
+    Task<ServiceResponse<List<ConfigurationDto>>> DeleteConfiguration(string configurationKey, string configurationLanguage, CancellationToken cancellationToken);
 
-    Task<ServiceResponse<List<Configuration>>> DeleteConfiguration(Guid configurationId, CancellationToken cancellationToken);
-
-    Task<ServiceResponse<List<Configuration>>> UpdateConfiguration(Configuration configuration, CancellationToken cancellationToken);
+    Task<ServiceResponse<List<ConfigurationDto>>> UpdateConfiguration(ConfigurationDto configuration, CancellationToken cancellationToken);
 }

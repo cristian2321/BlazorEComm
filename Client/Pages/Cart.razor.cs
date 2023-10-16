@@ -12,7 +12,7 @@ public partial class Cart
     private IOrderService OrderService { get; set; } = default!;
   
     [Inject]
-    private NavigationManager NavigationManager { get; set; } = default!;
+    private IRedirectService RedirectService { get; set; } = default!;
 
     private List<CartProductDto>? _cartProducts = null;
 
@@ -52,5 +52,5 @@ public partial class Cart
     }
 
     private async Task CheckoutOrder() => 
-        NavigationManager.NavigateTo(await OrderService.CheckoutOrder());
+        RedirectService.NavigateTo(await OrderService.CheckoutOrder());
 }

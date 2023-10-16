@@ -8,35 +8,34 @@ public partial class Categories : IDisposable
     private ICategoryService CategoryService { get; set; } = default!;
     
     [Inject]
-    private NavigationManager NavigationManager { get; set; } = default!;
-    
+    private IAdminService AdminService { get; set; } = default!;
+
     [Inject]
-    private IAuthService AuthService { get; set; } = default!;
+    private IRedirectService RedirectService { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
-        var authentificateRole = await AuthService.IsUserAuthenticatedWithRoleAdmin();
-        if (authentificateRole)
+        if (await AdminService.IsUserWithAdminRole())
         {
             await CategoryService.GetAdminCategories();
 
             CategoryService.OnChange += StateHasChanged;
         }
-        else
-        {
-            NavigationManager.NavigateTo(NavigationManager.BaseUri);
-        } 
     }
 
     public void NavigateToAddCategory() =>
-        NavigationManager.NavigateTo(ClientApiEndpoints.AdminCategoryAddUrl);
+        RedirectService.NavigateTo(ClientApiEndpoints.AdminCategoryAddUrl);
 
     public void NavigateToDeleteCategory(Guid categoryId) =>
-        NavigationManager.NavigateTo($"{ClientApiEndpoints.AdminCategoryDeleteUrl}/{categoryId}");
+        RedirectService.NavigateTo($"{ClientApiEndpoints.AdminCategoryDeleteUrl}/{categoryId}");
 
     public void NavigateToEditCategory(Guid categoryId) =>
-        NavigationManager.NavigateTo($"{ClientApiEndpoints.AdminCategoryUpdateUrl}/{categoryId}");
+        RedirectService.NavigateTo($"{ClientApiEndpoints.AdminCategoryUpdateUrl}/{categoryId}");
 
-    public void Dispose() => 
+    public void Dispose()
+    {
         CategoryService.OnChange -= StateHasChanged;
+    
+        GC.SuppressFinalize(this);
+    }
 }

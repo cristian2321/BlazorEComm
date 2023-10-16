@@ -13,7 +13,7 @@ public partial class UserButton
     private ICartService CartService { get; set; } = default!;
 
     [Inject]
-    private NavigationManager NavigationManager { get; set; } = default!;
+    private IRedirectService RedirectService { get; set; } = default!;
 
     [Inject]
     private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
@@ -42,6 +42,6 @@ public partial class UserButton
 
         await AuthenticationStateProvider.GetAuthenticationStateAsync();
 
-        NavigationManager.NavigateTo(NavigationManager.BaseUri);
+        RedirectService.NavigateTo(RedirectService.GetBaseUri());
     }
 }

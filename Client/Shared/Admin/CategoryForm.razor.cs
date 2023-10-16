@@ -8,7 +8,7 @@ public partial class CategoryForm
     public ICategoryService CategoryService { get; set; } = default !;
 
     [Inject]
-    public NavigationManager NavigationManager { get; set; } = default!;
+    public IRedirectService RedirectService { get; set; } = default!;
 
     [Parameter, EditorRequired]
     public bool Add { get; set; }
@@ -48,6 +48,6 @@ public partial class CategoryForm
             await CategoryService.UpdateCategory(_category!);
         }
 
-        NavigationManager.NavigateTo(ClientApiEndpoints.AdminCategoriesUrl);
+        RedirectService.NavigateTo(ClientApiEndpoints.AdminCategoriesUrl);
     }
 }

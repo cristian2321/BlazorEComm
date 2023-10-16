@@ -6,7 +6,7 @@ namespace BlazorEComm.Client.Shared;
 public partial class Search
 {
     [Inject]
-    private NavigationManager NavigationManager { get; set; } = default!;
+    private IRedirectService RedirectService { get; set; } = default!;
 
     [Inject]
     private IProductService ProductService { get; set; } = default!;
@@ -23,11 +23,8 @@ public partial class Search
         }
     }
 
-    public void SearchProducts() 
-    {
-        string uri = $"{ClientApiEndpoints.BaseSearchUrl}/{_searchText}/{ClientConstants.DefaultPage}";
-        NavigationManager.NavigateTo(uri);
-    }
+    public void SearchProducts() =>
+        RedirectService.NavigateTo($"{ClientApiEndpoints.BaseSearchUrl}/{_searchText}/{ClientConstants.DefaultPage}");
 
     public async Task HandleSearch(KeyboardEventArgs args) 
     {

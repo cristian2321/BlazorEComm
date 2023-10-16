@@ -14,7 +14,7 @@ public partial class OrderFail
     private IAuthService AuthService { get; set; } = default!;
 
     [Inject]
-    private NavigationManager NavigationManager { get; set; } = default!;
+    private IRedirectService RedirectService { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -24,6 +24,6 @@ public partial class OrderFail
 
         await CartService.GetCartItemsCount();
 
-        NavigationManager.NavigateTo(NavigationManager.BaseUri);
+        RedirectService.NavigateTo(RedirectService.GetBaseUri());
     }
 }

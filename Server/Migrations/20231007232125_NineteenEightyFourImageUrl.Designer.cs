@@ -148,7 +148,7 @@ namespace BlazorEComm.Server.Migrations
                         });
                 });
 
-            modelBuilder.Entity("BlazorEComm.Shared.Models.Configuration", b =>
+            modelBuilder.Entity("BlazorEComm.Shared.Models.Configurations", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()

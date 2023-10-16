@@ -159,6 +159,10 @@ namespace BlazorEComm.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Language")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Value")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -170,10 +174,51 @@ namespace BlazorEComm.Server.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("007181e9-de7a-411d-9544-225663b78196"),
+                            Id = new Guid("f7f61d18-5089-4f99-9a9e-5f9883c59b5f"),
                             Activ = true,
                             Key = "ProductsByPage",
+                            Language = "en",
                             Value = "5"
+                        },
+                        new
+                        {
+                            Id = new Guid("1a108d55-6071-47ce-9143-aed31667cd2a"),
+                            Activ = true,
+                            Key = "DefaultLanguage",
+                            Language = "",
+                            Value = "en"
+                        },
+                        new
+                        {
+                            Id = new Guid("1be8e099-f5dd-4663-b920-29e49e53bb07"),
+                            Activ = true,
+                            Key = "CompanyName",
+                            Language = "en",
+                            Value = "Cristian Company"
+                        },
+                        new
+                        {
+                            Id = new Guid("44d11148-6868-4a40-9f6e-ac6de7e9cae8"),
+                            Activ = true,
+                            Key = "MessageLoadingProducts",
+                            Language = "en",
+                            Value = "Loading product ..."
+                        },
+                        new
+                        {
+                            Id = new Guid("4761ada0-7299-4b68-b25d-751f438f90a5"),
+                            Activ = true,
+                            Key = "NoProductsFound",
+                            Language = "en",
+                            Value = "No products found"
+                        },
+                        new
+                        {
+                            Id = new Guid("819e9f4e-32e0-4340-b54a-25d73118d8ba"),
+                            Activ = true,
+                            Key = "TitleFeaturedProducts",
+                            Language = "en",
+                            Value = "Top Products of Today"
                         });
                 });
 

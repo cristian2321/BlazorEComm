@@ -24,7 +24,7 @@ public partial class ProductVariantForm
     private IProductTypeService ProductTypeService { get; set; } = default!;
 
     [Inject]
-    public NavigationManager NavigationManager { get; set; } = default!;
+    public IRedirectService RedirectService { get; set; } = default!;
 
     private string _submitText = string.Empty;
     private string _productSelect = string.Empty;
@@ -92,7 +92,7 @@ public partial class ProductVariantForm
             await ProductVariantService.UpdateProductVariant(_productVariant);
         }
 
-        NavigationManager.NavigateTo(ClientApiEndpoints.AdminProductVariantsUrl);
+        RedirectService.NavigateTo(ClientApiEndpoints.AdminProductVariantsUrl);
     }
 
     private void SetSelectedProductTitle()

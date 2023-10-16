@@ -15,7 +15,7 @@ public partial class AdminMenu
     {
         var role =(await AuthenticationStateProvider.GetAuthenticationStateAsync())
             .User.Claims.FirstOrDefault(x=>x.Type == ClaimTypes.Role);
-        if (role is not null && role.Value is not null && role.Value.Contains("Admin"))
+        if (role is not null && role.Value is not null && role.Value.Contains(ClientConstants.Admin))
         {
             _isAuthorize = true;
         }

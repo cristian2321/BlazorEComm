@@ -17,6 +17,10 @@ public partial class CartCounter : IDisposable
     protected override void OnInitialized() =>
         CartService.OnChange += StateHasChanged;
 
-    public void Dispose() => 
+    public void Dispose()
+    {
         CartService.OnChange -= StateHasChanged;
+       
+        GC.SuppressFinalize(this);
+    }
 }

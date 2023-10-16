@@ -1,4 +1,5 @@
-﻿using BlazorEComm.Shared.Messages;
+﻿using BlazorEComm.Shared.Dtos;
+using BlazorEComm.Shared.Messages;
 using BlazorEComm.Shared.Models;
 
 namespace BlazorEComm.Server.Services.ConfigurationService;
@@ -14,11 +15,13 @@ public class ConfigurationService : IConfigurationService
         _configurationExtensionRepository = configurationExtensionRepository;
     }
 
-    public async Task<ServiceResponse<List<Configuration>>> AddConfiguration(Configuration configuration, CancellationToken cancellationToken)
+    public async Task<ServiceResponse<List<ConfigurationDto>>> AddConfiguration(ConfigurationDto configuration, CancellationToken cancellationToken)
     {
-        if (!await _configurationExtensionRepository.AnyConfigurationDb(configuration, cancellationToken))
+        var dbConfiguration = configuration.GetConfigurationFromConfigurationDto();
+
+        if (!await _configurationExtensionRepository.AnyConfigurationDb(dbConfiguration, cancellationToken))
         {
-            var added = _repository.Add(configuration);
+            var added = _repository.Add(dbConfiguration);
             if (added)
             {
                 _ = await _repository.SaveChangesAsync(cancellationToken);
@@ -28,32 +31,26 @@ public class ConfigurationService : IConfigurationService
         return await GetConfigurations(cancellationToken);
     }
 
-    public async Task<ServiceResponse<Configuration>> GetConfiguration(Guid configurationId, CancellationToken cancellationToken)
+    public async Task<ServiceResponse<List<ConfigurationDto>>> GetConfigurations(CancellationToken cancellationToken)
     {
-        var configuration = await _configurationExtensionRepository.GetConfiguration(configurationId, cancellationToken);
+        var data = new List<ConfigurationDto>();    
+      
+        var configurations = await _configurationExtensionRepository.GetConfigurations(cancellationToken);
+        if (configurations is not null && configurations.Any())
+        {
+            configurations.ForEach(x => data.Add(x.GetConfigurationDtoFromConfiguration()));
+        }
 
-        return configuration is null ?
-            new()
-            {
-                Message = MessagesServerServices.MessageProductNotFound,
-                Succes = !ConstantServerServices.IsSucces
-            }:
-            new() 
-            { 
-                Data = configuration 
-            };
+        return new()
+        {
+            Data = data
+        };
     }
 
-    public async Task<ServiceResponse<List<Configuration>>> GetConfigurations(CancellationToken cancellationToken) =>
-        new ()
-        {
-            Data = await _configurationExtensionRepository.GetConfigurations(cancellationToken)
-        };
-
-    public async Task<ServiceResponse<string>> GetConfigValue(string configurationKey, CancellationToken cancellationToken)
+    public async Task<ServiceResponse<string>> GetConfigurationValue(string configurationKey, string configurationLanguage, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        string? configurationValue = await _configurationExtensionRepository.GetConfigurationValue(configurationKey, cancellationToken);
+        string? configurationValue = await _configurationExtensionRepository.GetConfigurationValue(configurationKey, configurationLanguage, cancellationToken);
 
         return configurationValue is null ?
             new()
@@ -67,9 +64,9 @@ public class ConfigurationService : IConfigurationService
             };
     }
 
-    public async Task<ServiceResponse<List<Configuration>>> DeleteConfiguration(Guid configurationId, CancellationToken cancellationToken)
+    public async Task<ServiceResponse<List<ConfigurationDto>>> DeleteConfiguration(string configurationKey, string configurationLanguage, CancellationToken cancellationToken)
     {
-        var configuration = (await GetConfiguration(configurationId, cancellationToken)).Data;
+        var configuration = (await GetConfiguration(configurationKey, configurationLanguage, cancellationToken)).Data;
         if (configuration is null)
         {
             return new ()
@@ -90,9 +87,9 @@ public class ConfigurationService : IConfigurationService
         return await GetConfigurations(cancellationToken);
     }
 
-    public async Task<ServiceResponse<List<Configuration>>> UpdateConfiguration(Configuration configuration, CancellationToken cancellationToken)
+    public async Task<ServiceResponse<List<ConfigurationDto>>> UpdateConfiguration(ConfigurationDto configuration, CancellationToken cancellationToken)
     {
-        var dbConfiguration = (await GetConfiguration(configuration.Id, cancellationToken)).Data;
+        var dbConfiguration = (await GetConfiguration(configuration.Key, configuration.Language, cancellationToken)).Data;
         if (dbConfiguration is null)
         {
             return new()
@@ -114,5 +111,21 @@ public class ConfigurationService : IConfigurationService
         }
 
         return await GetConfigurations(cancellationToken);
+    }
+
+    private async Task<ServiceResponse<Configuration>> GetConfiguration(string confugrationKey, string configurationLanguage, CancellationToken cancellationToken)
+    {
+        var configuration = await _configurationExtensionRepository.GetConfiguration(confugrationKey, configurationLanguage, cancellationToken);
+
+        return configuration is null ?
+            new()
+            {
+                Message = MessagesServerServices.MessageProductNotFound,
+                Succes = !ConstantServerServices.IsSucces
+            } :
+            new()
+            {
+                Data = configuration
+            };
     }
 }

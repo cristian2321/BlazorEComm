@@ -7,11 +7,15 @@ public partial class ProductList : IDisposable
     [Inject]
     private IProductService ProductService { get; set; } = default!;
 
-    public void Dispose() =>
-        ProductService.ProductsChanged -= StateHasChanged;
+    [Inject]
+    IConfigurationAppService ConfigurationAppService { get; set; } = default!;
 
-    protected override void OnInitialized() => 
+    protected override async Task OnInitializedAsync()
+    {
+        await ConfigurationAppService.ConfigurationAppIntialize();
+
         ProductService.ProductsChanged += StateHasChanged;
+    }
 
     private static string GetPriceText(Product product)
     {
@@ -25,5 +29,12 @@ public partial class ProductList : IDisposable
             1 => $"${product.ProductVariants.First().Price}",
             _ => $"{MessagesClientSharedComponements.MessageStartAt}: {product.ProductVariants.Min(x => x.Price)}",
         };
+    }
+
+    public void Dispose() 
+    {
+        ProductService.ProductsChanged -= StateHasChanged;
+    
+        GC.SuppressFinalize(this);
     }
 }

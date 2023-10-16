@@ -8,7 +8,7 @@ public partial class ProductTypeForm
     public IProductTypeService ProductTypeService { get; set; } = default!;
 
     [Inject]
-    public NavigationManager NavigationManager { get; set; } = default!;
+    public IRedirectService RedirectService { get; set; } = default!;
 
     [Parameter, EditorRequired]
     public bool Add { get; set; }
@@ -49,6 +49,6 @@ public partial class ProductTypeForm
             await ProductTypeService.UpdateProductType(_productType!);
         }
 
-        NavigationManager.NavigateTo(ClientApiEndpoints.AdminProductTypesUrl);
+        RedirectService.NavigateTo(ClientApiEndpoints.AdminProductTypesUrl);
     }
 }

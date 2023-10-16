@@ -9,7 +9,7 @@ public partial class Register
     private IAuthService AuthService { get; set; } = default!;
 
     [Inject]
-    private NavigationManager NavigationManager { get; set; } = default!;
+    private IRedirectService RedirectService { get; set; } = default!;
 
     private readonly UserRegisterDto _userRegister = new ();
 
@@ -22,8 +22,8 @@ public partial class Register
 
         if (result.Succes)
         {
-            _messageCssClass = ClientCssConstants.TextSucces;  
-            NavigationManager.NavigateTo(ClientApiEndpoints.BaseLoginUrl);
+            _messageCssClass = ClientCssConstants.TextSucces;
+            RedirectService.NavigateTo(ClientApiEndpoints.BaseLoginUrl);
         }
         else
         {

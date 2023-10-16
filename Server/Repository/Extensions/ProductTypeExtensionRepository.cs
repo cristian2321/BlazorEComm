@@ -12,7 +12,7 @@ public class ProductTypeExtensionRepository : IProductTypeExtensionRepository
     }
 
     public async Task<bool> AnyDbProductType(string name, CancellationToken cancellationToken) =>
-        await _ecommDbContext.ProductTypes.AnyAsync(x => x.Name.ToLower() == name.ToLower(), cancellationToken);
+        await _ecommDbContext.ProductTypes.AnyAsync(x => x.Name.ToLower() == name.ToLower() && !x.Deleted, cancellationToken);
 
     public async Task<List<ProductType>> GetAdminProductTypes(CancellationToken cancellationToken) =>
         await _ecommDbContext.ProductTypes
@@ -32,7 +32,7 @@ public class ProductTypeExtensionRepository : IProductTypeExtensionRepository
 
     public async Task<Guid> GetProductTypeIdByName(string name, CancellationToken cancellationToken) =>
         await _ecommDbContext.ProductTypes
-            .Where(p => p.Name.ToLower() == name.ToLower())
+            .Where(p => p.Name.ToLower() == name.ToLower() && !p.Deleted)
             .Select(x => x.Id)
             .FirstOrDefaultAsync(cancellationToken);
 

@@ -1,20 +1,24 @@
 ﻿using BlazorEComm.Shared;
 using BlazorEComm.Shared.Dtos;
-using System.Text.Json;
 
 namespace BlazorEComm.Client.Services.ProductService;
 
 public class ProductService : IProductService
 {
     private readonly HttpClient _httpClient;
-   
+    private readonly ConfigurationAppDto _configurationApp;
+
+    public ProductService(HttpClient httpClient, ConfigurationAppDto configurationApp)
+    {
+        _httpClient = httpClient;
+        _configurationApp = configurationApp;
+    }
+
     public event Action? ProductsChanged;
 
-    public List<Product> Products { get; set; } = new ();
+    public List<Product>? Products { get; set; } 
 
     public List<ProductDto> AdminProducts { get; set; } = new();
-
-    public string Message { get; set; } = MessagesClientPages.MessageLoadingProduct;
  
     public int CurrentPage { get; set; } = ClientConstants.DefaultPage;
 
@@ -24,11 +28,6 @@ public class ProductService : IProductService
 
     public string LastSearchText { get; set; } = default!;
 
-    public ProductService(HttpClient httpClient)
-    {
-        _httpClient = httpClient;
-    }
-  
     public async Task<ServiceResponse<Product>> GetProduct(Guid productId)
     {
         var result = await _httpClient.GetFromJsonAsync<ServiceResponse<Product>>
@@ -53,12 +52,6 @@ public class ProductService : IProductService
    
         CurrentPage = 1;
         PageCount = 0;
-
-        if (!Products.Any())
-        {
-            Message = MessagesClientServices.MessageNoProductFound;
-        }
-          
         ProductsChanged?.Invoke();
     }
 
@@ -74,12 +67,7 @@ public class ProductService : IProductService
             CurrentPage = result.Data.CurrentPage;
             PageCount = result.Data.Pages;
         }
-
-        if (!Products.Any())
-        {
-            Message = MessagesClientServices.MessageNoProductFound;
-        }      
-
+     
         ProductsChanged?.Invoke();
     }
 
@@ -101,6 +89,17 @@ public class ProductService : IProductService
         return result is not null && result.Data is not null && result.Succes ? 
             result.Data : default!;
     }
+
+    public string GetLoadingProductsMessage() =>
+        _configurationApp.Configurations
+            .Where(x => x.Activ && x.Language.ToLower() == _configurationApp.Language.ToLower() && 
+                x.Key.ToLower() == ClientConstants.MessageLoadingProducts.ToLower())
+            .Select(x => x.Value).FirstOrDefault() ?? string.Empty;
+    public string GetEmptyProductMessage() =>
+        _configurationApp.Configurations
+        .Where(x => x.Activ && x.Language.ToLower() == _configurationApp.Language.ToLower() &&
+            x.Key.ToLower() == ClientConstants.NoProductsFound.ToLower())
+        .Select(x => x.Value).FirstOrDefault() ?? string.Empty;
 
     #region Admin
 

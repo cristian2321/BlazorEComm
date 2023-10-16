@@ -8,7 +8,7 @@ public partial class AddressForm
     IAddressService AddressService { get; set; } = default!;
 
     [Inject]
-    NavigationManager NavigationManager { get; set; } = default!;
+    IRedirectService RedirectService { get; set; } = default!;
 
     [Parameter]
     public bool Add { get; set; } = default!;
@@ -34,7 +34,7 @@ public partial class AddressForm
             var address = await AddressService.GetAddress(AddressId);
             if (address is null)
             {
-                NavigationManager.NavigateTo(NavigationManager.BaseUri);
+                RedirectService.NavigateTo(RedirectService.GetBaseUri());
             }
 
             _address = address!; 
@@ -48,7 +48,7 @@ public partial class AddressForm
             var response = await AddressService.AddAddress(_address);
             if (response is not null)
             {
-                NavigationManager.NavigateTo(ClientApiEndpoints.BaseAddressUrl);
+                RedirectService.NavigateTo(ClientApiEndpoints.BaseAddressUrl);
             }
         }
 
@@ -57,7 +57,7 @@ public partial class AddressForm
             var response = await AddressService.UpdateAddress(_address);
             if (response)
             {
-                NavigationManager.NavigateTo(ClientApiEndpoints.BaseAddressUrl);
+                RedirectService.NavigateTo(ClientApiEndpoints.BaseAddressUrl);
             }
             else
             {

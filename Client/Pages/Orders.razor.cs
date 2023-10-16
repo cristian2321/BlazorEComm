@@ -12,7 +12,7 @@ public partial class Orders
     private IAuthService AuthService { get; set; } = default!;
 
     [Inject]
-    private NavigationManager NavigationManager { get; set; } = default!;
+    private IRedirectService RedirectService { get; set; } = default!;
 
     private List<OrderOverviewDto>? _orders = null;
 
@@ -23,6 +23,6 @@ public partial class Orders
         _orders = await OrderService.GetOrders();
     }
 
-    private async Task CheckoutOrderById(Guid orderId) => 
-        NavigationManager.NavigateTo(await OrderService.CheckoutOrderById(orderId));
+    private async Task CheckoutOrderById(Guid orderId) =>
+        RedirectService.NavigateTo(await OrderService.CheckoutOrderById(orderId));
 }

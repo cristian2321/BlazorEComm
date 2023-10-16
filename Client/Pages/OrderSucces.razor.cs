@@ -11,7 +11,7 @@ public partial class OrderSucces
     private IAuthService AuthService { get; set; } = default!;
 
     [Inject]
-    private NavigationManager NavigationManager { get; set; } = default!;
+    private IRedirectService RedirectService { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -19,6 +19,6 @@ public partial class OrderSucces
 
         await OrderService.UpdateOrderPaymentFlag();
 
-        NavigationManager.NavigateTo(NavigationManager.BaseUri);
+        RedirectService.NavigateTo(RedirectService.GetBaseUri());
     }
 }

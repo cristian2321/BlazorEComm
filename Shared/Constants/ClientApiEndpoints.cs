@@ -10,6 +10,7 @@ public class ClientApiEndpoints
     public const string AdminCategoryNameByIdApiUrl = "api/Category/admin/categoryNaneById";
     public const string AdminCategoryDeleteUrl = "admin/categoryDelete";
     public const string AdminCategoryUpdateUrl = "admin/categoryUpdate";
+    public const string AdminConfigurationApiUrl = "api/Configuration/admin";
     public const string AdminProducsApiBaseUrl = "api/Product/admin";
     public const string AdminProducsApiUrl = "api/Product/admin/products";
     public const string AdminProductsUrl = "admin/Products";
@@ -45,6 +46,7 @@ public class ClientApiEndpoints
     public const string CartProductsUrl = "api/cart/products";
     public const string CartUpdateQuantityUrl = "api/cart/update-quantity";
     public const string ChangePasswordUrl = "api/auth/change-password";
+    public const string ConfigurationsUrl = "api/Configuration";
     public const string ProductCategoryUrl = "api/product/category";
     public const string ProductFeaturedUrl = "api/product/featured";
     public const string ProductTypesUrl = "api/ProductType";
