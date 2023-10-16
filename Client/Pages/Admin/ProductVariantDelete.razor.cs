@@ -18,7 +18,9 @@ public partial class ProductVariantDelete
 
     [Parameter]
     public Guid ProductTypeId { get; set; }
-
+ 
+    private string _messageError = string.Empty;
+   
     protected override async Task OnInitializedAsync()
     {
         if (await AdminService.IsUserWithAdminRole())
@@ -27,6 +29,10 @@ public partial class ProductVariantDelete
             if (response)
             {
                 RedirectService.NavigateTo(ClientApiEndpoints.AdminProductVariantsUrl);
+            }
+            else
+            {
+                _messageError = MessagesClientPages.MessageDeleteNotWork;
             }
         }
     }

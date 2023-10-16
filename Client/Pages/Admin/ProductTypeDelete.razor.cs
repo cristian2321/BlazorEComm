@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 namespace BlazorEComm.Client.Pages.Admin;
 
 public partial class ProductTypeDelete
-{
+{ 
     [Inject]
     private IProductTypeService ProductTypeService { get; set; } = default!;
 
@@ -15,6 +15,8 @@ public partial class ProductTypeDelete
 
     [Parameter]
     public Guid ProductTypeId { get; set; }
+    
+    private string _messageError = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -24,6 +26,10 @@ public partial class ProductTypeDelete
             if (response)
             {
                 RedirectService.NavigateTo(ClientApiEndpoints.AdminProductTypesUrl);
+            }
+            else
+            {
+                _messageError = MessagesClientPages.MessageDeleteNotWork;
             }
         }
     }

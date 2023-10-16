@@ -25,11 +25,11 @@ public partial class AddressForm
     {
         if (Add)
         {
-            _submitText = MessagesClientSharedComponements.MessageAddAddress;
+            _submitText = MessagesClientSharedComponements.MessageAddAddressSubmit;
         }
         else
         {
-            _submitText = MessagesClientSharedComponements.MessageUpdateAddress;
+            _submitText = MessagesClientSharedComponements.MessageUpdateAddressSubmit;
 
             var address = await AddressService.GetAddress(AddressId);
             if (address is null)

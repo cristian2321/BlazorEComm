@@ -29,7 +29,7 @@ public partial class AddressDelete
         }
         else
         {
-            _message = MessagesClientPages.MessageDeleteNoWork;
+            _message = MessagesClientPages.MessageDeleteNotWork;
         }
     }
 }

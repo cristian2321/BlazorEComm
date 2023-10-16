@@ -5,7 +5,7 @@ namespace BlazorEComm.Client.Shared.Admin;
 public partial class CategoryForm
 {
     [Inject]
-    public ICategoryService CategoryService { get; set; } = default !;
+    public ICategoryService CategoryService { get; set; } = default!;
 
     [Inject]
     public IRedirectService RedirectService { get; set; } = default!;
@@ -14,7 +14,7 @@ public partial class CategoryForm
     public bool Add { get; set; }
 
     [Parameter]
-    public Guid CategoryId { get; set; } = default !;
+    public Guid CategoryId { get; set; } = default!;
  
     private string _submitText = string.Empty;
     private Category _category = new();

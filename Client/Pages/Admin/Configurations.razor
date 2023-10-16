@@ -1,0 +1,42 @@
+﻿@page "/admin/configurations"
+<PageTitle> Configurations </PageTitle>
+<h3>Configurations</h3>
+
+<div class="header">
+    <div class="col">Key</div>
+    <div class="col">Value</div>
+    <div class="col">Language</div>
+    <div class="col">Activ</div>
+    <div class="col"></div>
+</div>
+
+
+@foreach (var configuration in _configurations)
+{
+    <div class="row">
+        <div class="col">
+            @configuration.Key
+        </div>
+        <div class="col">
+            @configuration.Value
+        </div>
+        <div class="col">
+            @configuration.Language.ToUpper()
+        </div>
+        <div class="col col-visible">
+            <span>@(configuration.Activ ? "✔️" : "")</span>
+        </div>
+        <div class="col">
+            <button class="btn btn-primary" @onclick="(() => NavigateToEditConfiguration(configuration.Key, configuration.Language))">
+                Update
+            </button>
+            <button class="btn btn-primary" @onclick="(() => NavigateToDeleteConfiguration(configuration.Key, configuration.Language))">
+                Delete
+            </button>
+        </div>
+    </div>
+}
+
+<button class="btn btn-primary" @onclick="NavigateToAddConfiguration">
+    Add new configuration
+</button>

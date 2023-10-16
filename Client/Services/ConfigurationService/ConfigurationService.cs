@@ -22,9 +22,11 @@ public class ConfigurationService : IConfigurationService
         await AfterResponseForAddDeleteAndUpdate(response);
     }
 
-    public async Task<bool> DeleteConfiguration(Guid configurationId)
+    public async Task<bool> DeleteConfiguration(string configurationKey, string configurationLanguage)
     {
-        var response = await _httpClient.DeleteAsync($"{ClientApiEndpoints.AdminConfigurationApiUrl}/{configurationId}");
+        var response = await _httpClient.DeleteAsync
+            ($"{ClientApiEndpoints.AdminConfigurationApiUrl}/{configurationKey}/{configurationLanguage}");
+        
         if (response is null || !response.IsSuccessStatusCode)
         {
             return !ClientConstants.IsSucces;
@@ -63,6 +65,8 @@ public class ConfigurationService : IConfigurationService
         }
     }
 
+    public List<ConfigurationDto> ConfgurationAppConfigurations => _configurationApp.Configurations;
+
     public async Task UpdateConfiguration(ConfigurationDto configuration)
     {
         var response = await _httpClient.PutAsJsonAsync(ClientApiEndpoints.AdminConfigurationApiUrl, configuration);
@@ -82,5 +86,14 @@ public class ConfigurationService : IConfigurationService
         }
 
         await GetConfigurations();
+    }
+
+    public async Task<Configuration?> GetConfiguration(string configurationKey, string configurationLanguage)
+    {
+        var response = await _httpClient.GetFromJsonAsync<ServiceResponse<Configuration?>>
+         ($"{ClientApiEndpoints.AdminConfigurationApiUrl}/{nameof(Configuration)}/{configurationKey}/{configurationLanguage}");
+
+        return response is not null && response.Data is not null && response.Succes ?
+            response.Data : default;
     }
 }

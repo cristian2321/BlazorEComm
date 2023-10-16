@@ -63,6 +63,22 @@ public class ConfigurationService : IConfigurationService
                 Data = configurationValue 
             };
     }
+   
+    public async Task<ServiceResponse<Configuration?>> GetConfiguration(string confugrationKey, string configurationLanguage, CancellationToken cancellationToken)
+    {
+        var configuration = await _configurationExtensionRepository.GetConfiguration(confugrationKey, configurationLanguage, cancellationToken);
+
+        return configuration is null ?
+            new()
+            {
+                Message = MessagesServerServices.MessageConfigNotFound,
+                Succes = !ConstantServerServices.IsSucces
+            } :
+            new()
+            {
+                Data = configuration
+            };
+    }
 
     public async Task<ServiceResponse<List<ConfigurationDto>>> DeleteConfiguration(string configurationKey, string configurationLanguage, CancellationToken cancellationToken)
     {
@@ -77,6 +93,7 @@ public class ConfigurationService : IConfigurationService
         }
 
         configuration.Activ = !ConstantServerServices.IsActiv;
+        configuration.Deleted = ConstantServerServices.IsDelete;
 
         var updated = _repository.Update(configuration);
         if (updated)
@@ -111,21 +128,5 @@ public class ConfigurationService : IConfigurationService
         }
 
         return await GetConfigurations(cancellationToken);
-    }
-
-    private async Task<ServiceResponse<Configuration>> GetConfiguration(string confugrationKey, string configurationLanguage, CancellationToken cancellationToken)
-    {
-        var configuration = await _configurationExtensionRepository.GetConfiguration(confugrationKey, configurationLanguage, cancellationToken);
-
-        return configuration is null ?
-            new()
-            {
-                Message = MessagesServerServices.MessageProductNotFound,
-                Succes = !ConstantServerServices.IsSucces
-            } :
-            new()
-            {
-                Data = configuration
-            };
     }
 }

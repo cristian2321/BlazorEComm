@@ -1,0 +1,27 @@
+﻿<EditForm Model="@_configuration" OnValidSubmit="HandleAddOrUpdateConfiguration">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label for="key"> Key </label>
+        <InputText id="key" @bind-Value="@_configuration.Key" class="form-control"> </InputText>
+        <ValidationMessage For="@(()=> _configuration.Key)" />
+    </div>
+    <div class="mb-3">
+        <label for="value"> Value </label>
+        <InputText id="value" @bind-Value="@_configuration.Value" class="form-control"> </InputText>
+        <ValidationMessage For="@(()=> _configuration.Value)" />
+    </div>
+    <div class="mb-3">
+        <label for="language"> Language </label>
+        <InputText id="language" @bind-Value="@_configuration.Language" class="form-control"> </InputText>
+        <ValidationMessage For="@(()=> _configuration.Language)" />
+    </div>
+    <div class="mb-3">
+        <label for="activ"> Activ </label>
+        <br />
+        <InputCheckbox @bind-Value="_configuration.Activ"></InputCheckbox>
+        <ValidationMessage For="@(()=> _configuration.Activ)" />
+    </div>
+    <button type="submit" class="btn btn-primary">
+        @_submitText
+    </button>
+</EditForm>

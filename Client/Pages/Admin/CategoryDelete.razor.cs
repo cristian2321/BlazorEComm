@@ -16,6 +16,8 @@ public partial class CategoryDelete
     [Parameter]
     public Guid CategoryId { get; set; }
 
+    private string _messageError = string.Empty;
+
     protected override async Task OnInitializedAsync()
     {
         if (await AdminService.IsUserWithAdminRole())
@@ -24,6 +26,10 @@ public partial class CategoryDelete
             if (response)
             {
                 RedirectService.NavigateTo(ClientApiEndpoints.AdminCategoriesUrl);
+            }
+            else
+            {
+                _messageError = MessagesClientPages.MessageDeleteNotWork;
             }
         } 
     }
