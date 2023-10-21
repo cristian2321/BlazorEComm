@@ -1,6 +1,6 @@
 ﻿@page "/admin/productVariantAdd"
-<PageTitle> Product variant add </PageTitle>
-<h3>Product-variant add</h3>
-<ProductVariantForm Add = "true" ProductId="Guid.Empty" ProductTypeId="Guid.Empty"/>
 
+<PageTitle>@_titlePage</PageTitle>
+<h3>@_titlePage</h3>
 
+<ProductVariantForm Add=ClientConstants.Add ProductId=Guid.Empty ProductTypeId=Guid.Empty />

@@ -26,10 +26,15 @@ public partial class ProductVariantForm
     [Inject]
     public IRedirectService RedirectService { get; set; } = default!;
 
-    private string _submitText = string.Empty;
+    [Inject]
+    private IConfigurationService ConfigurationService { get; set; } = default!;
+
+    private string? _submitText = string.Empty;
     private string _productSelect = string.Empty;
     private string _productTypeSelect = string.Empty;   
+
     private ProductVariantDto _productVariant = new();
+
     private List<string> _productTitles = new();
     private List<string> _productTypeNames = new();
     
@@ -41,11 +46,17 @@ public partial class ProductVariantForm
         _productTypeNames = await ProductTypeService.GetAdminProductTypeNames();
         if (Add)
         {
-            _submitText = MessagesClientSharedComponements.AddProductVariantSubmit;
+            _submitText = (await ConfigurationService.GetConfigurationsByKeysAndType(ClientConstants.ProductVariantConfigurationType))!
+                .Where(x => x.Key == ClientConstants.AddButtonTitle)
+                .Select(x => x.Value)
+                .FirstOrDefault();
         }
         else
         {
-            _submitText = MessagesClientSharedComponements.UpdateProductVariantSubmit;
+            _submitText = (await ConfigurationService.GetConfigurationsByKeysAndType(ClientConstants.ProductVariantConfigurationType))!
+                .Where(x => x.Key == ClientConstants.UpdateButtonTitle)
+                .Select(x => x.Value)
+                .FirstOrDefault();
 
             var productVariant = await ProductVariantService.GetAdminProductVariant(ProductId, ProductTypeId);
             if (productVariant is not null)

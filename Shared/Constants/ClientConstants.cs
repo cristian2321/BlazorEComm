@@ -26,6 +26,12 @@ public class ClientConstants
     public const string DeleteButtonTitle = "DeleteButtonTitle";
     public const string MessageLoadingProducts = "MessageLoadingProducts";
     public const string NoProductsFound = "NoProductsFound";
+    public const string ProductVariantConfigurationType = "Configuration ProductVariant";
+    public const string ProductVariantConfigurationPageTitleKey = "ProductVariantPageTitle";
+    public const string ProductVariantAddConfigurationPageTitleKey = "ProductVariantAddPageTitle";
+    public const string ProductVariantDeleteConfigurationPageTitleKey = "ProductVariantDeletePageTitle";
+    public const string ProductVariantDeleteConfigurationDeleteError = "ProductVariantDeleteError";
+    public const string ProductVariantUpdateConfigurationPageTitleKey = "ProductVariantUpdatePageTitle";
     public const string TitleFeaturedProducts = "TitleFeaturedProducts";
     public const string UpdateButtonTitle = "UpdateButtonTitle";
 }

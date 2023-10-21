@@ -13,7 +13,23 @@ public partial class ProductVariantUpdate
 
     [Inject]
     private IAdminService AdminService { get; set; } = default!;
+    [Inject]
+    private IConfigurationService ConfigurationService { get; set; } = default!;
 
-    protected override async Task OnInitializedAsync() =>
-        _ = await AdminService.IsUserWithAdminRole();
+    private string? _titlePage = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var isUserAdmin = await AdminService.IsUserWithAdminRole();
+
+        if (isUserAdmin)
+        {
+            await ConfigurationService.AddConfigurationsKeys(ClientConstants.ProductVariantUpdateConfigurationPageTitleKey);
+
+            _titlePage = (await ConfigurationService.GetConfigurationsByKeysAndType(ClientConstants.ProductVariantConfigurationType))!
+                .Where(x => x.Key == ClientConstants.ProductVariantUpdateConfigurationPageTitleKey)
+                .Select(x => x.Value)
+                .FirstOrDefault();
+        }   
+    }
 }

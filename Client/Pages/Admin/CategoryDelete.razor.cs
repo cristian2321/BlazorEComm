@@ -20,7 +20,6 @@ public partial class CategoryDelete
     public Guid CategoryId { get; set; }
 
     private string? _titlePage = string.Empty;
-
     private string? _messageError = string.Empty;
 
     protected override async Task OnInitializedAsync()

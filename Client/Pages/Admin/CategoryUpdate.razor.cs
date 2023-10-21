@@ -17,13 +17,16 @@ public partial class CategoryUpdate
     
     protected override async Task OnInitializedAsync()
     {
-        _ = await AdminService.IsUserWithAdminRole();
+        var isUserAdmin = await AdminService.IsUserWithAdminRole();
 
-        await ConfigurationService.AddConfigurationsKeys(ClientConstants.CategoryUpdateConfigurationPageTitleKey);
+        if (isUserAdmin)
+        {
+            await ConfigurationService.AddConfigurationsKeys(ClientConstants.CategoryUpdateConfigurationPageTitleKey);
 
-        _titlePage = (await ConfigurationService.GetConfigurationsByKeysAndType(ClientConstants.CategoryConfigurationType))!
-            .Where(x => x.Key == ClientConstants.CategoryUpdateConfigurationPageTitleKey)
-            .Select(x => x.Value)
-            .FirstOrDefault();
+            _titlePage = (await ConfigurationService.GetConfigurationsByKeysAndType(ClientConstants.CategoryConfigurationType))!
+                .Where(x => x.Key == ClientConstants.CategoryUpdateConfigurationPageTitleKey)
+                .Select(x => x.Value)
+                .FirstOrDefault();
+        }    
     }
 }

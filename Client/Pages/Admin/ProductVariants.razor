@@ -1,40 +1,42 @@
 ﻿@page "/admin/product-variants"
-<h3>Product-variants</h3>
+@using BlazorEComm.Shared.Dtos;
+<PageTitle> @_titlePage</PageTitle>
+<h3>@_titlePage</h3>
 
 <div class="header">
-    <div class="col">Product</div>
-    <div class="col">Product Type</div>
-    <div class="col">Price</div>
-    <div class="col">Original Price</div>
-    <div class="col">Visible</div>
+    <div class="col">@nameof(ProductVariantDto.Product)</div>
+    <div class="col">@nameof(ProductVariantDto.ProductType)</div>
+    <div class="col">@nameof(ProductVariantDto.Price)</div>
+    <div class="col">@nameof(ProductVariantDto.OriginalPrice)</div>
+    <div class="col">@nameof(ProductVariantDto.Visible)</div>
     <div class="col"></div>
 </div>
 
 
-@foreach (var productTypes in _productVariants)
+@foreach (var productVariant in _productVariants)
 {
     <div class="row">
         <div class="col col-center">
-            @productTypes.Product
+            @productVariant.Product
         </div>
         <div class="col col-center">
-            @productTypes.ProductType
+            @productVariant.ProductType
         </div>
         <div class="col col-center">
-            $@productTypes.Price
+            $@productVariant.Price
         </div>
         <div class="col col-center">
-            $@productTypes.OriginalPrice
+            $@productVariant.OriginalPrice
         </div>
         <div class="col col-center">
-            <span>@(productTypes.Visible ? "✔️" : "")</span>
+            <span>@(productVariant.Visible ? "✔️" : "")</span>
         </div>
         <div class="col">
-            <button class="btn btn-primary" @onclick="(() => NavigateToEditProductVariant(productTypes.ProductId, productTypes.ProductTypeId))">
-                Update
+            <button class="btn btn-primary" @onclick="(() => NavigateToEditProductVariant(productVariant.ProductId, productVariant.ProductTypeId))">
+                @GetConfigurationValue(ClientConstants.UpdateButtonTitle)
             </button>
-            <button class="btn btn-primary" @onclick="(() => NavigateToDeleteProductVariant(productTypes.ProductId, productTypes.ProductTypeId))">
-                Delete
+            <button class="btn btn-primary" @onclick="(() => NavigateToDeleteProductVariant(productVariant.ProductId, productVariant.ProductTypeId))">
+                @GetConfigurationValue(ClientConstants.DeleteButtonTitle)
             </button>
         </div>
     </div>
@@ -42,5 +44,5 @@
 
 
 <button class="btn btn-primary" @onclick="NavigateToAddProductVariant">
-    Add new product variant
+    @GetConfigurationValue(ClientConstants.AddButtonTitle)
 </button>

@@ -20,6 +20,7 @@ public partial class CategoryForm
     public Guid CategoryId { get; set; } = default!;
  
     private string? _submitText = string.Empty;
+
     private Category _category = new();
 
     protected override async Task OnInitializedAsync()

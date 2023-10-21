@@ -13,6 +13,13 @@ public partial class ProductVariants
 
     [Inject]
     private IAdminService AdminService { get; set; } = default!;
+    
+    [Inject]
+    private IConfigurationService ConfigurationService { get; set; } = default!;
+
+    private string? _titlePage = string.Empty;
+
+    private List<ConfigurationDto>? _configurationsProductVariant = new();
 
     private List<ProductVariantDto> _productVariants = new();
 
@@ -24,18 +31,32 @@ public partial class ProductVariants
             _productVariants = ProductVariantService.AdminProductVariants;
 
             ProductVariantService.OnChange += StateHasChanged;
+
+            await ConfigurationService.AddConfigurationsKeys(ClientConstants.ProductVariantConfigurationPageTitleKey);
+
+            _configurationsProductVariant = await ConfigurationService.GetConfigurationsByKeysAndType
+                (ClientConstants.ProductVariantConfigurationType);
+
+            _titlePage = GetConfigurationValue(ClientConstants.ProductVariantConfigurationPageTitleKey);
         }
     }
 
-    public void NavigateToAddProductVariant() =>
+    private void NavigateToAddProductVariant() =>
         RedirectService.NavigateTo(ClientApiEndpoints.AdminProductVariantAddUrl);
 
-    public void NavigateToDeleteProductVariant(Guid productId, Guid productTypeId) =>
+    private void NavigateToDeleteProductVariant(Guid productId, Guid productTypeId) =>
         RedirectService.NavigateTo($"{ClientApiEndpoints.AdminProductVariantDeleteUrl}/{productId}/{productTypeId}");
 
-    public void NavigateToEditProductVariant(Guid productId, Guid productTypeId) =>
+    private void NavigateToEditProductVariant(Guid productId, Guid productTypeId) =>
         RedirectService.NavigateTo($"{ClientApiEndpoints.AdminProductVariantUpdateUrl}/{productId}/{productTypeId}");
 
     public void Dispose() =>
         ProductVariantService.OnChange -= StateHasChanged;
+
+    private string? GetConfigurationValue(string configurationKey) =>
+        _configurationsProductVariant is null || !_configurationsProductVariant.Any() ?
+            default :
+            _configurationsProductVariant.Where(x => x.Key.ToLower() == configurationKey.ToLower())
+                .Select(x => x.Value)
+                .FirstOrDefault();
 }
