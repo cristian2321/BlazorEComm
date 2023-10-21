@@ -10,6 +10,20 @@ public partial class CategoryUpdate
     [Parameter]
     public Guid CategoryId { get; set; }
 
-    protected override async Task OnInitializedAsync() => 
+    [Inject]
+    private IConfigurationService ConfigurationService { get; set; } = default!;
+
+    private string? _titlePage = string.Empty;
+    
+    protected override async Task OnInitializedAsync()
+    {
         _ = await AdminService.IsUserWithAdminRole();
+
+        await ConfigurationService.AddConfigurationsKeys(ClientConstants.CategoryUpdateConfigurationPageTitleKey);
+
+        _titlePage = (await ConfigurationService.GetConfigurationsByKeysAndType(ClientConstants.CategoryConfigurationType))!
+            .Where(x => x.Key == ClientConstants.CategoryUpdateConfigurationPageTitleKey)
+            .Select(x => x.Value)
+            .FirstOrDefault();
+    }
 }

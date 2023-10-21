@@ -15,6 +15,9 @@ public class ClientConstants
     public const string CategoryConfigurationType = "Configuration Category";
     public const string CategoryConfigurationPageTitleKey = "CategoryPageTitle";
     public const string CategoryAddConfigurationPageTitleKey = "CategoryAddPageTitle";
+    public const string CategoryDeleteConfigurationPageTitleKey = "CategoryDeletePageTitle";
+    public const string CategoryDeleteConfigurationDeleteError = "CategoryDeleteError";
+    public const string CategoryUpdateConfigurationPageTitleKey = "CategoryUpdatePageTitle";
     public const string Cart = "cart";
     public const string CartItemsCount = "cartItemsCount";
     public const string CompanyName = "CompanyName";

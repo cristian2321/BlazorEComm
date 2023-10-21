@@ -104,7 +104,10 @@ public class ConfigurationService : IConfigurationService
     {
         await InitializeConfigurationsKeys();
 
-        ConfigurationsKeys!.Add(configurationKey);
+        if (!ConfigurationsKeys!.Contains(configurationKey))
+        {
+            ConfigurationsKeys!.Add(configurationKey);
+        } 
     }
 
     private Task InitializeConfigurationsKeys()

@@ -43,7 +43,11 @@ public class ConfigurationService : IConfigurationService
 
         return new()
         {
-            Data = data.OrderBy(x => x.Type).ToList()
+            Data = data
+                .OrderBy(x => x.Type)
+                .ThenBy(x=>x.Key)
+                .ThenBy(x=> x.Language)
+                .ToList()
         };
     }
 
