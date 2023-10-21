@@ -1,5 +1,5 @@
 ﻿@page "/admin/categoryAdd"
-<PageTitle> Category add </PageTitle>
-<h3>Category add</h3>
+<PageTitle> @_titlePage </PageTitle>
+<h3>@_titlePage</h3>
 
-<CategoryForm Add="true" CategoryId="Guid.Empty"/>
+<CategoryForm Add=ClientConstants.Add CategoryId=Guid.Empty/>

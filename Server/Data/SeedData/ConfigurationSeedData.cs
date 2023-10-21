@@ -15,6 +15,7 @@ internal class ConfigurationSeedData
             {
                 Id = Guid.NewGuid(),
                 Key = "ProductsByPage",
+                Type = "Configurations Product",
                 Value = "5",
                 Language = Language
             },
@@ -22,6 +23,7 @@ internal class ConfigurationSeedData
             {
                 Id = Guid.NewGuid(),
                 Key = ClientConstants.DefaultLanguage,
+                Type = "Configurations Company",
                 Value = Language
             },
             new ()
@@ -29,6 +31,7 @@ internal class ConfigurationSeedData
                 Id = Guid.NewGuid(),
                 Key = ClientConstants.CompanyName,
                 Value = "Cristian Company",
+                Type = "Configurations Company",
                 Language = Language,
             },
             new ()
@@ -36,6 +39,7 @@ internal class ConfigurationSeedData
                 Id = Guid.NewGuid(),
                 Key = ClientConstants.MessageLoadingProducts,
                 Value = MessagesClientPages.MessageLoadingProduct,
+                Type = "Configurations Messages",
                 Language = Language,
             },
             new ()
@@ -43,6 +47,7 @@ internal class ConfigurationSeedData
                 Id = Guid.NewGuid(),
                 Key = ClientConstants.NoProductsFound,
                 Value = MessagesClientServices.MessageNoProductsFound,
+                Type = "Configurations Messages",
                 Language = Language,
             },
             new ()
@@ -50,6 +55,7 @@ internal class ConfigurationSeedData
                 Id = Guid.NewGuid(),
                 Key = ClientConstants.TitleFeaturedProducts,
                 Value = "Top Products of Today",
+                Type = "Configurations Product",
                 Language = Language,
             },
         };

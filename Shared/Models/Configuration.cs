@@ -13,6 +13,9 @@ public class Configuration: Entity
     public string Value { get; set; } = string.Empty;
    
     [Required, MaxLength(256)]
+    public string Type { get; set; } = string.Empty;
+
+    [Required, MaxLength(256)]
     public string Language { get; set; } = string.Empty;
 
     public bool Activ { get; set; } = true;

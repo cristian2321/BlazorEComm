@@ -1,12 +1,14 @@
 ﻿@page "/admin/configurations"
+@using BlazorEComm.Shared.Dtos;
 <PageTitle> Configurations </PageTitle>
 <h3>Configurations</h3>
 
 <div class="header">
-    <div class="col">Key</div>
-    <div class="col">Value</div>
-    <div class="col">Language</div>
-    <div class="col">Activ</div>
+    <div class="col">@nameof(ConfigurationDto.Key)</div>
+    <div class="col">@nameof(ConfigurationDto.Value)</div>
+    <div class="col">@nameof(ConfigurationDto.Type)</div>
+    <div class="col">@nameof(ConfigurationDto.Language)</div>
+    <div class="col">@nameof(ConfigurationDto.Activ)</div>
     <div class="col"></div>
 </div>
 
@@ -19,6 +21,9 @@
         </div>
         <div class="col">
             @configuration.Value
+        </div>  
+        <div class="col">
+            @configuration.Type
         </div>
         <div class="col">
             @configuration.Language.ToUpper()

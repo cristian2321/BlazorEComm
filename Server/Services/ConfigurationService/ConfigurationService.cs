@@ -43,7 +43,7 @@ public class ConfigurationService : IConfigurationService
 
         return new()
         {
-            Data = data
+            Data = data.OrderBy(x => x.Type).ToList()
         };
     }
 
@@ -63,7 +63,7 @@ public class ConfigurationService : IConfigurationService
                 Data = configurationValue 
             };
     }
-   
+
     public async Task<ServiceResponse<Configuration?>> GetConfiguration(string confugrationKey, string configurationLanguage, CancellationToken cancellationToken)
     {
         var configuration = await _configurationExtensionRepository.GetConfiguration(confugrationKey, configurationLanguage, cancellationToken);

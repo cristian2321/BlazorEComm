@@ -11,6 +11,11 @@
         <ValidationMessage For="@(()=> _configuration.Value)" />
     </div>
     <div class="mb-3">
+        <label for="type"> Type </label>
+        <InputText id="type" @bind-Value="@_configuration.Type" class="form-control"> </InputText>
+        <ValidationMessage For="@(()=> _configuration.Type)" />
+    </div>
+    <div class="mb-3">
         <label for="language"> Language </label>
         <InputText id="language" @bind-Value="@_configuration.Language" class="form-control"> </InputText>
         <ValidationMessage For="@(()=> _configuration.Language)" />

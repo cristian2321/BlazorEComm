@@ -1,15 +1,14 @@
 ﻿@page "/admin/categories" 
-<PageTitle> Categories </PageTitle>
-<h3>Categories</h3>
+<PageTitle>@_titlePage</PageTitle>
+<h3>@_titlePage</h3>
 
 
 <div class="header">
-    <div class="col">Name</div>
-    <div class="col">Url</div>
-    <div class="col">Visible</div>
+    <div class="col">@nameof(Category.Name)</div>
+    <div class="col">@nameof(Category.Url)</div>
+    <div class="col">@nameof(Category.Visible)</div>
     <div class="col"></div>
 </div>
-
 
  @foreach (var category in CategoryService.AdminCategories)
 {
@@ -25,15 +24,15 @@
         </div>
         <div class="col">
             <button class="btn btn-primary" @onclick="(() => NavigateToEditCategory(category.Id))">
-                Update 
+                @GetConfigurationValue(ClientConstants.UpdateButtonTitle)
             </button> 
             <button class="btn btn-primary" @onclick="(() => NavigateToDeleteCategory(category.Id))">
-                Delete
+                @GetConfigurationValue(ClientConstants.DeleteButtonTitle)
              </button> 
         </div>
     </div>
 }
 
 <button class="btn btn-primary" @onclick="NavigateToAddCategory">
-   Add new category
+    @GetConfigurationValue(ClientConstants.AddButtonTitle)
 </button>
