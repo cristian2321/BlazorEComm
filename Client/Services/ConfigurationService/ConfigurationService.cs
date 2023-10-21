@@ -41,28 +41,28 @@ public class ConfigurationService : IConfigurationService
     {
         if (_configurationApp is null || _configurationApp.Configurations is null || !_configurationApp.Configurations.Any())
         {
-            await GetConfigurations();
+            await GetConfigurations(ClientConstants.UpdateConfigurations);
         }
         
         return _configurationApp!.Configurations!.Where(x=>x.Key.ToLower() == configurationKey.ToLower() && 
                 x.Language.ToLower() == _configurationApp.Language.ToLower() && x.Activ)
-            .Select(x=>x.Value).First();
+            .Select(x=>x.Value).FirstOrDefault();
     }
 
-    public async Task GetConfigurations()
+    public async Task GetConfigurations(bool updateConfigurations = false)
     {
-        var response = await _httpClient.GetFromJsonAsync<ServiceResponse<List<ConfigurationDto>>>
-         (ClientApiEndpoints.ConfigurationsUrl);
-        if (response is not null && response.Data is not null && response.Succes)
+        if (updateConfigurations || _configurationApp.Configurations is null || !_configurationApp.Configurations.Any())
         {
-            _configurationApp.Configurations = response.Data;
-            _configurationApp.Language = _configurationApp.Configurations
-                .Where(x=>x.Key == ClientConstants.DefaultLanguage && x.Activ)
-                .Select(x=>x.Value)
-                .FirstOrDefault() ?? string.Empty;
-
-            OnChange?.Invoke();
-        }
+            var response = await _httpClient.GetFromJsonAsync<ServiceResponse<List<ConfigurationDto>>>
+                (ClientApiEndpoints.ConfigurationsUrl);
+                if (response is not null && response.Data is not null && response.Succes)
+                {
+                    _configurationApp.Configurations = response.Data;
+                    _configurationApp.Language = response.Data.First().Language;
+                
+                    OnChange?.Invoke();
+                }
+            }    
     }
 
     public List<ConfigurationDto> ConfgurationAppConfigurations => _configurationApp.Configurations;
@@ -85,7 +85,7 @@ public class ConfigurationService : IConfigurationService
                 .FirstOrDefault() ?? string.Empty;
         }
 
-        await GetConfigurations();
+        await GetConfigurations(ClientConstants.UpdateConfigurations);
     }
 
     public async Task<Configuration?> GetConfiguration(string configurationKey, string configurationLanguage)

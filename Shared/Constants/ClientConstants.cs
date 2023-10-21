@@ -2,7 +2,7 @@
 
 public class ClientConstants
 {
-    public const bool CallConfigurationService = true;
+    public const bool UpdateConfigurations = true;
     public const bool IsSucces = true;
   
     public const int DefaultPage = 1;

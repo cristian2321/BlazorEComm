@@ -8,7 +8,7 @@ public interface IConfigurationService
 
     event Action? OnChange;
 
-    Task GetConfigurations();
+    Task GetConfigurations(bool updateConfigurations = false);
 
     Task<Configuration?> GetConfiguration(string configurationKey, string configurationLanguage);
 
